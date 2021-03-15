@@ -1,0 +1,31 @@
+*.pyc
+fromdate.txt
+.ropeproject/
+.coverage
+*.egg-info/
+*.eggs
+
+/env/*
+.env
+
+# backups
+*~
+**/*~
+
+#PyCharm
+.idea
+venv
+
+# logs
+*.log
+
+.*.sw?
+
+# config files
+*.ini
+
+*.csv
+
+migrations/
+src/zb_links/db/datasets
+docker-compose.override.yaml

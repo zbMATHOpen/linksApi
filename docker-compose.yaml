@@ -1,0 +1,29 @@
+version: '3.4'
+services:
+  db:
+    container_name: dlmf_zbmath_db
+    restart: always
+    image: postgres:12
+    environment:
+      POSTGRES_PASSWORD: dlmfzb
+      POSTGRES_USER: dlmfzb
+      POSTGRES_DB: dlmfzb
+  migration:
+    build: .
+    command: /zb_links/startup.sh
+    environment:
+      DATABASE_URL: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'
+    entrypoint: ''
+    depends_on:
+      - db
+  rest:
+    restart: always
+    build: .
+    container_name: dlmf_zbmath_api
+    ports:
+      - 5001:5000
+    depends_on:
+      - db
+      - migration
+    environment:
+      DATABASE_URL: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'
