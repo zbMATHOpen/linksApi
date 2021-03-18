@@ -28,4 +28,4 @@ venv
 
 migrations/
 src/zb_links/db/datasets
-docker-compose.override.yaml
+docker-compose.override.yml
