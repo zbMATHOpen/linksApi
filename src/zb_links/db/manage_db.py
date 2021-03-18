@@ -14,8 +14,7 @@ def db_reset():
     meta = db.metadata
     for table in reversed(meta.sorted_tables):
         connection.execute(
-            sql.SQL("DROP TABLE IF EXISTS {};").format(
-                sql.Identifier(table))
+            sql.SQL("DROP TABLE IF EXISTS {};").format(sql.Identifier(table))
         )
 
     # drop alembic as well

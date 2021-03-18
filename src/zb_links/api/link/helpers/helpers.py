@@ -8,10 +8,10 @@ def make_message(status_code, message):
     ----------
     status_code : int
         status code of the response.
-    
+
     message: str or list of string
         message(s) to display
-    
+
     Returns
     -------
     response : json obj
