@@ -4,7 +4,7 @@
 
 from flask_restx import Api
 from functools import wraps
-from flask import request
+from flask import request, url_for
 import os
 
 
@@ -39,8 +39,14 @@ authorizations = {
     }
 }
 
+# Fix for mixed content when deployed on https. Will be removed when resolved.
+# https://github.com/python-restx/flask-restx/issues/188
+class PatchedApi(Api):
+    @property
+    def specs_url(self):
+        return url_for(self.endpoint('specs'))
 
-api = Api(
+api = PatchedApi(
     version="0.1.0",
     title="zbMATH Links API",
     description="Links between zbMATH and selected partners API",
