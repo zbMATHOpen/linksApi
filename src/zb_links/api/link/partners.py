@@ -15,14 +15,17 @@ partner = api.model(
     "Linking partner",
     {
         "partner_id": fields.Integer(
-            readOnly=True, description="The unique identifier of a zbMATH partner"
+            readOnly=True,
+            description="The unique identifier of a zbMATH partner",
         ),
         "name": fields.String(required=True, description="Partner name"),
         "scheme": fields.String(
             required=True,
             description="Schematic followed to establish partner identifier",
         ),
-        "url": fields.String(required=True, description="Web address of partner"),
+        "url": fields.String(
+            required=True, description="Web address of partner"
+        ),
     },
 )
 
@@ -73,7 +76,9 @@ class PartnerCollection(Resource):
         if "partner url" in arg_key_list:
             partner_url = args["partner url"]
 
-        data_to_update = dict(name=partner_name, scheme=partner_scheme, url=partner_url)
+        data_to_update = dict(
+            name=partner_name, scheme=partner_scheme, url=partner_url
+        )
 
         partner_query.update(data_to_update)
         db.session.commit()

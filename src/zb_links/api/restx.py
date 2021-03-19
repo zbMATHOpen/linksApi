@@ -34,7 +34,9 @@ def token_required(f):
     return decorated
 
 
-authorizations = {"apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}}
+authorizations = {
+    "apikey": {"type": "apiKey", "in": "header", "name": "X-API-KEY"}
+}
 
 # Fix for mixed content when deployed on https. Will be removed when resolved.
 # https://github.com/python-restx/flask-restx/issues/188
