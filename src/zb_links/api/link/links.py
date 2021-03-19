@@ -11,13 +11,17 @@ from zb_links.api.link.display import *
 from zb_links.api.link.helpers import helpers, link_helpers
 from zb_links.api.restx import token_required
 
-ns = api.namespace("link", description="Operations related to linking to zbMATH")
+ns = api.namespace(
+    "link", description="Operations related to linking to zbMATH"
+)
 
 search_by_arguments = reqparse.RequestParser()
 
 search_by_arguments.add_argument("author", type=str, required=False)
 
-search_by_arguments.add_argument("msc classification code", type=str, required=False)
+search_by_arguments.add_argument(
+    "msc classification code", type=str, required=False
+)
 
 
 @api.expect(search_by_arguments)
@@ -61,7 +65,9 @@ class LinkCollection(Resource):
             link_set = set(link_list_msc)
 
         if link_list_auth and link_list_msc:
-            link_set = set.intersection(set(link_list_auth), set(link_list_msc))
+            link_set = set.intersection(
+                set(link_list_auth), set(link_list_msc)
+            )
 
         if not (author or msc_val):
             link_set = set(Link.query.all())
@@ -103,7 +109,9 @@ class LinkItem(Resource):
         partner_name = args["partner name"]
 
         return_link = Link.query.filter_by(
-            source_identifier=source_val, target_id=zbl_val, partner_name=partner_name
+            source_identifier=source_val,
+            target_id=zbl_val,
+            partner_name=partner_name,
         ).first()
 
         return_display = []

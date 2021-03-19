@@ -60,7 +60,13 @@ def seed_source():
     partner = "DLMF"
 
     new_source_entry = Source(
-        source_id, source_identifier, scheme, type_name, url, chapter_title, partner
+        source_id,
+        source_identifier,
+        scheme,
+        type_name,
+        url,
+        chapter_title,
+        partner,
     )
 
     db.session.add(new_source_entry)
@@ -81,7 +87,9 @@ def seed_target():
         "Washington: U.S. Department of Commerce. " "xiv, 1046 pp. (1964)."
     )
     authors = "Abramowitz, Milton (ed.); Stegun, Irene A. (ed.)"
-    msc_list = "33-00 00A20 00A22 65A05 65Dxx 41A55 " "62Q05 44A10 11B68 11M06 11Y70"
+    msc_list = (
+        "33-00 00A20 00A22 65A05 65Dxx 41A55 " "62Q05 44A10 11B68 11M06 11Y70"
+    )
 
     new_target = ZBTarget(
         zbl_code,

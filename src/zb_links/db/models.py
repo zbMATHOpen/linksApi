@@ -50,7 +50,10 @@ class Link(db.Model):
     __tablename__ = "link_table"
     __table_args__ = (
         db.UniqueConstraint(
-            "source_id", "target_id", "partner_id", name="link_unique_constraint"
+            "source_id",
+            "target_id",
+            "partner_id",
+            name="link_unique_constraint",
         ),
     )
 
@@ -63,7 +66,8 @@ class Link(db.Model):
         db.String()
     )  # must manually update if changed; # partner object identifier, e.g. dlmf url suffix
     target_id = db.Column(
-        db.String(), db.ForeignKey("zb_target_table.zbl_code", onupdate="CASCADE")
+        db.String(),
+        db.ForeignKey("zb_target_table.zbl_code", onupdate="CASCADE"),
     )  # zbl_code
     partner_id = db.Column(db.Integer)
     partner_name = db.Column(
@@ -71,7 +75,8 @@ class Link(db.Model):
     )
     link_publication_date = db.Column(db.DateTime)
     link_provider = db.Column(
-        db.Integer, db.ForeignKey("provider_table.provider_id", onupdate="CASCADE")
+        db.Integer,
+        db.ForeignKey("provider_table.provider_id", onupdate="CASCADE"),
     )  # provider_id
     link_added_date = db.Column(db.DateTime)  # date when zb_math adds to db
     relationship_type = db.Column(db.String())
@@ -104,7 +109,9 @@ class Link(db.Model):
 class Source(db.Model):
     __tablename__ = "source_table"
     __table_args__ = (
-        db.UniqueConstraint("identifier", "partner", name="source_unique_constraint"),
+        db.UniqueConstraint(
+            "identifier", "partner", name="source_unique_constraint"
+        ),
     )
 
     source_id = db.Column(db.Integer, primary_key=True)
@@ -112,14 +119,18 @@ class Source(db.Model):
     identifier = db.Column(db.String())  # e.g. dlmf url suffix
     id_scheme = db.Column(db.String())
     type_name = db.Column(db.String())
-    url = db.Column(db.String())  # url where link occurs (e.g. using url suffix)
+    url = db.Column(
+        db.String()
+    )  # url where link occurs (e.g. using url suffix)
     title = db.Column(db.String())  # e.g. title of DLMF section
     partner = db.Column(
         db.String(), db.ForeignKey("zbmath_partners.name", onupdate="CASCADE")
     )  # zbMATH partner
 
     # Source-Link is a one-to-many relationship
-    links = db.relationship("Link", backref="link_source", cascade="all, delete-orphan")
+    links = db.relationship(
+        "Link", backref="link_source", cascade="all, delete-orphan"
+    )
 
     def __init__(
         self, source_id, identifier, id_scheme, type_name, url, title, partner
@@ -136,8 +147,12 @@ class Source(db.Model):
 # connects author_ids and zb_documents
 doc_author = db.Table(
     "doc_author",
-    db.Column("author_id", db.String(), db.ForeignKey("author_id_table.author_id")),
-    db.Column("zbl_code", db.String(), db.ForeignKey("zb_target_table.zbl_code")),
+    db.Column(
+        "author_id", db.String(), db.ForeignKey("author_id_table.author_id")
+    ),
+    db.Column(
+        "zbl_code", db.String(), db.ForeignKey("zb_target_table.zbl_code")
+    ),
 )
 
 
@@ -148,17 +163,24 @@ class ZBTarget(db.Model):
     id_scheme = db.Column(db.String())
     type_name = db.Column(db.String())
     title = db.Column(db.String())
-    publication_date = db.Column(db.Integer)  # year of publication in journal/book
+    publication_date = db.Column(
+        db.Integer
+    )  # year of publication in journal/book
     source_of_publication = db.Column(db.String())  # source col of matrix db
     authors = db.Column(db.String())
     msc = db.Column(db.String())
 
     # Target-Link is a one-to-many relationship
-    links = db.relationship("Link", backref="target", cascade="all, delete-orphan")
+    links = db.relationship(
+        "Link", backref="target", cascade="all, delete-orphan"
+    )
 
     # Target-AuthorId is a many-to-many relationship
     author_ids = db.relationship(
-        "AuthorId", secondary=doc_author, back_populates="zb_docs", lazy="dynamic"
+        "AuthorId",
+        secondary=doc_author,
+        back_populates="zb_docs",
+        lazy="dynamic",
     )
 
     def __init__(
@@ -185,9 +207,13 @@ class ZBTarget(db.Model):
 # connects author_ids and author_names
 auth_id_name = db.Table(
     "author_id_name",
-    db.Column("author_id", db.String(), db.ForeignKey("author_id_table.author_id")),
     db.Column(
-        "author_name", db.String(), db.ForeignKey("author_name_table.published_name")
+        "author_id", db.String(), db.ForeignKey("author_id_table.author_id")
+    ),
+    db.Column(
+        "author_name",
+        db.String(),
+        db.ForeignKey("author_name_table.published_name"),
     ),
 )
 
@@ -204,7 +230,10 @@ class AuthorId(db.Model):
         lazy="dynamic",
     )
     zb_docs = db.relationship(
-        "ZBTarget", secondary=doc_author, back_populates="author_ids", lazy="dynamic"
+        "ZBTarget",
+        secondary=doc_author,
+        back_populates="author_ids",
+        lazy="dynamic",
     )
 
     def __init__(self, author_id):

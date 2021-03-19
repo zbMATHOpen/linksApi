@@ -14,7 +14,8 @@ object_id_info = api.model(
             readOnly=True, description="The unique identifier the object"
         ),
         "IDScheme": fields.String(
-            required=True, description="Schematic used for the object identification"
+            required=True,
+            description="Schematic used for the object identification",
         ),
         "IDURL": fields.String(description="web address of the object"),
     },
@@ -43,7 +44,9 @@ name_model_creator = api.model("name", {"Name": fields.String(required=True)})
 publisher_model = api.model(
     "publisher",
     {
-        "Name": fields.String(required=True, description="name of the zbMATH partner"),
+        "Name": fields.String(
+            required=True, description="name of the zbMATH partner"
+        ),
         "Identifier": fields.Nested(object_id_info),
     },
 )
@@ -82,7 +85,9 @@ link = api.model(
             source, required=True, description="source of the link"
         ),
         "Target": fields.Nested(
-            target, required=True, description="target (zbMATH object) of the link"
+            target,
+            required=True,
+            description="target (zbMATH object) of the link",
         ),
         "LinkPublicationDate": fields.DateTime(
             required=True, description="Date the link was established"
@@ -91,7 +96,8 @@ link = api.model(
             provider, required=True, description="provider of the link"
         ),
         "RelationshipType": fields.String(
-            required=True, description="Type of relationship described by the link"
+            required=True,
+            description="Type of relationship described by the link",
         ),
     },
 )
@@ -127,7 +133,9 @@ def get_display(link_element):
     }
     source_publisher_dict = {
         "Name": partner,
-        "Identifier": marshal(source_publisher_identifier_dict, object_id_info),
+        "Identifier": marshal(
+            source_publisher_identifier_dict, object_id_info
+        ),
     }
     source_dict = {
         "Identifier": marshal(source_id_dict, object_id_info),
@@ -143,7 +151,10 @@ def get_display(link_element):
         "IDURL": "https://zbmath.org/",
     }
 
-    target_name_msc_dict = {"Name": target_obj.type_name, "Subtype": target_obj.msc}
+    target_name_msc_dict = {
+        "Name": target_obj.type_name,
+        "Subtype": target_obj.msc,
+    }
 
     target_author_list = []
     author_list = target_obj.authors.split(";")
