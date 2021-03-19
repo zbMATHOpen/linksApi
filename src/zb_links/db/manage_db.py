@@ -1,5 +1,4 @@
 from flask import Blueprint
-from psycopg2 import sql
 
 from zb_links.db.models import db
 
@@ -7,9 +6,6 @@ managebp = Blueprint("manage_db", __name__)
 
 
 # clears the database
-# is necessary if a new install is performed 
-# after a previous version had already populated
-# the database
 @managebp.cli.command("drop_all")
 def db_drop_all():
     
