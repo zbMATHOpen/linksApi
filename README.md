@@ -23,7 +23,7 @@
     ```
     Navigate to root folder, and
     ```
-    pip install .
+    pip install -e .
     ```
     Then follow the last three steps in 1) above to export the env settings.
     This will have been done in the virtual environment when the 
