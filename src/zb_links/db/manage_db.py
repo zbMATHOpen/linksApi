@@ -1,4 +1,5 @@
 from flask import Blueprint
+import sqlalchemy
 
 from zb_links.db.models import db
 
@@ -10,9 +11,9 @@ managebp = Blueprint("manage_db", __name__)
 def db_drop_all():
     db.drop_all()
 
-    # drop alembic as well
+    # drop alembic if exists
     connection = db.engine.connect()
     try:
         connection.execute("DROP TABLE alembic_version;")
-    except Exception:
-        connection.execute("DROP TABLE IF EXISTS alembic_version;")
+    except sqlalchemy.exc.ProgrammingError:
+        pass
