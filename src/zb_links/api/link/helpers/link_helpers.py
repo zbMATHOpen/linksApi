@@ -1,7 +1,6 @@
+from sqlalchemy import func, or_
 
 from zb_links.db.models import *
-
-from sqlalchemy import func, or_
 
 
 def get_author_objs(author):
@@ -33,15 +32,13 @@ def get_author_objs(author):
         an_author_expression = an_author_expression.rstrip("_")
 
         author_names = author_name_query.filter(
-            func.lower(
-                AuthorName.published_name
-            ).like(an_author_expression)
+            func.lower(AuthorName.published_name).like(an_author_expression)
         ).all()
 
         author_name_objs.append(list(author_names))
-        
+
     return author_name_objs
-    
+
 
 def get_links_from_author(author):
     """
@@ -54,12 +51,12 @@ def get_links_from_author(author):
     Returns
     -------
     link_list_auth : list of Link objects
-        returns all Links associated to 
+        returns all Links associated to
         ZBTarget documents which are associated to all
         AuthorIds associated to all authors in search input.
 
     """
-    
+
     author_name_objs = get_author_objs(author)
 
     # create sets of ids, assoc. with each author_name entry
@@ -81,17 +78,10 @@ def get_links_from_author(author):
     # get intersection of docs belonging to each set of ids
     intersection_docs = set(target_objs_list[0])
     for doc_list in target_objs_list:
-        intersection_docs = set.intersection(
-            set(doc_list),
-            intersection_docs
-        )
+        intersection_docs = set.intersection(set(doc_list), intersection_docs)
 
-    link_list_auth = [
-        link
-        for doc in intersection_docs
-        for link in doc.links
-    ]
-    
+    link_list_auth = [link for doc in intersection_docs for link in doc.links]
+
     return link_list_auth
 
 
@@ -107,12 +97,12 @@ def get_links_from_mscs(msc_val):
     Returns
     -------
     link_list_msc : list of Link objects
-        returns all Links associated to 
+        returns all Links associated to
         ZBTarget documents which are associated to all
         to all msc codes in search input.
 
     """
-    
+
     msc_query = ZBTarget.query
     msc_list = msc_val.split(" ")
     for an_msc in msc_list:
@@ -121,24 +111,14 @@ def get_links_from_mscs(msc_val):
         msc_query = msc_query.filter(
             or_(
                 func.lower(ZBTarget.msc).startswith(an_msc),
-                func.lower(ZBTarget.msc).contains(msc_with_empty)
+                func.lower(ZBTarget.msc).contains(msc_with_empty),
             )
         )
 
-    msc_docs_codes = list(
-        [
-            doc.zbl_code
-            for doc in msc_query
-        ]
-    )
+    msc_docs_codes = list([doc.zbl_code for doc in msc_query])
 
-    link_query = Link.query.filter(
-        Link.target_id.in_(msc_docs_codes)
-    )
+    link_query = Link.query.filter(Link.target_id.in_(msc_docs_codes))
 
-    link_list_msc = [
-        link
-        for link in link_query.all()
-    ]
-    
+    link_list_msc = [link for link in link_query.all()]
+
     return link_list_msc
