@@ -19,11 +19,11 @@
     Note: to install the API as a package outside the virtual environment, 
     deactivate your virtual environment,
     ```
-    source env/bin/deactivate
+    deactivate
     ```
     Navigate to root folder, and
     ```
-    pip install .
+    pip install -e .
     ```
     Then follow the last three steps in 1) above to export the env settings.
     This will have been done in the virtual environment when the 
@@ -37,7 +37,7 @@
    With initialization a migration folder will automatically be created by 
    Flask.
    ```
-   flask manage_db reset
+   flask manage_db drop_all
    flask db init
    flask db migrate
    flask db upgrade

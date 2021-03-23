@@ -1,21 +1,19 @@
 from flask import Blueprint
-from psycopg2 import sql
+import sqlalchemy
 
 from zb_links.db.models import db
 
 managebp = Blueprint("manage_db", __name__)
 
 
-# clear the database
-@managebp.cli.command("reset")
-def db_reset():
+# clears the database
+@managebp.cli.command("drop_all")
+def db_drop_all():
+    db.drop_all()
+
+    # drop alembic if exists
     connection = db.engine.connect()
-
-    meta = db.metadata
-    for table in reversed(meta.sorted_tables):
-        connection.execute(
-            sql.SQL("DROP TABLE IF EXISTS {};").format(sql.Identifier(table))
-        )
-
-    # drop alembic as well
-    connection.execute("DROP TABLE IF EXISTS alembic_version;")
+    try:
+        connection.execute("DROP TABLE alembic_version;")
+    except sqlalchemy.exc.ProgrammingError:
+        pass
