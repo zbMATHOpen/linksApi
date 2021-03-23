@@ -4,8 +4,17 @@
 
 import click
 from flask import Blueprint
-from zb_links.db.models import \
-    db, Partner, Provider, ZBTarget, Source, Link, AuthorId, AuthorName
+
+from zb_links.db.models import (
+    AuthorId,
+    AuthorName,
+    Link,
+    Partner,
+    Provider,
+    Source,
+    ZBTarget,
+    db,
+)
 
 seedbp = Blueprint("seed", __name__)
 
@@ -43,9 +52,11 @@ def seed_source():
     scheme = "DLMF scheme"
     type_name = "DLMF bibliographic entry"
     url = "https://dlmf.nist.gov/11.14#I1.i1.p1"
-    chapter_title = "1st item ‣ §11.14(ii) Struve Functions ‣ " \
-                    "§11.14 Tables ‣ Computation ‣ " \
-                    "Chapter 11 Struve and Related Functions"
+    chapter_title = (
+        "1st item ‣ §11.14(ii) Struve Functions ‣ "
+        "§11.14 Tables ‣ Computation ‣ "
+        "Chapter 11 Struve and Related Functions"
+    )
     partner = "DLMF"
 
     new_source_entry = Source(
@@ -55,7 +66,7 @@ def seed_source():
         type_name,
         url,
         chapter_title,
-        partner
+        partner,
     )
 
     db.session.add(new_source_entry)
@@ -67,14 +78,18 @@ def seed_target():
     zbl_code = "0171.38503"
     id_scheme = "zbMATH scheme"
     type_name = "book"
-    title = "Handbook of mathematical functions with formulas, " \
-            "graphs and mathematical tables"
+    title = (
+        "Handbook of mathematical functions with formulas, "
+        "graphs and mathematical tables"
+    )
     publication_date = "1964"
-    source_of_publication = "Washington: U.S. Department of Commerce. " \
-                            "xiv, 1046 pp. (1964)."
+    source_of_publication = (
+        "Washington: U.S. Department of Commerce. " "xiv, 1046 pp. (1964)."
+    )
     authors = "Abramowitz, Milton (ed.); Stegun, Irene A. (ed.)"
-    msc_list = "33-00 00A20 00A22 65A05 65Dxx 41A55 " \
-               "62Q05 44A10 11B68 11M06 11Y70"
+    msc_list = (
+        "33-00 00A20 00A22 65A05 65Dxx 41A55 " "62Q05 44A10 11B68 11M06 11Y70"
+    )
 
     new_target = ZBTarget(
         zbl_code,
@@ -84,7 +99,7 @@ def seed_target():
         publication_date,
         source_of_publication,
         authors,
-        msc_list
+        msc_list,
     )
 
     db.session.add(new_target)
@@ -94,9 +109,7 @@ def seed_target():
 @seedbp.cli.command("link")
 def seed_link():
     # TODO: in general the partner can be read from below partner_name
-    dlmf_partner_obj = Partner.query.filter_by(
-        name="DLMF"
-    ).first()
+    dlmf_partner_obj = Partner.query.filter_by(name="DLMF").first()
 
     link_id = 1
     source_id = 1
@@ -119,16 +132,12 @@ def seed_link():
         link_pub_date,
         date_added,
         provider,
-        relationship
+        relationship,
     )
 
     # add link to partner, target, and to source
-    zb_target_obj = ZBTarget.query.filter_by(
-        zbl_code=zbl_code
-    ).first()
-    source_obj = Source.query.filter_by(
-        source_id=source_id
-    ).first()
+    zb_target_obj = ZBTarget.query.filter_by(zbl_code=zbl_code).first()
+    source_obj = Source.query.filter_by(source_id=source_id).first()
 
     dlmf_partner_obj.links.append(new_link)
     zb_target_obj.links.append(new_link)
