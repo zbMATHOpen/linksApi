@@ -2,9 +2,7 @@
 # zbMATH links API (Flask + Swagger + Flask-RESTPlus)
 # ------------------------------------------------------------------------------
 
-import os
-import sys
-
+import configparser
 from flask import Blueprint, Flask
 from flask_migrate import Migrate
 from pkg_resources import get_distribution
@@ -20,10 +18,12 @@ from zb_links.db.models import db
 from zb_links.db.seed_db import seedbp
 
 
+config = configparser.ConfigParser()
+config.read('config.ini')
+
 def configure_app(flask_app):
-    myPath = os.path.dirname(os.path.abspath(__file__))
-    sys.path.insert(0, myPath + "/../..")
-    flask_app.config.from_object(os.environ["APP_SETTINGS"])
+    flask_app.config.from_object(config['app']['app_settings'])
+    flask_app.config["FLASK_APP"] = "zb_links.app.py"
 
     # follow recommended settings to save memory
     # see https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/
