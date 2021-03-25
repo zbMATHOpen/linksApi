@@ -2,7 +2,7 @@
 # Configuration
 # ------------------------------------------------------------------------------
 
-from zb_links.app import db_uri
+from zb_links.api.restx import db_uri
 
 
 class Config(object):
