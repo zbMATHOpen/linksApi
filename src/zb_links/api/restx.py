@@ -2,23 +2,30 @@
 # Header + Authentication
 # ------------------------------------------------------------------------------
 
-import os
+import configparser
 from functools import wraps
 
 from flask import request, url_for
 from flask_restx import Api
 
 
+config = configparser.ConfigParser()
+config.read('config.ini')
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
         token = None
-        if not "ZBMATH_API_KEY" in os.environ:
+        api_key = None
+        try:
+            api_key = config['key']['secret_key']
+        except KeyError:
             return {
                 "message": "Authentication is not implemented on this server. "
                 "Configure ZBMATH_API_KEY for write operations."
             }, 501
+
 
         if "X-API-KEY" in request.headers:
             token = request.headers["X-API-KEY"]
@@ -26,7 +33,7 @@ def token_required(f):
         if not token:
             return {"message": "Token is missing."}, 401
 
-        if token != os.environ.get("ZBMATH_API_KEY"):
+        if token != api_key:
             return {"message": "Token is wrong."}, 401
 
         return f(*args, **kwargs)
@@ -45,6 +52,9 @@ class PatchedApi(Api):
     def specs_url(self):
         return url_for(self.endpoint("specs"))
 
+
+app_settings = config['app']['app_settings']
+db_uri = config['DB']['db_uri']
 
 api = PatchedApi(
     version="0.1.0",
