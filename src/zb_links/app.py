@@ -55,12 +55,12 @@ def initialize_app(flask_app):
 
 
 def create_app():
-    app = Flask(__name__)
+    application = Flask(__name__)
 
-    Migrate(app, db)
-    initialize_app(app)
-    initialize_db(app)
-    return app
+    Migrate(application, db)
+    initialize_app(application)
+    initialize_db(application)
+    return application
 
 
 if __name__ == "__main__":
