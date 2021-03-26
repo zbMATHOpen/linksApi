@@ -57,9 +57,9 @@ class PatchedApi(Api):
 
 
 app_settings = config['app']['app_settings']
-db_uri = config['DB']['db_uri']
 if "DATABASE_URL" in os.environ:
     config.set('DB', 'db_uri', os.environ.get('DATABASE_URL'))
+db_uri = config['DB']['db_uri']
 api = PatchedApi(
     version="0.1.0",
     title="zbMATH Links API",
