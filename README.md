@@ -12,7 +12,7 @@
     This will install the API as a package (dlmfapi) in the virtual environment.
     Fill out the config_template fields:
     enter your database URI, and the configuration settings
-    (development: config.DevelopmentConfig or production: config.ProuctionConfig)
+    (development: config.DevelopmentConfig or production: config.ProductionConfig)
     you plan to use.
     If you have an API key for the write functions, uncomment
     and enter them in the 'key' field.
