@@ -10,7 +10,7 @@ from flask import request, url_for
 from flask_restx import Api
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 
 
 def token_required(f):
@@ -20,14 +20,14 @@ def token_required(f):
         token = None
         api_key: str
         if "ZBMATH_API_KEY" in os.environ:
-            config.set('key', 'secret_key', os.environ.get("ZBMATH_API_KEY"))
+            config.set("key", "secret_key", os.environ.get("ZBMATH_API_KEY"))
         try:
-            api_key = config['key']['secret_key']
+            api_key = config["key"]["secret_key"]
         except KeyError:
             return {
-                       "message": "Authentication is not implemented on this server. "
-                                  "Configure ZBMATH_API_KEY for write operations."
-                   }, 501
+                "message": "Authentication is not implemented on this server. "
+                "Configure ZBMATH_API_KEY for write operations."
+            }, 501
 
         if "X-API-KEY" in request.headers:
             token = request.headers["X-API-KEY"]
@@ -56,10 +56,10 @@ class PatchedApi(Api):
         return url_for(self.endpoint("specs"))
 
 
-app_settings = config['app']['app_settings']
+app_settings = config["app"]["app_settings"]
 if "DATABASE_URL" in os.environ:
-    config.set('DB', 'db_uri', os.environ.get('DATABASE_URL'))
-db_uri = config['DB']['db_uri']
+    config.set("DB", "db_uri", os.environ.get("DATABASE_URL"))
+db_uri = config["DB"]["db_uri"]
 api = PatchedApi(
     version="0.1.0",
     title="zbMATH Links API",
