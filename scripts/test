@@ -11,7 +11,7 @@ ${PREFIX}coverage report -m
 echo "### black:"
 ${PREFIX}black src --check --diff
 echo "### flake8:"
-${PREFIX}flake8 src || echo "Ignore flake8 errors"
+${PREFIX}flake8 src
 echo "### Radon complexity check:"
 ${PREFIX}radon cc --min B --total-average src
 echo "### Visual Studio maintainability index:"
