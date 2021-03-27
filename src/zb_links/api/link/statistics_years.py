@@ -15,7 +15,8 @@ ns = api.namespace("statistics")
 # Distribution of years of publication
 @ns.route("/years/")
 class YearCollection(Resource):
-    def get(self):
+    @staticmethod
+    def get():
         """Occurrence of years of publication of papers"""
         queries = ZBTarget.query.all()
         years_list = [str(item.publication_date) for item in queries]
