@@ -5,6 +5,14 @@ if [ -d 'venv' ] ; then
     export PREFIX="venv/bin/"
 fi
 
+echo "### pytest:"
 ${PREFIX}pytest
+echo "### black:"
 ${PREFIX}black src --check --diff
+echo "### flake8:"
 ${PREFIX}flake8 src || echo "Ignore flake8 errors"
+echo "### Radon complexity check:"
+${PREFIX}radon cc --min B --total-average src
+echo "### Visual Studio maintainability index:"
+${PREFIX}radon mi --min B src
+echo "### tests done"
