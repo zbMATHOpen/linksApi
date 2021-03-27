@@ -1,0 +1,13 @@
+name: Docker Compose Actions Workflow
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Start the database
+        run: docker-compose up -d db
+      - name: Start the database
+        run: docker-compose up migration
+      - name: Test
+        run: docker-compose run --no-deps --entrypoint "" rest pytest
