@@ -7,7 +7,7 @@ fi
 
 echo "### pytest:"
 ${PREFIX}coverage run --source=src -m pytest
-${PREFIX}coverage report -m
+${PREFIX}coverage report -m --fail-under 65
 echo "### black:"
 ${PREFIX}black src --check --diff
 echo "### flake8:"
