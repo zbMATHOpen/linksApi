@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Start the database
         run: docker-compose up -d db
-      - name: Start the database
+      - name: Migrate the database schema
         run: docker-compose up migration
       - name: Test
         run: docker-compose run --no-deps --entrypoint "" rest pytest
