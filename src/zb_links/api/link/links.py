@@ -9,8 +9,8 @@ from flask_restx import Resource, reqparse
 
 from zb_links.api.link.display import get_display, link
 from zb_links.api.link.helpers import helpers, link_helpers
-from zb_links.api.restx import token_required, api
-from zb_links.db.models import Link, Partner, db, ZBTarget, Source
+from zb_links.api.restx import api, token_required
+from zb_links.db.models import Link, Partner, Source, ZBTarget, db
 
 ns = api.namespace(
     "link", description="Operations related to linking to zbMATH"
@@ -37,7 +37,7 @@ class LinkCollection(Resource):
             },
             "msc classification code": {
                 "description": "Ex: 33-00 (multiple inputs with space as "
-                               "delimiter) "
+                "delimiter) "
             },
         }
     )
