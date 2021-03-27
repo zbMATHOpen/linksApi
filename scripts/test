@@ -6,7 +6,8 @@ if [ -d 'venv' ] ; then
 fi
 
 echo "### pytest:"
-${PREFIX}pytest
+${PREFIX}coverage run --source=src -m pytest
+${PREFIX}coverage report -m
 echo "### black:"
 ${PREFIX}black src --check --diff
 echo "### flake8:"

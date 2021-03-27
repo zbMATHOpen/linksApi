@@ -7,3 +7,4 @@ isort
 pytest
 radon
 flake8_polyfill
+coverage
