@@ -13,7 +13,8 @@ ns = api.namespace("source", description="url of links in the source")
 # List of link sources (list of all DLMF backlinks)
 @ns.route("/")
 class SourceCollection(Resource):
-    def get(self):
+    @staticmethod
+    def get():
         """List of all links in the source"""
         sources = Source.query.all()
         display_list = []
