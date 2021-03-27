@@ -19,7 +19,8 @@ ns = api.namespace(
 # Distribution of MSC codes
 @ns.route("/msc/")
 class MSCCollection(Resource):
-    def get(self):
+    @staticmethod
+    def get():
         """Occurrence of primary 2-digit level MSC codes"""
         queries = ZBTarget.query.all()
         msc_primary_list = [str(item.msc)[0:2] for item in queries if item.msc]
