@@ -6,3 +6,5 @@ if [ -d 'venv' ] ; then
 fi
 
 ${PREFIX}pytest
+${PREFIX}black src --check --diff
+${PREFIX}flake8 src || echo "Ignore flake8 errors"
