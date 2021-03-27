@@ -5,7 +5,7 @@
 from flask_restx import fields, marshal
 
 from zb_links.api.restx import api
-from zb_links.db.models import *
+from zb_links.db.models import Source, ZBTarget, Provider
 
 object_id_info = api.model(
     "identifier",

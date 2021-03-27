@@ -10,6 +10,7 @@ from flask_restx import Resource, reqparse
 from zb_links.api.link.display import *
 from zb_links.api.link.helpers import helpers, link_helpers
 from zb_links.api.restx import token_required
+from zb_links.db.models import Link
 
 ns = api.namespace(
     "link", description="Operations related to linking to zbMATH"
