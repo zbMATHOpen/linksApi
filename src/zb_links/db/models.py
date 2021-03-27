@@ -64,7 +64,8 @@ class Link(db.Model):
     )
     source_identifier = db.Column(
         db.String()
-    )  # must manually update if changed; # partner object identifier, e.g. dlmf url suffix
+    )  # must manually update if changed;
+    # partner object identifier, e.g. dlmf url suffix
     target_id = db.Column(
         db.String(),
         db.ForeignKey("zb_target_table.zbl_code", onupdate="CASCADE"),
