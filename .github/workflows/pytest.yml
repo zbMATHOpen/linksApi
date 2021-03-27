@@ -11,3 +11,5 @@ jobs:
         run: docker-compose up migration
       - name: Test
         run: docker-compose run --no-deps --entrypoint "" rest pytest
+      - name: Shutdown database
+        run: docker-compose stop db
