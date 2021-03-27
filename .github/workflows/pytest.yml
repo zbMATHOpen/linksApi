@@ -5,12 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Pull public images
-        run: docker-compose pull && docker pull python:3.7
-      - name: Add cache for imediate layers
-        uses: satackey/action-docker-layer-caching@v0.0.11
-        # Ignore the failure of a step and avoid terminating the job.
-        continue-on-error: true
       - name: Start the database
         run: docker-compose up -d db
       - name: Start the database

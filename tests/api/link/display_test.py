@@ -25,5 +25,5 @@ def test_get_display_all(client):
     assert len(data) == 1
     entry: dict = data[0]
     assert len(entry.keys()) == 5
-    src:dict = entry.get("Source")
+    src: dict = entry.get("Source")
     assert len(src) == 4
