@@ -17,7 +17,7 @@ def test_get_partner(client):
 # potentially destructive test
 def test_put_partner(client):
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
-    test_name = "Test"
+    test_name = "DLMF"
     json = {"partner id": 1, "partner name": test_name}
     param = urlencode(json)
     response = client.put(f"/links_api/partner/?{param}",
