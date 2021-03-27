@@ -8,8 +8,9 @@ jobs:
       - name: Start the database
         run: docker-compose up -d db
       - name: Migrate the database schema
-        run: docker-compose up migration
+        run: docker-compose up --build migration
       - name: Test
-        run: docker-compose run --no-deps --entrypoint "" rest pytest
+        run: docker-compose run --no-deps --entrypoint "" rest scripts/test
       - name: Shutdown database
+        if: ${{ always() }}
         run: docker-compose stop db
