@@ -133,3 +133,9 @@ services:
 ```
 Sets the key to `secretKey` and maps the internal database to port 5432 on your host system.
 This can be practical for development.
+
+## Running GitHub actions locally
+Install https://github.com/nektos/act and run
+```
+act
+```
