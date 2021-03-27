@@ -10,6 +10,7 @@ services:
       POSTGRES_DB: dlmfzb
   migration:
     build: .
+    image: zbmath:scholix-rest-api
     command: /zb_links/startup.sh
     environment:
       DATABASE_URL: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'
@@ -17,8 +18,7 @@ services:
     depends_on:
       - db
   rest:
-    restart: always
-    build: .
+    image: zbmath:scholix-rest-api
     container_name: dlmf_zbmath_api
     ports:
       - 5001:5000
