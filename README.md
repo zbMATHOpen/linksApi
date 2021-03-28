@@ -9,14 +9,7 @@
     pip install .
     ```
 
-    This will install the API as a package (dlmfapi) in the virtual environment.
-    Fill out the config_template fields:
-    enter your database URI, and the configuration settings
-    (development: config.DevelopmentConfig or production: config.ProductionConfig)
-    you plan to use.
-    If you have an API key for the write functions, uncomment
-    and enter them in the 'key' field.
-    Rename config_template.ini to config.ini
+    This will install the API as a package (zbmath_link_api) in the virtual environment.
 
     Note: to install the API as a package outside the virtual environment,
     deactivate your virtual environment,
@@ -29,9 +22,10 @@
     ```
 
 
-
 2) Create the database.
 
+   Define an environment variable `SQLALCHEMY_DATABASE_URI` to define the 
+   [database connection uri.](https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/?highlight=sqlalchemy_database_uri#connection-uri-format)
    With initialization a migration folder will automatically be created by
    Flask.
    ```
@@ -59,6 +53,8 @@
 
 5) View the API at http://127.0.0.1:5000/links_api/
 
+6) See settings for configuring write access.
+   You can use [dotenv](https://pypi.org/project/python-dotenv/) to store your settings.
 
 ## Remarks:
 
@@ -134,6 +130,7 @@ services:
 Sets the key to `secretKey` and maps the internal database to port 5432 on your host system.
 This can be practical for development.
 
+All settings are listed at in the method [zb_links.app.configure_app](src/zb_links/app.py).
 ## Running GitHub actions locally
 Install https://github.com/nektos/act and run
 ```
