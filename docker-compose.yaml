@@ -13,7 +13,7 @@ services:
     image: zbmath:scholix-rest-api
     command: /zb_links/startup.sh
     environment:
-      DATABASE_URL: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'
+      SQLALCHEMY_DATABASE_URI: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'
     entrypoint: ''
     depends_on:
       - db
@@ -26,4 +26,4 @@ services:
       - db
       - migration
     environment:
-      DATABASE_URL: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'
+      SQLALCHEMY_DATABASE_URI: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'

@@ -1,6 +1,7 @@
 # ------------------------------------------------------------------------------
 # zbMATH links API (Flask + Swagger + Flask-RESTPlus)
 # ------------------------------------------------------------------------------
+import os
 
 from flask import Blueprint, Flask
 from flask_migrate import Migrate
@@ -11,24 +12,34 @@ from zb_links.api.link.partners import ns as partners_namespace
 from zb_links.api.link.source import ns as source_namespace
 from zb_links.api.link.statistics_msc import ns as statistics_msc_namespace
 from zb_links.api.link.statistics_years import ns as statistics_years_namespace
-from zb_links.api.restx import api, app_settings
+from zb_links.api.restx import api
 from zb_links.db.manage_db import managebp
 from zb_links.db.models import db
 from zb_links.db.seed_db import seedbp
 
 
 def configure_app(flask_app):
-    flask_app.config.from_object(app_settings)
-    flask_app.config["FLASK_APP"] = "zb_links.app.py"
-
-    # follow recommended settings to save memory
-    # see https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/
-    flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    flask_app.config["SWAGGER_UI_DOC_EXPANSION"] = "list"
-    flask_app.config["RESTPLUS_VALIDATE"] = True
-    flask_app.config["RESTPLUS_MASK_SWAGGER"] = False
-    flask_app.config["ERROR_404_HELP"] = False
-    flask_app.config["API_VERSION"] = get_distribution("dlmfapi").version
+    default_config = {
+        "FLASK_APP": "zb_links.app.py",
+        # follow recommended settings to save memory
+        # see https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/
+        "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+        "SWAGGER_UI_DOC_EXPANSION": "list",
+        "RESTPLUS_VALIDATE": True,
+        "RESTPLUS_MASK_SWAGGER": False,
+        "ERROR_404_HELP": False,
+        "DEBUG": False,
+        "TESTING": False,
+        "CSRF_ENABLED": True,
+        "API_VERSION": get_distribution("zbmath_link_api").version,
+        "SQLALCHEMY_DATABASE_URI": None,
+        "ZBMATH_API_KEY": None,
+    }
+    flask_app.config.from_mapping(default_config)
+    # Overwrite config with
+    for key in default_config.keys():
+        if key in os.environ:
+            flask_app.config[key] = os.getenv(key)
 
 
 def initialize_db(flask_app):
