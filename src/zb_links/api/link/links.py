@@ -182,16 +182,16 @@ class LinkItem(Resource):
 
         try:
             new_link = Link(
-                new_link_id,
-                source_id,
-                source_val,
-                zbl_val,
-                partner_id,
-                partner_name,
-                date_established,
-                date_added,
-                provider_id,
-                relation,
+                link_id=new_link_id,
+                source_id=source_id,
+                source_identifier=source_val,
+                target_id=zbl_val,
+                partner_id=partner_id,
+                partner_name=partner_name,
+                link_publication_date=date_established,
+                link_added_date=date_added,
+                link_provider=provider_id,
+                relationship_type=relation,
             )
             db.session.add(new_link)
             db.session.commit()

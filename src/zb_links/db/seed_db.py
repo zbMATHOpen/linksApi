@@ -111,32 +111,23 @@ def seed_link():
     # TODO: in general the partner can be read from below partner_name
     dlmf_partner_obj = Partner.query.filter_by(name="DLMF").first()
 
-    link_id = 1
+    target_id = "0171.38503"
     source_id = 1
-    source_identifier = "11.14#I1.i1.p1"
-    zbl_code = "0171.38503"
-    partner_id = 1
-    partner_name = "DLMF"
-    link_pub_date = "2010-01-01T00:00:00"
-    provider = 1
-    date_added = "2010-01-01T00:00:00"
-    relationship = "equation referenced"
-
     new_link = Link(
-        link_id,
-        source_id,
-        source_identifier,
-        zbl_code,
-        partner_id,
-        partner_name,
-        link_pub_date,
-        date_added,
-        provider,
-        relationship,
+        link_id=1,
+        source_id=source_id,
+        source_identifier="11.14#I1.i1.p1",
+        target_id=target_id,
+        partner_id=1,
+        partner_name="DLMF",
+        link_publication_date="2010-01-01T00:00:00",
+        link_provider=1,
+        link_added_date="2010-01-01T00:00:00",
+        relationship_type="equation referenced",
     )
 
     # add link to partner, target, and to source
-    zb_target_obj = ZBTarget.query.filter_by(zbl_code=zbl_code).first()
+    zb_target_obj = ZBTarget.query.filter_by(zbl_code=target_id).first()
     source_obj = Source.query.filter_by(source_id=source_id).first()
 
     dlmf_partner_obj.links.append(new_link)
