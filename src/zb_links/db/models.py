@@ -82,30 +82,6 @@ class Link(db.Model):
     link_added_date = db.Column(db.DateTime)  # date when zb_math adds to db
     relationship_type = db.Column(db.String())
 
-    def __init__(
-        self,
-        link_id,
-        source_id,
-        source_identifier,
-        zbl_code,
-        partner_id,
-        partner_name,
-        date_established,
-        date_added,
-        provider_id,
-        relation,
-    ):
-        self.link_id = link_id
-        self.source_id = source_id
-        self.source_identifier = source_identifier
-        self.target_id = zbl_code
-        self.partner_id = partner_id
-        self.partner_name = partner_name
-        self.link_publication_date = date_established
-        self.link_added_date = date_added
-        self.link_provider = provider_id
-        self.relationship_type = relation
-
 
 class Source(db.Model):
     __tablename__ = "source_table"

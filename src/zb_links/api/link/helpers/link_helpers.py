@@ -1,6 +1,6 @@
 from sqlalchemy import func, or_
 
-from zb_links.db.models import AuthorName, ZBTarget, Link
+from zb_links.db.models import AuthorName, Link, ZBTarget
 
 
 def get_author_objs(author):
