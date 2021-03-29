@@ -1,5 +1,5 @@
 ## zbMATH links API
-![test status](https://github.com/zbmathopen/zbLinkApi/actions/workflows/pytest.yml/badge.svg)
+![test status](https://github.com/zbmathopen/linksApi/actions/workflows/pytest.yml/badge.svg)
 
 1) Install requirements and set the env variables.
 
