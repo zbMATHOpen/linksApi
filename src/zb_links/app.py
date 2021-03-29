@@ -31,7 +31,7 @@ def configure_app(flask_app):
         "DEBUG": False,
         "TESTING": False,
         "CSRF_ENABLED": True,
-        "API_VERSION": get_distribution("zbmath_link_api").version,
+        "API_VERSION": get_distribution("zbmath_links_api").version,
         "SQLALCHEMY_DATABASE_URI": None,
         "ZBMATH_API_KEY": None,
     }
