@@ -149,7 +149,7 @@ def seed_author_id():
 
 @seedbp.cli.command("author_name")
 def seed_author_name():
-    name = "Abramowitz Milton"
+    name = "Abramowitz, Milton"
     new_author = AuthorName(name)
 
     db.session.add(new_author)
@@ -159,7 +159,7 @@ def seed_author_name():
 @seedbp.cli.command("author_id_name")
 def seed_author_id_name():
     author_id = "abramowitz.milton"
-    name = "Abramowitz Milton"
+    name = "Abramowitz, Milton"
 
     author_with_id = AuthorId.query.get(author_id)
     author_with_name = AuthorName.query.get(name)
