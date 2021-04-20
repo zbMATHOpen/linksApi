@@ -156,20 +156,9 @@ def get_display(link_element):
         "Subtype": target_obj.msc,
     }
 
-    target_author_list = []
-    author_list = target_obj.authors.split(";")
-
-    for an_author in author_list:
-        author_name_dict = {"Name": an_author.strip()}
-        author_name_model = marshal(author_name_dict, name_model_creator)
-        target_author_list.append(author_name_model)
-
     target_dict = {
         "Identifier": marshal(target_id_dict, object_id_info),
         "Type": marshal(target_name_msc_dict, name_model),
-        "Title": target_obj.title,
-        "Creator": target_author_list,
-        "Publisher": target_obj.source_of_publication,
         "PublicationDate": target_obj.publication_date,
     }
 
