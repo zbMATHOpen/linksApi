@@ -18,15 +18,19 @@ def test_author_query(client):
 def test_author_query_with_bad_db(client):
 
     the_real_isaac = AuthorName("Newton, Sr. Isaac")
+    imposter_isaac = AuthorName("Newton,csSr.crIsaac")
     db.session.add(the_real_isaac)
+    db.session.add(imposter_isaac)
     db.session.commit()
 
-    author = "Newton, Sreisaac"
+    author = "newton, sr. isaac"
     author_objs = get_author_objs(author)[0]
 
     isaac = AuthorName.query.filter_by(published_name="Newton, Sr. Isaac").first()
     db.session.delete(isaac)
+    fake_isaac = AuthorName.query.filter_by(published_name="Newton,csSr.crIsaac").first()
+    db.session.delete(fake_isaac)
     db.session.commit()
 
-    assert len(author_objs) == 0
+    assert len(author_objs) == 1
 
