@@ -14,6 +14,13 @@ def test_author_query(client):
         assert a_2 in author_1_objs[0]
 
 
+def test_last_name_author_query(client):
+    author = "Abramowitz"
+
+    author_objs = get_author_objs(author)
+
+    assert len(author_objs[0]) > 0
+
 
 def test_author_query_with_bad_db(client):
 
