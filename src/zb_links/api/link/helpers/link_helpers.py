@@ -4,6 +4,14 @@ from zb_links.db.models import AuthorName, Link, ZBTarget
 import re
 
 
+def nontrivial(name_list):
+    nontrivial_length = 0
+    for name in name_list:
+        reduced_name = re.sub('[^A-Za-z]+', '', name)
+        nontrivial_length += len(reduced_name)
+    return nontrivial_length > 0
+
+
 def get_author_objs(author):
     """
 
@@ -32,15 +40,19 @@ def get_author_objs(author):
         an_author_pieces = an_author.split(" ")
 
         last_name = an_author_pieces[0]
-        an_author_expression = last_name + " "
-
         remaining_names = an_author_pieces[1:]
-        for a_piece in remaining_names:
-            a_piece = a_piece.strip(".")
+        if nontrivial(remaining_names):
+            an_author_expression = last_name + " "
 
-            an_author_expression += a_piece + "% "
+            remaining_names = an_author_pieces[1:]
+            for a_piece in remaining_names:
+                a_piece = a_piece.strip(".")
 
-        an_author_expression = an_author_expression.strip()
+                an_author_expression += a_piece + "% "
+        else:
+            an_author_expression = last_name + "%"
+
+        an_author_expression = an_author_expression.strip().lower()
 
         author_names = author_name_query.filter(
             func.lower(AuthorName.published_name).like(an_author_expression)
