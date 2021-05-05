@@ -7,7 +7,7 @@ import re
 def nontrivial(name_list):
     nontrivial_length = 0
     for name in name_list:
-        reduced_name = re.sub('[^A-Za-z]+', '', name)
+        reduced_name = re.sub("[^A-Za-z]+", "", name)
         nontrivial_length += len(reduced_name)
     return nontrivial_length > 0
 
