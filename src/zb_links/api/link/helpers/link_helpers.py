@@ -1,6 +1,15 @@
 from sqlalchemy import func, or_
 
 from zb_links.db.models import AuthorName, Link, ZBTarget
+import re
+
+
+def nontrivial(name_list):
+    nontrivial_length = 0
+    for name in name_list:
+        reduced_name = re.sub("[^A-Za-z]+", "", name)
+        nontrivial_length += len(reduced_name)
+    return nontrivial_length > 0
 
 
 def get_author_objs(author):
@@ -21,15 +30,29 @@ def get_author_objs(author):
     """
     author_name_query = AuthorName.query
     author_name_objs = []
+
+    # remove possible double spaces from input
+    author = re.sub(" +", " ", author)
+
     author_list = author.split(";")
     for an_author in author_list:
         an_author = an_author.strip()
         an_author_pieces = an_author.split(" ")
-        an_author_expression = ""
-        for a_piece in an_author_pieces:
-            a_piece.strip(".")
-            an_author_expression += a_piece + "%_"
-        an_author_expression = an_author_expression.rstrip("_")
+
+        last_name = an_author_pieces[0]
+        remaining_names = an_author_pieces[1:]
+        if nontrivial(remaining_names):
+            an_author_expression = last_name + " "
+
+            remaining_names = an_author_pieces[1:]
+            for a_piece in remaining_names:
+                a_piece = a_piece.strip(".")
+
+                an_author_expression += a_piece + "% "
+        else:
+            an_author_expression = last_name + "%"
+
+        an_author_expression = an_author_expression.strip().lower()
 
         author_names = author_name_query.filter(
             func.lower(AuthorName.published_name).like(an_author_expression)
