@@ -8,7 +8,7 @@ db = SQLAlchemy()
 
 
 class Partner(db.Model):
-    __tablename__ = "zb_links.partners"
+    __tablename__ = "zb_links.partner"
 
     name = db.Column(db.String(), primary_key=True)
     scheme = db.Column(db.String())
@@ -29,7 +29,7 @@ class Partner(db.Model):
 
 
 class Provider(db.Model):
-    __tablename__ = "provider_table"
+    __tablename__ = "provider"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
