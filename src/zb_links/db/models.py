@@ -7,7 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class Partner(db.Model):
-    __tablename__ = "zb_links.partner"
+    __tablename__ = "partner"
+    __table_args__ = {"schema": "zb_links"}
 
     name = db.Column(db.String(), primary_key=True)
     scheme = db.Column(db.String())
@@ -37,7 +38,8 @@ class Partner(db.Model):
 
 
 class Provider(db.Model):
-    __tablename__ = "zb_links.provider"
+    __tablename__ = "provider"
+    __table_args__ = {"schema": "zb_links"}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
@@ -109,8 +111,8 @@ class Link(db.Model):
 class ZBTarget(db.Model):
     __tablename__ = "math_documents"
 
-    id = db.Column(db.String())
-    zbl_id = db.Column(db.String(), primary_key=True)
+    id = db.Column(db.String(), primary_key=True)
+    zbl_id = db.Column(db.String())
     type = db.Column(db.String())
     title = db.Column(db.String())
     year = db.Column(db.String())
@@ -120,7 +122,8 @@ class ZBTarget(db.Model):
 
 
 class Source(db.Model):
-    __tablename__ = "zb_links.source"
+    __tablename__ = "source"
+    __table_args__ = {"schema": "zb_links"}
 
     id = db.Column(db.String(), primary_key=True)
     id_scheme = db.Column(db.String())
