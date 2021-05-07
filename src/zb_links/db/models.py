@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-
 class Partner(db.Model):
     __tablename__ = "zb_links.partner"
 
@@ -14,37 +13,53 @@ class Partner(db.Model):
     scheme = db.Column(db.String())
     url = db.Column(db.String())
 
-    # Partner-Link, Partner-Source are one-to-many relationships
     links = db.relationship(
-        "Link", backref="partner", cascade="all, delete-orphan"
-    )
-    sources = db.relationship(
-        "Source", backref="partner", cascade="all, delete-orphan"
+        "Link",
+        backref="partner_link",
+        cascade="all, delete-orphan"
     )
 
-    def __init__(self, name, scheme, url):
+    sources = db.relationship(
+        "Source",
+        backref="partner_source",
+        cascade="all, delete-orphan"
+    )
+
+    def __init__(
+            self,
+            name,
+            scheme,
+            url
+    ):
         self.name = name
         self.scheme = scheme
         self.url = url
 
 
 class Provider(db.Model):
-    __tablename__ = "provider"
+    __tablename__ = "zb_links.provider"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
     scheme = db.Column(db.String())
     url = db.Column(db.String())
 
-    def __init__(self, id, name, scheme, url):
+    def __init__(
+            self,
+            id,
+            name,
+            scheme,
+            url
+    ):
         self.id = id
         self.name = name
         self.scheme = scheme
         self.url = url
 
-    # Provider-Link, is a one-to-many relationship
     links = db.relationship(
-        "Link", backref="provider", cascade="all, delete-orphan"
+        "Link",
+        backref="provider_link",
+        cascade="all, delete-orphan"
     )
 
 
@@ -53,19 +68,35 @@ class Link(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     document = db.Column(
-        db.Integer, db.ForeignKey("math_documents.id", onupdate="CASCADE")
+        db.Integer,
+        db.ForeignKey("math_documents.id", onupdate="CASCADE")
     )
     external_id = db.Column(db.String())
-    type = db.Column(db.String())
+    type = db.Column(
+        db.String(),
+        db.ForeignKey("zb_links.partner.name", onupdate="CASCADE")
+    )
     created_at = db.Column(db.DateTime)
-    created_by = db.Column(db.String())  # provider_name
-    matched_at = db.Column(db.DateTime)  # date when zb_math adds to db
+    created_by = db.Column(
+        db.Integer,
+        db.ForeignKey("zb_links.provider.id", onupdate="CASCADE")
+    )
+    matched_at = db.Column(db.DateTime)
     parent_id = db.Column(
-        db.Integer, db.ForeignKey("document_external_ids.id")
+        db.Integer,
+        db.ForeignKey("document_external_ids.id")
     )
 
-    def __init__(self, id, document, external_id, type,
-                 created_at, created_by, matched_at):
+    def __init__(
+            self,
+            id,
+            document,
+            external_id,
+            type,
+            created_at,
+            created_by,
+            matched_at
+    ):
         self.id = id
         self.document = document
         self.external_id = external_id
@@ -83,7 +114,7 @@ class ZBTarget(db.Model):
     type = db.Column(db.String())
     title = db.Column(db.String())
     year = db.Column(db.String())
-    source = db.Column(db.String()) # journal or publisher
+    source = db.Column(db.String())
     author = db.Column(db.String())
     classification = db.Column(db.String())
 
@@ -95,22 +126,24 @@ class Source(db.Model):
     id_scheme = db.Column(db.String())
     type = db.Column(db.String())
     url = db.Column(db.String())
-    title = db.Column(db.String()) # journal or publisher
+    title = db.Column(db.String())
     partner = db.Column(
         db.String(),
         db.ForeignKey("zb_links.partner.name", onupdate="CASCADE")
     )
 
-    def __init__(self, id, id_scheme, type,
-                 url, title, partner):
+    def __init__(
+            self,
+            id,
+            id_scheme,
+            type,
+            url,
+            title,
+            partner
+    ):
         self.id = id
         self.id_scheme = id_scheme
         self.type = type
         self.url = url
         self.title = title
         self.partner = partner
-
-
-
-
-

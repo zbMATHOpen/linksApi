@@ -1,6 +1,6 @@
 from sqlalchemy import func, or_
 
-from zb_links.db.models import AuthorName, Link, ZBTarget
+from zb_links.db.models import Link, ZBTarget
 import re
 
 
@@ -133,8 +133,8 @@ def get_links_from_mscs(msc_val):
         msc_with_empty = " " + an_msc
         msc_query = msc_query.filter(
             or_(
-                func.lower(ZBTarget.msc).startswith(an_msc),
-                func.lower(ZBTarget.msc).contains(msc_with_empty),
+                func.lower(ZBTarget.classification).startswith(an_msc),
+                func.lower(ZBTarget.classification).contains(msc_with_empty),
             )
         )
 
