@@ -6,8 +6,8 @@ import click
 from flask import Blueprint
 
 from zb_links.db.models import (
-    AuthorId,
-    AuthorName,
+    # AuthorId,
+    # AuthorName,
     Link,
     Partner,
     Provider,
