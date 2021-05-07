@@ -72,7 +72,7 @@ class LinkCollection(Resource):
             )
 
         if not (author or msc_val):
-            link_set = set(Link.query.all())
+            link_set = set(Link.query.filter_by(type="DLMF").all())
 
         links_display = [get_display(element) for element in link_set]
 

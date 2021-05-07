@@ -106,26 +106,26 @@ link = api.model(
 # List of all links to zbMATH objects
 def get_display(link_element):
 
-    element_source = link_element.source_id
-    element_target = link_element.target_id
-    element_link_publication_date = link_element.link_publication_date
-    element_link_provider = link_element.link_provider
-    element_relationship_type = link_element.relationship_type
+    element_source = link_element.external_id
+    element_target = link_element.document
+    element_link_publication_date = link_element.created_at
+    element_link_provider = link_element.created_by
+    element_relationship_type = None
 
     source_publisher_url = ""
     source_publisher_id_scheme = ""
-    partner = link_element.partner_name
+    partner = link_element.type
     if partner == "DLMF":
         source_publisher_url = "https://dlmf.nist.gov/"
         source_publisher_id_scheme = "name of partner"
 
     source_obj = Source.query.get(element_source)
     source_id_dict = {
-        "ID": source_obj.identifier,
+        "ID": source_obj.id,
         "IDScheme": source_obj.id_scheme,
         "IDURL": source_obj.url,
     }
-    source_name_dict = {"Name": source_obj.type_name}
+    source_name_dict = {"Name": source_obj.type}
     source_publisher_identifier_dict = {
         "ID": partner,
         "IDScheme": source_publisher_id_scheme,
@@ -146,31 +146,35 @@ def get_display(link_element):
 
     target_obj = ZBTarget.query.get(element_target)
     target_id_dict = {
-        "ID": target_obj.zbl_code,
-        "IDScheme": target_obj.id_scheme,
+        "ID": target_obj.zbl_id,
+        "IDScheme": "zbMATH scheme",
         "IDURL": "https://zbmath.org/",
     }
 
     target_name_msc_dict = {
-        "Name": target_obj.type_name,
-        "Subtype": target_obj.msc,
+        "Name": target_obj.type,
+        "Subtype": target_obj.classification,
     }
 
     target_dict = {
         "Identifier": marshal(target_id_dict, object_id_info),
         "Type": marshal(target_name_msc_dict, name_model),
-        "PublicationDate": target_obj.publication_date,
+        "PublicationDate": target_obj.year,
     }
 
-    provider_obj = Provider.query.get(element_link_provider)
+    # TODO: maybe want to erase provider.id;
+    # the link is connected to provider through name
+    # provider_obj = Provider.query.filter_by(name=element_link_provider).first()
+    # TODO: replace next with the above
+    provider_obj = Provider.query.filter_by(name="zbMATH").first()
     provider_id_dict = {
-        "ID": provider_obj.provider_name,
-        "IDScheme": provider_obj.id_scheme,
-        "IDURL": provider_obj.provider_url,
+        "ID": provider_obj.name,
+        "IDScheme": provider_obj.scheme,
+        "IDURL": provider_obj.url,
     }
     provider_dict = {
         "identifier": marshal(provider_id_dict, object_id_info),
-        "provider_name": provider_obj.provider_name,
+        "provider_name": provider_obj.name,
     }
 
     links_display_format = {
