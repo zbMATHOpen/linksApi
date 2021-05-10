@@ -14,15 +14,9 @@ class Partner(db.Model):
     scheme = db.Column(db.String())
     url = db.Column(db.String())
 
-    links = db.relationship(
-        "Link",
-        backref="partner_link",
-        cascade="all, delete-orphan"
-    )
-
     sources = db.relationship(
         "Source",
-        backref="partner_source",
+        backref="partners",
         cascade="all, delete-orphan"
     )
 
@@ -58,12 +52,6 @@ class Provider(db.Model):
         self.scheme = scheme
         self.url = url
 
-    links = db.relationship(
-        "Link",
-        backref="provider_link",
-        cascade="all, delete-orphan"
-    )
-
 
 class Link(db.Model):
     __tablename__ = "document_external_ids"
@@ -74,15 +62,9 @@ class Link(db.Model):
         db.ForeignKey("math_documents.id", onupdate="CASCADE")
     )
     external_id = db.Column(db.String())
-    type = db.Column(
-        db.String(),
-        db.ForeignKey("zb_links.partner.name", onupdate="CASCADE")
-    )
+    type = db.Column(db.String())
     created_at = db.Column(db.DateTime)
-    created_by = db.Column(
-        db.Integer,
-        db.ForeignKey("zb_links.provider.id", onupdate="CASCADE")
-    )
+    created_by = db.Column(db.Integer)
     matched_at = db.Column(db.DateTime)
     parent_id = db.Column(
         db.Integer,
