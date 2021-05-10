@@ -19,6 +19,6 @@ class SourceCollection(Resource):
         sources = Source.query.all()
         display_list = []
         for a_source in sources:
-            if a_source.identifier not in display_list:
+            if a_source.id not in display_list:
                 display_list.append(a_source.url)
         return display_list
