@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 
 from collections import Counter
-
+# from flask import request
 from flask_restx import Resource
 
 from zb_links.api.restx import api
@@ -31,3 +31,29 @@ class MSCCollection(Resource):
             if item.classification]
         counter = Counter(msc_primary_list).most_common()
         return counter
+
+# @ns.route("/msc/")
+# class MSCCollection(Resource):
+#     # @api.expect(link_item_arguments)
+#     @api.marshal_with(link)
+#     @api.doc(
+#         params={
+#             "partner name": {"description": "Ex: DLMF"},
+#         }
+#     )
+#     def get(self):
+#         """Occurrence of primary 2-digit level MSC codes"""
+#         args = request.args
+#         partner_name = args["type"]
+#
+#         queries = ZBTarget.query.\
+#             join(Link, Link.document == ZBTarget.id).\
+#             filter(Link.type == partner_name).\
+#             all()
+#
+#         msc_primary_list = [
+#             str(item.classification)[0:2]
+#             for item in queries
+#             if item.classification]
+#         counter = Counter(msc_primary_list).most_common()
+#         return counter
