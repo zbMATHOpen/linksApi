@@ -7,7 +7,7 @@ from collections import Counter
 from flask_restx import Resource
 
 from zb_links.api.restx import api
-from zb_links.db.models import ZBTarget
+from zb_links.db.models import ZBTarget, Link
 
 ns = api.namespace("statistics")
 
@@ -18,7 +18,9 @@ class YearCollection(Resource):
     @staticmethod
     def get():
         """Occurrence of years of publication of papers"""
-        queries = ZBTarget.query.all()
-        years_list = [str(item.publication_date) for item in queries]
+        queries = ZBTarget.query.\
+            join(Link, Link.document == ZBTarget.id).\
+            filter(Link.type == "DLMF").all()
+        years_list = [str(item.year) for item in queries]
         counter = Counter(years_list).most_common()
         return counter
