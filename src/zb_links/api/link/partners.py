@@ -14,10 +14,6 @@ ns = api.namespace("partner", description="Linking partners of zbMATH")
 partner = api.model(
     "Linking partner",
     {
-        "partner_id": fields.Integer(
-            readOnly=True,
-            description="The unique identifier of a zbMATH partner",
-        ),
         "name": fields.String(required=True, description="Partner name"),
         "scheme": fields.String(
             required=True,
@@ -31,9 +27,9 @@ partner = api.model(
 
 partner_edit_arguments = reqparse.RequestParser()
 
-partner_edit_arguments.add_argument("partner id", type=int, required=True)
+partner_edit_arguments.add_argument("current partner name", type=str, required=True)
 
-partner_edit_arguments.add_argument("partner name", type=str)
+partner_edit_arguments.add_argument("new partner name", type=str)
 
 partner_edit_arguments.add_argument("partner id scheme", type=str)
 
@@ -46,6 +42,7 @@ class PartnerCollection(Resource):
     def get(self):
         """Retrieve data of a zbMATH partner (partner id, name, scheme, url)"""
         partners = Partner.query.all()
+
         return partners
 
     @api.expect(partner_edit_arguments)
@@ -59,18 +56,19 @@ class PartnerCollection(Resource):
         for a_key in arg_keys:
             arg_key_list.append(a_key)
 
-        partner_id = args["partner id"]
+        partner_name = args["current partner name"]
 
-        partner_query = Partner.query.filter_by(partner_id=partner_id)
-        partner_to_edit = Partner.query.get(partner_id)
+        partner_query = Partner.query.filter_by(name=partner_name)
+        partner_to_edit = Partner.query.get(partner_name)
+
         if not partner_to_edit:
             return helpers.make_message(422, "Invalid input")
 
         partner_name = partner_to_edit.name
         partner_scheme = partner_to_edit.scheme
         partner_url = partner_to_edit.url
-        if "partner name" in arg_key_list:
-            partner_name = args["partner name"]
+        if "new partner name" in arg_key_list:
+            partner_name = args["new partner name"]
         if "partner id scheme" in arg_key_list:
             partner_scheme = args["partner id scheme"]
         if "partner url" in arg_key_list:
