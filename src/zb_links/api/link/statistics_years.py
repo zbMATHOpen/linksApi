@@ -3,24 +3,35 @@
 # ------------------------------------------------------------------------------
 
 from collections import Counter
-
-from flask_restx import Resource
+from flask import request
+from flask_restx import Resource, reqparse
 
 from zb_links.api.restx import api
 from zb_links.db.models import ZBTarget, Link
 
 ns = api.namespace("statistics")
 
+year_arguments = reqparse.RequestParser()
 
-# Distribution of years of publication
+year_arguments.add_argument("type", type=str, required=True)
+
 @ns.route("/years/")
 class YearCollection(Resource):
-    @staticmethod
-    def get():
+    @api.expect(year_arguments)
+    @api.doc(
+        params={
+            "type": {"description": "Ex: DLMF, euclid, eudml, etc."},
+        }
+    )
+    def get(self):
         """Occurrence of years of publication of papers"""
+        args = request.args
+        partner_name = args["type"]
+
         queries = ZBTarget.query.\
             join(Link, Link.document == ZBTarget.id).\
-            filter(Link.type == "DLMF").all()
+            filter(Link.type == partner_name).all()
+
         years_list = [str(item.year) for item in queries]
         counter = Counter(years_list).most_common()
         return counter
