@@ -12,7 +12,7 @@ from zb_links.db.models import ZBTarget, Link
 ns = api.namespace(
     "statistics",
     description="Distribution of primary MSC codes and years of publication "
-    "of referenced papers in the source",
+    "of referenced papers for a given partner",
 )
 
 msc_arguments = reqparse.RequestParser()
@@ -29,7 +29,7 @@ class MSCCollection(Resource):
         }
     )
     def get(self):
-        """Occurrence of primary 2-digit level MSC codes in each partner"""
+        """Occurrence of primary 2-digit level MSC codes"""
         args = request.args
         partner_name = args["type"]
 
