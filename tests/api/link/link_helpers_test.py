@@ -1,6 +1,6 @@
 
 from zb_links.api.link.helpers.link_helpers import get_author_objs
-from zb_links.db.models import db, AuthorName
+from zb_links.db.models import db
 
 
 def test_author_query(client):
@@ -22,16 +22,16 @@ def test_last_name_author_query(client):
     assert len(author_objs[0]) > 0
 
 
-def test_author_query_with_bad_db(client):
+# def test_author_query_with_bad_db(client):
 
-    the_real_isaac = AuthorName("Newton, Sr. Isaac")
-    imposter_isaac = AuthorName("Newton,csSr.crIsaac")
-    db.session.add(the_real_isaac)
-    db.session.add(imposter_isaac)
-    db.session.commit()
+#     the_real_isaac = AuthorName("Newton, Sr. Isaac")
+#     imposter_isaac = AuthorName("Newton,csSr.crIsaac")
+#     db.session.add(the_real_isaac)
+#     db.session.add(imposter_isaac)
+#     db.session.commit()
 
-    author = "newton, sr. isaac"
-    author_objs = get_author_objs(author)[0]
+#     author = "newton, sr. isaac"
+#     author_objs = get_author_objs(author)[0]
 
     isaac = AuthorName.query.filter_by(published_name="Newton, Sr. Isaac").first()
     db.session.delete(isaac)
