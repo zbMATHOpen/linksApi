@@ -20,7 +20,7 @@ class YearCollection(Resource):
     @api.expect(year_arguments)
     @api.doc(
         params={
-            "type": {"description": "Ex: DLMF, euclid, eudml, etc."},
+            "type": {"description": "Ex: DLMF, OEIS, etc."},
         }
     )
     def get(self):
