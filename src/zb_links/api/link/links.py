@@ -81,11 +81,11 @@ class LinkCollection(Resource):
 
 link_item_arguments = reqparse.RequestParser()
 
-link_item_arguments.add_argument("zbl code", type=str, required=True)
+link_item_arguments.add_argument("document", type=str, required=True)
 
-link_item_arguments.add_argument("source identifier", type=str, required=True)
+link_item_arguments.add_argument("external_id", type=str, required=True)
 
-link_item_arguments.add_argument("partner name", type=str, required=True)
+link_item_arguments.add_argument("type", type=str, required=True)
 
 link_create_arguments = link_item_arguments.copy()
 
@@ -98,22 +98,22 @@ class LinkItem(Resource):
     @api.marshal_with(link)
     @api.doc(
         params={
-            "zbl code": {"description": "Ex: 0171.38503"},
-            "source identifier": {"description": "Ex: 11.14#I1.i1.p1"},
-            "partner name": {"description": "Ex: DLMF"},
+            "document": {"description": "Ex: 3273551"},
+            "external_id": {"description": "Ex: 11.14#I1.i1.p1"},
+            "type": {"description": "Ex: DLMF"},
         }
     )
     def get(self):
         """Check relations between a given link and a given zbMATH object"""
         args = request.args
-        zbl_val = args["zbl code"]
-        source_val = args["source identifier"]
-        partner_name = args["partner name"]
+        de_val = args["document"]
+        source_val = args["external_id"]
+        partner_name = args["type"]
 
         return_link = Link.query.filter_by(
-            source_identifier=source_val,
-            target_id=zbl_val,
-            partner_name=partner_name,
+            document=de_val,
+            external_id=source_val,
+            type=partner_name
         ).first()
 
         return_display = []
@@ -121,6 +121,7 @@ class LinkItem(Resource):
             return_display = get_display(return_link)
 
         return return_display
+
 
     @api.expect(link_create_arguments)
     @api.response(201, "Link successfully created.")
