@@ -39,7 +39,7 @@ class LinkCollection(Resource):
             },
             "document": {
                 "description": "Ex: 3273551 (DE number, available in the "
-                               "bibtex of each document)"
+                               "bibtex of each document at https://zbmath.org/)"
             },
             "msc classification code": {
                 "description": "Ex: 33-00 (multiple inputs with space as "
@@ -118,9 +118,12 @@ class LinkItem(Resource):
     @api.marshal_with(link)
     @api.doc(
         params={
-            "document": {"description": "Ex: 3273551"},
-            "external_id": {"description": "Ex: 11.14#I1.i1.p1"},
-            "type": {"description": "Ex: DLMF"},
+            "document": {"description": "Ex: 3273551 (DE number, available "
+                                        "in the bibtex of each document at "
+                                        "https://zbmath.org/)"},
+            "external_id": {"description": "Ex: 11.14#I1.i1.p1"
+                                           "(identifier of the link)"},
+            "type": {"description": "Ex: DLMF, OEIS, etc."},
         }
     )
     def get(self):
