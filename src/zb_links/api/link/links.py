@@ -61,7 +61,7 @@ class LinkCollection(Resource):
         if "document" in args:
             de_val = args["document"]
 
-        link_set = set()
+        link_set = None
         link_list_auth = None
         link_list_msc = None
         link_de_val = None
@@ -69,12 +69,12 @@ class LinkCollection(Resource):
         if author:
             # get all links corresponding to author input
             link_list_auth = link_helpers.get_links_from_author(author)
-            link_set = set(link_list_auth)
+            link_set = link_helpers.update_set(link_set, set(link_list_auth))
 
         if msc_val:
             # get all links corresponding to msc input
             link_list_msc = link_helpers.get_links_from_mscs(msc_val)
-            link_set = set(link_list_msc)
+            link_set = link_helpers.update_set(link_set, set(msc_val))
 
         if de_val:
             # get all links corresponding to document input
@@ -82,14 +82,7 @@ class LinkCollection(Resource):
                 document=de_val,
                 matched_by="LinksApi"
             ).all()
-            link_set = set(link_de_val)
-
-        if link_list_auth and link_list_msc and link_de_val:
-            link_set = set.intersection(
-                set(link_list_auth),
-                set(link_list_msc),
-                set(link_de_val)
-            )
+            link_set = link_helpers.update_set(link_set, set(link_de_val))
 
         if not (author or msc_val or de_val):
             link_set = set(Link.query.filter_by(matched_by="LinksApi").all())

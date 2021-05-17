@@ -4,6 +4,12 @@ from zb_links.db.models import Link, ZBTarget, db
 import re
 
 
+def update_set(old_set, new_set):
+    if not old_set:
+        return new_set
+    return set.intersection(old_set, new_set)
+
+
 def nontrivial(name_list):
     nontrivial_length = 0
     for name in name_list:
