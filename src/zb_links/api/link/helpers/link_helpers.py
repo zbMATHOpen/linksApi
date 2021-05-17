@@ -1,6 +1,6 @@
-from sqlalchemy import func, or_
+from sqlalchemy import func, or_, text
 
-from zb_links.db.models import Link, ZBTarget
+from zb_links.db.models import Link, ZBTarget, db
 import re
 
 
@@ -12,28 +12,26 @@ def nontrivial(name_list):
     return nontrivial_length > 0
 
 
-def get_author_objs(author):
+def get_author_expressions(author):
     """
 
     Parameters
     ----------
     author : str
-        name of author from user search input.
+        name of author(s) from user search input.
 
     Returns
     -------
-    author_name_objs : list of list of AuthorName objects
-        for each author in input a list of AuthorName objects
-        associated with that author is created. Final list is the
-        list of AuthorName lists
+    author_exp_list: list of regular expressions
+        each expression in the list will be used to search
+        for an author
 
     """
-    author_name_query = AuthorName.query
-    author_name_objs = []
 
     # remove possible double spaces from input
     author = re.sub(" +", " ", author)
 
+    author_exp_list = []
     author_list = author.split(";")
     for an_author in author_list:
         an_author = an_author.strip()
@@ -53,14 +51,9 @@ def get_author_objs(author):
             an_author_expression = last_name + "%"
 
         an_author_expression = an_author_expression.strip().lower()
+        author_exp_list.append(an_author_expression)
 
-        author_names = author_name_query.filter(
-            func.lower(AuthorName.published_name).like(an_author_expression)
-        ).all()
-
-        author_name_objs.append(list(author_names))
-
-    return author_name_objs
+    return author_exp_list
 
 
 def get_links_from_author(author):
@@ -69,7 +62,7 @@ def get_links_from_author(author):
     Parameters
     ----------
     author : str
-        name of author from user search input.
+        name of author(s) from user search input.
 
     Returns
     -------
@@ -80,30 +73,39 @@ def get_links_from_author(author):
 
     """
 
-    author_name_objs = get_author_objs(author)
+    author_expressions = get_author_expressions(author)
 
-    # create sets of ids, assoc. with each author_name entry
-    author_id_objs = []
-    for name_list in author_name_objs:
-        name_id_list = []
-        for a_name in name_list:
-            name_id_list.extend(a_name.author_ids)
-        author_id_objs.append(name_id_list)
+    doc_id_list = []
+    connection = db.engine.connect()
+    for each_exp in author_expressions:
+        auth_doc_query = text("""
+            SELECT document
+            FROM author_groups
+            WHERE LOWER(name) LIKE :a_name;
+        """
+        )
 
-    # get docs which belong to all id sets
-    target_objs_list = []
-    for id_list in author_id_objs:
-        id_doc_list = []
-        for auth_id in id_list:
-            id_doc_list.extend(auth_id.zb_docs)
-        target_objs_list.append(id_doc_list)
+        query_results = connection.execute(auth_doc_query, a_name=each_exp)
 
-    # get intersection of docs belonging to each set of ids
-    intersection_docs = set(target_objs_list[0])
-    for doc_list in target_objs_list:
+        # query_results = connection.execute(text(auth_doc_query))
+        author_documents = set(query_results)
+
+        auth_doc_list = [doc_el[0] for doc_el in author_documents]
+        doc_id_list.append(auth_doc_list)
+
+    # get intersection of doc ids belonging to each author set
+    intersection_docs = set(doc_id_list[0])
+    for doc_list in doc_id_list:
         intersection_docs = set.intersection(set(doc_list), intersection_docs)
 
-    link_list_auth = [link for doc in intersection_docs for link in doc.links]
+    link_list_auth = [
+        link
+        for doc in intersection_docs
+        for link in set(Link.query.filter(Link.document==doc,
+                                          Link.matched_by=='LinksApi')
+                        .all()
+                        )
+        ]
 
     return link_list_auth
 
