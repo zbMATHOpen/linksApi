@@ -24,6 +24,10 @@ search_by_arguments.add_argument(
     "msc classification code", type=str, required=False
 )
 
+search_by_arguments.add_argument(
+    "document", type=str, required=False
+)
+
 
 @api.expect(search_by_arguments)
 @ns.route("/")
@@ -34,6 +38,9 @@ class LinkCollection(Resource):
             "author": {
                 "description": "Ex: Abramowitz, M. "
                 "(multiple inputs with ; as delimiter)"
+            },
+            "document": {
+                "description": "Ex: 3273551"
             },
             "msc classification code": {
                 "description": "Ex: 33-00 (multiple inputs with space as "
@@ -47,14 +54,18 @@ class LinkCollection(Resource):
 
         author = None
         msc_val = None
+        de_val = None
         if "author" in args:
             author = args["author"].lower()
         if "msc classification code" in args:
             msc_val = args["msc classification code"].lower()
+        if "document" in args:
+            de_val = args["document"]
 
         link_set = set()
         link_list_auth = None
         link_list_msc = None
+        link_de_val = None
 
         if author:
             # get all links corresponding to author input
@@ -66,12 +77,20 @@ class LinkCollection(Resource):
             link_list_msc = link_helpers.get_links_from_mscs(msc_val)
             link_set = set(link_list_msc)
 
-        if link_list_auth and link_list_msc:
+        if de_val:
+            link_de_val = Link.query.filter_by(
+            document=de_val,
+            type="DLMF"
+        ).first()
+
+        if link_list_auth and link_list_msc and link_de_val:
             link_set = set.intersection(
-                set(link_list_auth), set(link_list_msc)
+                set(link_list_auth),
+                set(link_list_msc),
+                set(link_de_val)
             )
 
-        if not (author or msc_val):
+        if not (author or msc_val or de_val):
             link_set = set(Link.query.filter_by(type="DLMF").all())
 
         links_display = [get_display(element) for element in link_set]
