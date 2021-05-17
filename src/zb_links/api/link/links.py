@@ -24,9 +24,7 @@ search_by_arguments.add_argument(
     "msc classification code", type=str, required=False
 )
 
-search_by_arguments.add_argument(
-    "document", type=str, required=False
-)
+search_by_arguments.add_argument("document", type=str, required=False)
 
 
 @api.expect(search_by_arguments)
@@ -78,10 +76,12 @@ class LinkCollection(Resource):
             link_set = set(link_list_msc)
 
         if de_val:
+            # get all links corresponding to document input
             link_de_val = Link.query.filter_by(
-            document=de_val,
-            type="DLMF"
-        ).first()
+                document=de_val,
+                type="DLMF"
+            ).all()
+            link_set = set(link_de_val)
 
         if link_list_auth and link_list_msc and link_de_val:
             link_set = set.intersection(
