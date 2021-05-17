@@ -63,6 +63,7 @@ class Link(db.Model):
     )
     external_id = db.Column(db.String())
     type = db.Column(db.String())
+    matched_by = db.Column(db.String())
     created_at = db.Column(db.DateTime)
     created_by = db.Column(db.Integer)
     matched_at = db.Column(db.DateTime)
@@ -77,6 +78,7 @@ class Link(db.Model):
             document,
             external_id,
             type,
+            matched_by,
             created_at,
             created_by,
             matched_at
@@ -85,6 +87,7 @@ class Link(db.Model):
         self.document = document
         self.external_id = external_id
         self.type = type
+        self.matched_by=matched_by
         self.created_at = created_at
         self.created_by = created_by
         self.matched_at = matched_at
