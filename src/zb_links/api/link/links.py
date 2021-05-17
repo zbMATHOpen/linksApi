@@ -24,7 +24,7 @@ search_by_arguments.add_argument(
     "msc classification code", type=str, required=False
 )
 
-search_by_arguments.add_argument("document", type=str, required=False)
+search_by_arguments.add_argument("document", type=int, required=False)
 
 
 @api.expect(search_by_arguments)
@@ -38,7 +38,8 @@ class LinkCollection(Resource):
                 "(multiple inputs with ; as delimiter)"
             },
             "document": {
-                "description": "Ex: 3273551"
+                "description": "Ex: 3273551 (DE number, available in the "
+                               "bibtex of each document)"
             },
             "msc classification code": {
                 "description": "Ex: 33-00 (multiple inputs with space as "
@@ -79,7 +80,7 @@ class LinkCollection(Resource):
             # get all links corresponding to document input
             link_de_val = Link.query.filter_by(
                 document=de_val,
-                type="DLMF"
+                matched_by="LinksApi"
             ).all()
             link_set = set(link_de_val)
 
@@ -91,7 +92,7 @@ class LinkCollection(Resource):
             )
 
         if not (author or msc_val or de_val):
-            link_set = set(Link.query.filter_by(type="DLMF").all())
+            link_set = set(Link.query.filter_by(matched_by="LinksApi").all())
 
         links_display = [get_display(element) for element in link_set]
 
@@ -100,7 +101,7 @@ class LinkCollection(Resource):
 
 link_item_arguments = reqparse.RequestParser()
 
-link_item_arguments.add_argument("document", type=str, required=True)
+link_item_arguments.add_argument("document", type=int, required=True)
 
 link_item_arguments.add_argument("external_id", type=str, required=True)
 
