@@ -72,31 +72,11 @@ class Link(db.Model):
         db.ForeignKey("document_external_ids.id")
     )
 
-    def __init__(
-            self,
-            id,
-            document,
-            external_id,
-            type,
-            matched_by,
-            created_at,
-            created_by,
-            matched_at
-    ):
-        self.id = id
-        self.document = document
-        self.external_id = external_id
-        self.type = type
-        self.matched_by=matched_by
-        self.created_at = created_at
-        self.created_by = created_by
-        self.matched_at = matched_at
-
 
 class ZBTarget(db.Model):
     __tablename__ = "math_documents"
 
-    id = db.Column(db.String(), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     zbl_id = db.Column(db.String())
     type = db.Column(db.String())
     title = db.Column(db.String())
@@ -120,18 +100,4 @@ class Source(db.Model):
         db.ForeignKey("zb_links.partner.name", onupdate="CASCADE")
     )
 
-    def __init__(
-            self,
-            id,
-            id_scheme,
-            type,
-            url,
-            title,
-            partner
-    ):
-        self.id = id
-        self.id_scheme = id_scheme
-        self.type = type
-        self.url = url
-        self.title = title
-        self.partner = partner
+
