@@ -146,9 +146,9 @@ def get_links_from_mscs(msc_val):
             )
         )
 
-    msc_docs_codes = list([doc.zbl_code for doc in msc_query])
+    msc_docs_ids = [doc.id for doc in msc_query]
 
-    link_query = Link.query.filter(Link.target_id.in_(msc_docs_codes))
+    link_query = Link.query.filter(Link.document.in_(msc_docs_ids))
 
     link_list_msc = [link for link in link_query.all()]
 
