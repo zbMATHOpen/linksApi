@@ -134,7 +134,9 @@ def get_links_from_mscs(msc_val):
 
     """
 
-    msc_query = ZBTarget.query
+    msc_query = ZBTarget.query.\
+        join(Link, Link.document == ZBTarget.id).\
+        filter(Link.matched_by == "LinksApi")
     msc_list = msc_val.split(" ")
     for an_msc in msc_list:
         an_msc = an_msc.strip()
