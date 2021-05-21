@@ -66,15 +66,21 @@ class LinkCollection(Resource):
         link_list_msc = None
         link_de_val = None
 
+        links_display = []
+
         if author:
             # get all links corresponding to author input
             link_list_auth = link_helpers.get_links_from_author(author)
-            link_set = link_helpers.update_set(link_set, set(link_list_auth))
+            link_set = link_helpers.update_set_by_intersect(
+                link_set, set(link_list_auth)
+                )
 
         if msc_val:
             # get all links corresponding to msc input
             link_list_msc = link_helpers.get_links_from_mscs(msc_val)
-            link_set = link_helpers.update_set(link_set, set(link_list_msc))
+            link_set = link_helpers.update_set_by_intersect(
+                link_set, set(link_list_msc)
+                )
 
         if de_val:
             # get all links corresponding to document input
@@ -82,12 +88,15 @@ class LinkCollection(Resource):
                 document=de_val,
                 matched_by="LinksApi"
             ).all()
-            link_set = link_helpers.update_set(link_set, set(link_de_val))
+            link_set = link_helpers.update_set_by_intersect(
+                link_set, set(link_de_val)
+                )
 
         if not (author or msc_val or de_val):
             link_set = set(Link.query.filter_by(matched_by="LinksApi").all())
 
-        links_display = [get_display(element) for element in link_set]
+        if link_set:
+            links_display = [get_display(element) for element in link_set]
 
         return links_display
 
