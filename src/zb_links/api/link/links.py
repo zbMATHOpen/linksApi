@@ -74,7 +74,7 @@ class LinkCollection(Resource):
         if msc_val:
             # get all links corresponding to msc input
             link_list_msc = link_helpers.get_links_from_mscs(msc_val)
-            link_set = link_helpers.update_set(link_set, set(msc_val))
+            link_set = link_helpers.update_set(link_set, set(link_list_msc))
 
         if de_val:
             # get all links corresponding to document input
