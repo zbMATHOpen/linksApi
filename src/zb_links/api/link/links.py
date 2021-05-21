@@ -21,7 +21,7 @@ search_by_arguments = reqparse.RequestParser()
 search_by_arguments.add_argument("author", type=str, required=False)
 
 search_by_arguments.add_argument(
-    "msc classification code", type=str, required=False
+    "classification", type=str, required=False
 )
 
 search_by_arguments.add_argument("document", type=int, required=False)
@@ -41,8 +41,8 @@ class LinkCollection(Resource):
                 "description": "Ex: 3273551 (DE number, available in the "
                                "bibtex of each document at https://zbmath.org/)"
             },
-            "msc classification code": {
-                "description": "Ex: 33-00 (multiple inputs with space as "
+            "classification": {
+                "description": "Ex: 33-00 (MSC code, multiple inputs with space as "
                 "delimiter) "
             },
         }
@@ -56,8 +56,8 @@ class LinkCollection(Resource):
         de_val = None
         if "author" in args:
             author = args["author"].lower()
-        if "msc classification code" in args:
-            msc_val = args["msc classification code"].lower()
+        if "classification" in args:
+            msc_val = args["classification"].lower()
         if "document" in args:
             de_val = args["document"]
 
@@ -123,7 +123,7 @@ class LinkItem(Resource):
             "document": {"description": "Ex: 3273551 (DE number, available "
                                         "in the bibtex of each document at "
                                         "https://zbmath.org/)"},
-            "external_id": {"description": "Ex: 11.14#I1.i1.p1"
+            "external_id": {"description": "Ex (DLMF): 11.14#I1.i1.p1"
                                            "(identifier of the link)"},
             "type": {"description": "Ex: DLMF, OEIS, etc."},
         }
