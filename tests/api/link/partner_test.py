@@ -9,7 +9,7 @@ def test_get_partner(client):
     data = response.json
     assert len(data) == 1
     entry: dict = data[0]
-    assert len(entry.keys()) == 4
+    assert len(entry.keys()) == 3
     url: dict = entry.get("url")
     assert "https" in url
 
@@ -18,7 +18,7 @@ def test_get_partner(client):
 def test_put_partner(client):
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     test_name = "DLMF"
-    json = {"partner id": 1, "partner name": test_name}
+    json = {"current partner name": test_name}
     param = urlencode(json)
     response = client.put(f"/links_api/partner/?{param}",
                           headers=headers,
@@ -32,23 +32,10 @@ def test_put_partner(client):
     assert test_name == name
 
 
-def test_put_partner_invalid_id(client):
-    headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
-    test_name = "Test"
-    json = {"partner id": 2, "partner name": test_name}
-    param = urlencode(json)
-    response = client.put(f"/links_api/partner/?{param}",
-                          headers=headers,
-                          )
-    assert response.status_code == 422
-    data = response.json
-    assert "invalid" in data['message'].lower()
-
-
 def test_put_partner_full(client):
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     test_schema = "Test"
-    json = {"partner id": 1,
+    json = {"current partner name": "DLMF",
             "partner id scheme": test_schema,
             "partner url": "https://test.te.st"}
     param = urlencode(json)
@@ -63,11 +50,20 @@ def test_put_partner_full(client):
     schema: dict = data[0].get("scheme")
     assert test_schema == schema
 
+    json = {"current partner name": "DLMF",
+            "partner id scheme": "DLMF scheme",
+            "partner url": "https://dlmf.nist.gov/"}
+    param = urlencode(json)
+    response = client.put(f"/links_api/partner/?{param}",
+                          headers=headers,
+                          )
+    assert response.status_code == 200
+
 
 @pytest.mark.skip(reason="currently json input is not supported")
 def test_put_partner_via_json(client):
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
-    json = {"partner_id": 1, "partner_name": "Test name"}
+    json = {"current partner_name": "Test name"}
     response = client.put(f"/links_api/partner/",
                           headers=headers,
                           json=json

@@ -1,4 +1,9 @@
-def test_get_statistics_year(client):
-    response = client.get("/links_api/statistics/years/")
+from urllib.parse import urlencode
+
+def test_get_statistics_year(client):   
+    json = {"type": "DLMF"}
+    param = urlencode(json)
+    response = client.get(f"/links_api/statistics/years/?{param}")
     data = response.json
-    assert data == [["1964", 1]]
+    assert len(data[0]) == 2
+
