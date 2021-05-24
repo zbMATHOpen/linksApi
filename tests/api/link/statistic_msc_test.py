@@ -1,4 +1,8 @@
+from urllib.parse import urlencode
+
 def test_get_statistics_msc(client):
-    response = client.get("/links_api/statistics/msc/")
+    json = {"type": "DLMF"}
+    param = urlencode(json)
+    response = client.get(f"/links_api/statistics/msc/?{param}")
     data = response.json
-    assert data == [["33", 1]]
+    assert len(data[0]) == 2
