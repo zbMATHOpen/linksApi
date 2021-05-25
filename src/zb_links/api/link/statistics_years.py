@@ -29,9 +29,9 @@ class YearCollection(Resource):
         args = request.args
         partner_name = args["type"]
 
-        queries = (ZBTarget.query.
-            join(Link, Link.document == ZBTarget.id).
-            filter(Link.type == partner_name)
+        queries = (
+            ZBTarget.query.join(Link, Link.document == ZBTarget.id)
+            .filter(Link.type == partner_name)
             .all()
         )
 

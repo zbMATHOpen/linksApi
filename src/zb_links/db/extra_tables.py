@@ -1,4 +1,3 @@
-import sqlalchemy
 from flask import Blueprint
 
 from zb_links.db.models import db

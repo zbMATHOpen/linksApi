@@ -110,7 +110,7 @@ def get_links_from_author(author):
         for doc in intersection_docs
         for link in set(
             Link.query.filter(
-                Link.document==doc, Link.matched_by=="LinksApi"
+                Link.document==doc, Link.matched_by == "LinksApi"
             ).all()
         )
     ]
@@ -153,7 +153,7 @@ def get_links_from_mscs(msc_val):
     msc_docs_ids = [doc.id for doc in msc_query]
 
     link_query = Link.query.filter(
-        Link.document.in_(msc_docs_ids),Link.matched_by=="LinksApi"
+        Link.document.in_(msc_docs_ids), Link.matched_by == "LinksApi"
     )
 
     link_list_msc = [link for link in link_query.all()]
