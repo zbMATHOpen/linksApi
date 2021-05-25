@@ -34,7 +34,7 @@ def seed_partner():
 @seedbp.cli.command("provider")
 def seed_provider():
     provider_id = 1
-    name = "zbMATH"
+    name = "Dariush, Matteo"
     scheme = "zbMATH scheme"
     url = "https://zbmath.org/"
 
@@ -114,6 +114,16 @@ def seed_link():
 
     db.session.add(new_link)
     db.session.commit()
+    
+
+@seedbp.cli.command("author_ids")
+def seed_author_ids():
+    connection = db.engine.connect()
+    data_row = """
+    INSERT INTO math_author_ids
+    VALUES (1, 'Abramowitz, M.', 3273551, 1442);
+    """
+    connection.execute(data_row)
 
 
 @seedbp.cli.command("all")
@@ -124,4 +134,5 @@ def click_seed_all(ctx):
     seed_source.invoke(ctx)
     seed_target.invoke(ctx)
     seed_link.invoke(ctx)
+    seed_author_ids.invoke(ctx)
 

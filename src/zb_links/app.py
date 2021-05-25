@@ -17,6 +17,8 @@ from zb_links.db.manage_db import managebp
 from zb_links.db.models import db
 from zb_links.db.seed_db import seedbp
 from zb_links.db.schema import schemabp
+from zb_links.db.extra_tables import tablesbp
+from zb_links.db.view import viewbp
 
 
 def configure_app(flask_app):
@@ -53,6 +55,8 @@ def initialize_app(flask_app):
 
     flask_app.register_blueprint(seedbp)
     flask_app.register_blueprint(schemabp)
+    flask_app.register_blueprint(viewbp)
+    flask_app.register_blueprint(tablesbp)
     flask_app.register_blueprint(managebp)
 
     blueprint = Blueprint("links_api", __name__, url_prefix="/links_api")
