@@ -22,10 +22,3 @@ def add_schemas():
         WHERE deid.matched_by = 'LinksApi';
     """
     connection.execute(view_request)
-
-
-
-
-
-
-

@@ -27,7 +27,9 @@ partner = api.model(
 
 partner_edit_arguments = reqparse.RequestParser()
 
-partner_edit_arguments.add_argument("current partner name", type=str, required=True)
+partner_edit_arguments.add_argument(
+    "current partner name", type=str, required=True
+)
 
 partner_edit_arguments.add_argument("new partner name", type=str)
 

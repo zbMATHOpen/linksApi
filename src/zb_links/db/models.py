@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class Partner(db.Model):
     __tablename__ = "partner"
     __table_args__ = {"schema": "zb_links"}
@@ -15,17 +16,10 @@ class Partner(db.Model):
     url = db.Column(db.String())
 
     sources = db.relationship(
-        "Source",
-        backref="partners",
-        cascade="all, delete-orphan"
+        "Source", backref="partners", cascade="all, delete-orphan"
     )
 
-    def __init__(
-            self,
-            name,
-            scheme,
-            url
-    ):
+    def __init__(self, name, scheme, url):
         self.name = name
         self.scheme = scheme
         self.url = url
@@ -40,13 +34,7 @@ class Provider(db.Model):
     scheme = db.Column(db.String())
     url = db.Column(db.String())
 
-    def __init__(
-            self,
-            id,
-            name,
-            scheme,
-            url
-    ):
+    def __init__(self, id, name, scheme, url):
         self.id = id
         self.name = name
         self.scheme = scheme
@@ -58,8 +46,7 @@ class Link(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     document = db.Column(
-        db.Integer,
-        db.ForeignKey("math_documents.id", onupdate="CASCADE")
+        db.Integer, db.ForeignKey("math_documents.id", onupdate="CASCADE")
     )
     external_id = db.Column(db.String())
     type = db.Column(db.String())
@@ -68,8 +55,7 @@ class Link(db.Model):
     created_by = db.Column(db.String())
     matched_at = db.Column(db.DateTime)
     parent_id = db.Column(
-        db.Integer,
-        db.ForeignKey("document_external_ids.id")
+        db.Integer, db.ForeignKey("document_external_ids.id")
     )
 
 
@@ -96,8 +82,5 @@ class Source(db.Model):
     url = db.Column(db.String())
     title = db.Column(db.String())
     partner = db.Column(
-        db.String(),
-        db.ForeignKey("zb_links.partner.name", onupdate="CASCADE")
+        db.String(), db.ForeignKey("zb_links.partner.name", onupdate="CASCADE")
     )
-
-
