@@ -162,11 +162,7 @@ def get_display(link_element):
         "PublicationDate": target_obj.year,
     }
 
-    # TODO: maybe want to erase provider.id;
-    # the link is connected to provider through name
-    # provider_obj = Provider.query.filter_by(name=element_link_provider).first()
-    # TODO: replace next with the above
-    provider_obj = Provider.query.filter_by(name="zbMATH").first()
+    provider_obj = Provider.query.filter_by(name=element_link_provider).first()
     provider_id_dict = {
         "ID": provider_obj.name,
         "IDScheme": provider_obj.scheme,

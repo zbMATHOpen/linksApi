@@ -65,7 +65,7 @@ class Link(db.Model):
     type = db.Column(db.String())
     matched_by = db.Column(db.String())
     created_at = db.Column(db.DateTime)
-    created_by = db.Column(db.Integer)
+    created_by = db.Column(db.String())
     matched_at = db.Column(db.DateTime)
     parent_id = db.Column(
         db.Integer,

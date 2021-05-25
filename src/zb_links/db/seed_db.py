@@ -21,12 +21,11 @@ seedbp = Blueprint("seed", __name__)
 
 @seedbp.cli.command("partner")
 def seed_partner():
-    partner_id = 1
     name = "DLMF"
     scheme = "DLMF scheme"
     url = "https://dlmf.nist.gov/"
 
-    new_partner = Partner(partner_id, name, scheme, url)
+    new_partner = Partner(name, scheme, url)
 
     db.session.add(new_partner)
     db.session.commit()
@@ -46,28 +45,25 @@ def seed_provider():
 
 
 @seedbp.cli.command("source")
-def seed_source():
-    source_id = 1
-    source_identifier = "11.14#I1.i1.p1"
-    scheme = "DLMF scheme"
-    type_name = "DLMF bibliographic entry"
-    url = "https://dlmf.nist.gov/11.14#I1.i1.p1"
+def seed_source(): 
     chapter_title = (
         "1st item ‣ §11.14(ii) Struve Functions ‣ "
         "§11.14 Tables ‣ Computation ‣ "
         "Chapter 11 Struve and Related Functions"
     )
-    partner = "DLMF"
 
     new_source_entry = Source(
-        source_id,
-        source_identifier,
-        scheme,
-        type_name,
-        url,
-        chapter_title,
-        partner,
+        id="11.14#I1.i1.p1",
+        id_scheme="DLMF scheme",
+        type="DLMF bibliographic entry",
+        url="https://dlmf.nist.gov/11.14#I1.i1.p1",
+        title=chapter_title,
+        partner="DLMF",
     )
+    
+    # add source to partner
+    partner_obj = Partner.query.filter_by(name="DLMF").first()
+    partner_obj.sources.append(new_source_entry)
 
     db.session.add(new_source_entry)
     db.session.commit()
@@ -75,14 +71,10 @@ def seed_source():
 
 @seedbp.cli.command("target")
 def seed_target():
-    zbl_code = "0171.38503"
-    id_scheme = "zbMATH scheme"
-    type_name = "book"
-    title = (
+    book_title = (
         "Handbook of mathematical functions with formulas, "
         "graphs and mathematical tables"
     )
-    publication_date = "1964"
     source_of_publication = (
         "Washington: U.S. Department of Commerce. " "xiv, 1046 pp. (1964)."
     )
@@ -92,14 +84,14 @@ def seed_target():
     )
 
     new_target = ZBTarget(
-        zbl_code,
-        id_scheme,
-        type_name,
-        title,
-        publication_date,
-        source_of_publication,
-        authors,
-        msc_list,
+        id=3273551,
+        zbl_id="0171.38503",
+        type="book",
+        title=book_title,
+        year="1964",
+        source=source_of_publication,
+        author=authors,
+        classification=msc_list,
     )
 
     db.session.add(new_target)
@@ -108,75 +100,19 @@ def seed_target():
 
 @seedbp.cli.command("link")
 def seed_link():
-    # TODO: in general the partner can be read from below partner_name
-    dlmf_partner_obj = Partner.query.filter_by(name="DLMF").first()
-
-    target_id = "0171.38503"
-    source_id = 1
     new_link = Link(
-        link_id=1,
-        source_id=source_id,
-        source_identifier="11.14#I1.i1.p1",
-        target_id=target_id,
-        partner_id=1,
-        partner_name="DLMF",
-        link_publication_date="2010-01-01T00:00:00",
-        link_provider=1,
-        link_added_date="2010-01-01T00:00:00",
-        relationship_type="equation referenced",
+        id=1,
+        document=3273551,
+        external_id="11.14#I1.i1.p1",
+        type="DLMF",
+        matched_by="LinksApi",
+        created_at="2010-01-01 00:00:00",
+        created_by="Dariush, Matteo",
+        matched_at="2021-01-01 00:00:00",
+        parent_id=1,
     )
 
-    # add link to partner, target, and to source
-    zb_target_obj = ZBTarget.query.filter_by(zbl_code=target_id).first()
-    source_obj = Source.query.filter_by(source_id=source_id).first()
-
-    dlmf_partner_obj.links.append(new_link)
-    zb_target_obj.links.append(new_link)
-    source_obj.links.append(new_link)
-
     db.session.add(new_link)
-    db.session.commit()
-
-
-@seedbp.cli.command("author_id")
-def seed_author_id():
-    author_id = "abramowitz.milton"
-    new_author = AuthorId(author_id)
-
-    db.session.add(new_author)
-    db.session.commit()
-
-
-@seedbp.cli.command("author_name")
-def seed_author_name():
-    name = "Abramowitz, Milton"
-    new_author = AuthorName(name)
-
-    db.session.add(new_author)
-    db.session.commit()
-
-
-@seedbp.cli.command("author_id_name")
-def seed_author_id_name():
-    author_id = "abramowitz.milton"
-    name = "Abramowitz, Milton"
-
-    author_with_id = AuthorId.query.get(author_id)
-    author_with_name = AuthorName.query.get(name)
-
-    author_with_id.author_names.append(author_with_name)
-    db.session.commit()
-
-
-@seedbp.cli.command("doc_author")
-def seed_doc_author():
-    author_id = "abramowitz.milton"
-    doc_id = "0171.38503"
-
-    zb_doc = ZBTarget.query.get(doc_id)
-    author_with_id = AuthorId.query.get(author_id)
-
-    author_with_id.zb_docs.append(zb_doc)
     db.session.commit()
 
 
@@ -188,7 +124,4 @@ def click_seed_all(ctx):
     seed_source.invoke(ctx)
     seed_target.invoke(ctx)
     seed_link.invoke(ctx)
-    seed_author_id.invoke(ctx)
-    seed_author_name.invoke(ctx)
-    seed_author_id_name.invoke(ctx)
-    seed_doc_author.invoke(ctx)
+
