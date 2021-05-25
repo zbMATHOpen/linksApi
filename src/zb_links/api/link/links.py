@@ -40,7 +40,8 @@ class LinkCollection(Resource):
                 "bibtex of each document at https://zbmath.org/)"
             },
             "classification": {
-                "description": "Ex: 33-00 (MSC code, multiple inputs with space as "
+                "description": "Ex: 33-00 "
+                "(MSC code, multiple inputs with space as "
                 "delimiter) "
             },
         }
