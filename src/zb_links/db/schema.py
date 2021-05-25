@@ -15,8 +15,3 @@ def add_schemas():
         connection.execute("CREATE SCHEMA IF NOT EXISTS zb_links;")
     except sqlalchemy.exc.ProgrammingError:
         pass
-
-
-
-
-

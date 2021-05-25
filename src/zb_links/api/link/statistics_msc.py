@@ -33,13 +33,16 @@ class MSCCollection(Resource):
         args = request.args
         partner_name = args["type"]
 
-        queries = ZBTarget.query.\
-            join(Link, Link.document == ZBTarget.id).\
-            filter(Link.type == partner_name).all()
+        queries = (ZBTarget.query.
+            join(Link, Link.document == ZBTarget.id).
+            filter(Link.type == partner_name)
+            .all()
+        )
 
         msc_primary_list = [
             str(item.classification)[0:2]
             for item in queries
-            if item.classification]
+            if item.classification
+        ]
         counter = Counter(msc_primary_list).most_common()
         return counter

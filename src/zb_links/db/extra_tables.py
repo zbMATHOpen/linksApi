@@ -20,8 +20,3 @@ def add_tables():
     );
     """
     connection.execute(create_author_id_table)
-
-
-
-
-

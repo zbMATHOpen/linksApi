@@ -23,8 +23,6 @@ def db_drop_all():
     except sqlalchemy.exc.ProgrammingError:
         pass
     
-
-    
     db.drop_all()
 
     # drop alembic if exists

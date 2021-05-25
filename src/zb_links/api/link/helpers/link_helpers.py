@@ -84,11 +84,12 @@ def get_links_from_author(author):
     doc_id_list = []
     connection = db.engine.connect()
     for each_exp in author_expressions:
-        auth_doc_query = text("""
+        auth_doc_query = text(
+            """
             SELECT document
             FROM author_groups
             WHERE LOWER(name) LIKE :a_name;
-        """
+            """
         )
 
         query_results = connection.execute(auth_doc_query, a_name=each_exp)
@@ -107,11 +108,12 @@ def get_links_from_author(author):
     link_list_auth = [
         link
         for doc in intersection_docs
-        for link in set(Link.query.filter(Link.document==doc,
-                                          Link.matched_by=="LinksApi")
-                        .all()
-                        )
-        ]
+        for link in set(
+            Link.query.filter(
+                Link.document==doc, Link.matched_by=="LinksApi"
+            ).all()
+        )
+    ]
 
     return link_list_auth
 
@@ -134,9 +136,9 @@ def get_links_from_mscs(msc_val):
 
     """
 
-    msc_query = ZBTarget.query.\
-        join(Link, Link.document == ZBTarget.id).\
-        filter(Link.matched_by == "LinksApi")
+    msc_query = ZBTarget.query.join(Link, Link.document == ZBTarget.id).filter(
+        Link.matched_by == "LinksApi"
+    )
     msc_list = msc_val.split(" ")
     for an_msc in msc_list:
         an_msc = an_msc.strip()
@@ -150,8 +152,9 @@ def get_links_from_mscs(msc_val):
 
     msc_docs_ids = [doc.id for doc in msc_query]
 
-    link_query = Link.query.filter(Link.document.in_(msc_docs_ids),
-                                   Link.matched_by=="LinksApi")
+    link_query = Link.query.filter(
+        Link.document.in_(msc_docs_ids),Link.matched_by=="LinksApi"
+    )
 
     link_list_msc = [link for link in link_query.all()]
 

@@ -135,4 +135,3 @@ def click_seed_all(ctx):
     seed_target.invoke(ctx)
     seed_link.invoke(ctx)
     seed_author_ids.invoke(ctx)
-

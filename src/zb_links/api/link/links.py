@@ -20,9 +20,7 @@ search_by_arguments = reqparse.RequestParser()
 
 search_by_arguments.add_argument("author", type=str, required=False)
 
-search_by_arguments.add_argument(
-    "classification", type=str, required=False
-)
+search_by_arguments.add_argument("classification", type=str, required=False)
 
 search_by_arguments.add_argument("document", type=int, required=False)
 
@@ -39,7 +37,7 @@ class LinkCollection(Resource):
             },
             "document": {
                 "description": "Ex: 3273551 (DE number, available in the "
-                               "bibtex of each document at https://zbmath.org/)"
+                "bibtex of each document at https://zbmath.org/)"
             },
             "classification": {
                 "description": "Ex: 33-00 (MSC code, multiple inputs with space as "
@@ -73,24 +71,23 @@ class LinkCollection(Resource):
             link_list_auth = link_helpers.get_links_from_author(author)
             link_set = link_helpers.update_set_by_intersect(
                 link_set, set(link_list_auth)
-                )
+            )
 
         if msc_val:
             # get all links corresponding to msc input
             link_list_msc = link_helpers.get_links_from_mscs(msc_val)
             link_set = link_helpers.update_set_by_intersect(
                 link_set, set(link_list_msc)
-                )
+            )
 
         if de_val:
             # get all links corresponding to document input
             link_de_val = Link.query.filter_by(
-                document=de_val,
-                matched_by="LinksApi"
+                document=de_val, matched_by="LinksApi"
             ).all()
             link_set = link_helpers.update_set_by_intersect(
                 link_set, set(link_de_val)
-                )
+            )
 
         if not (author or msc_val or de_val):
             link_set = set(Link.query.filter_by(matched_by="LinksApi").all())
@@ -120,11 +117,15 @@ class LinkItem(Resource):
     @api.marshal_with(link)
     @api.doc(
         params={
-            "document": {"description": "Ex: 3273551 (DE number, available "
-                                        "in the bibtex of each document at "
-                                        "https://zbmath.org/)"},
-            "external_id": {"description": "Ex (DLMF): 11.14#I1.i1.p1"
-                                           "(identifier of the link)"},
+            "document": {
+                "description": "Ex: 3273551 (DE number, available "
+                "in the bibtex of each document at "
+                "https://zbmath.org/)"
+            },
+            "external_id": {
+                "description": "Ex (DLMF): 11.14#I1.i1.p1"
+                "(identifier of the link)"
+            },
             "type": {"description": "Ex: DLMF, OEIS, etc."},
         }
     )
@@ -136,9 +137,7 @@ class LinkItem(Resource):
         partner_name = args["type"]
 
         return_link = Link.query.filter_by(
-            document=de_val,
-            external_id=source_val,
-            type=partner_name
+            document=de_val, external_id=source_val, type=partner_name
         ).first()
 
         return_display = []
@@ -146,7 +145,6 @@ class LinkItem(Resource):
             return_display = get_display(return_link)
 
         return return_display
-
 
     @api.expect(link_create_arguments)
     @api.response(201, "Link successfully created.")
