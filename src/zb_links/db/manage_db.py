@@ -15,7 +15,7 @@ def db_drop_all():
     try:
         connection.execute("DROP VIEW author_groups;")
     except sqlalchemy.exc.ProgrammingError:
-        pass    
+        pass
 
     # drop math_author_ids if exists
     try:
