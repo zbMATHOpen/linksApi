@@ -110,7 +110,7 @@ def get_links_from_author(author):
         for doc in intersection_docs
         for link in set(
             Link.query.filter(
-                Link.document==doc, Link.matched_by == "LinksApi"
+                Link.document == doc, Link.matched_by == "LinksApi"
             ).all()
         )
     ]
