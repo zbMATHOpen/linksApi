@@ -45,7 +45,7 @@ def seed_provider():
 
 
 @seedbp.cli.command("source")
-def seed_source(): 
+def seed_source():
     chapter_title = (
         "1st item ‣ §11.14(ii) Struve Functions ‣ "
         "§11.14 Tables ‣ Computation ‣ "
@@ -60,7 +60,7 @@ def seed_source():
         title=chapter_title,
         partner="DLMF",
     )
-    
+
     # add source to partner
     partner_obj = Partner.query.filter_by(name="DLMF").first()
     partner_obj.sources.append(new_source_entry)
@@ -114,7 +114,7 @@ def seed_link():
 
     db.session.add(new_link)
     db.session.commit()
-    
+
 
 @seedbp.cli.command("author_ids")
 def seed_author_ids():
