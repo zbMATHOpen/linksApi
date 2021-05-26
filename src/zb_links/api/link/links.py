@@ -105,11 +105,13 @@ link_item_arguments.add_argument("document", type=int, required=True)
 
 link_item_arguments.add_argument("external_id", type=str, required=True)
 
-link_item_arguments.add_argument("type", type=str, required=True)
-
 link_create_arguments = link_item_arguments.copy()
 
+link_item_arguments.add_argument("type", type=str, required=True)
+
 link_create_arguments.add_argument("link relation", type=str, required=True)
+
+link_create_arguments.add_argument("name", type=str, required=True)
 
 
 @ns.route("/item/")
@@ -160,7 +162,7 @@ class LinkItem(Resource):
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
                 "(identifier of the link)"
             },
-            "type": {"description": "Ex: DLMF, OEIS, etc."},
+            "name": {"description": "Ex: DLMF, OEIS, etc."},
             "link relation": {"description": "Ex: None"},
         }
     )
@@ -170,9 +172,9 @@ class LinkItem(Resource):
         """Create a new link related to a zbMATH object"""
         args = request.args
 
-        zbl_val = args["zbl code"]
-        source_val = args["source identifier"]
-        source_name = args["partner name"]
+        de_val = args["document"]
+        source_val = args["external_id"]
+        source_name = args["name"]
         link_date = datetime.utcnow()
         provider_id = 1
 
@@ -181,23 +183,22 @@ class LinkItem(Resource):
 
         partner = Partner.query.filter_by(name=source_name).first()
         if partner:
-            partner_id = partner.partner_id
             partner_name = partner.name
         else:
             message_list.append("Invalid partner name")
-            partner_id = None
+            partner_name = None
 
-        target_obj = ZBTarget.query.filter_by(zbl_code=zbl_val).first()
+        target_obj = ZBTarget.query.filter_by(id=de_val).first()
         if not target_obj:
-            message_list.append("Zbl code is not the database")
+            message_list.append("This DE is not in the database")
 
         source_obj = Source.query.filter_by(
-            identifier=source_val, partner=partner_name
+            id=source_val, partner=partner_name
         ).first()
         if source_obj:
-            source_id = source_obj.source_id
+            source_id = source_obj.id
         else:
-            message_list.append("Invalid source identifier")
+            message_list.append("Invalid external id")
             source_id = None
 
         if len(message_list) > 0:
@@ -210,20 +211,18 @@ class LinkItem(Resource):
         date_established = link_date
         date_added = link_date
 
-        relation = "generic relation"
+        # relation = "generic relation"
 
         try:
             new_link = Link(
-                link_id=new_link_id,
-                source_id=source_id,
-                source_identifier=source_val,
-                target_id=zbl_val,
-                partner_id=partner_id,
-                partner_name=partner_name,
-                link_publication_date=date_established,
-                link_added_date=date_added,
-                link_provider=provider_id,
-                relationship_type=relation,
+                id=new_link_id,
+                document=de_val,
+                external_id=source_val,
+                type=partner_name,
+                matched_by = "LinksApi",
+                created_by="Dariush, Matteo",
+                created_at=date_established,
+                matched_at=date_added,
             )
             db.session.add(new_link)
             db.session.commit()
