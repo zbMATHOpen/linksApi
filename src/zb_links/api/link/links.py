@@ -151,9 +151,16 @@ class LinkItem(Resource):
     @api.response(201, "Link successfully created.")
     @api.doc(
         params={
-            "zbl code": {"description": "Ex: 0171.38503"},
-            "source identifier": {"description": "Ex: 11.14#I1.i1.p1"},
-            "partner name": {"description": "Ex: DLMF"},
+            "document": {
+                "description": "Ex: 3273551 (DE number, available "
+                "in the bibtex of each document at "
+                "https://zbmath.org/)"
+            },
+            "external_id": {
+                "description": "Ex (DLMF): 11.14#I1.i1.p1"
+                "(identifier of the link)"
+            },
+            "type": {"description": "Ex: DLMF, OEIS, etc."},
             "link relation": {"description": "Ex: None"},
         }
     )
