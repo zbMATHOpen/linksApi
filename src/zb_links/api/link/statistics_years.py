@@ -13,7 +13,7 @@ ns = api.namespace("statistics")
 
 year_arguments = reqparse.RequestParser()
 
-year_arguments.add_argument("type", type=str, required=True)
+year_arguments.add_argument("partner", type=str, required=True)
 
 
 @ns.route("/years/")
@@ -21,13 +21,13 @@ class YearCollection(Resource):
     @api.expect(year_arguments)
     @api.doc(
         params={
-            "type": {"description": "Ex: DLMF, OEIS, etc."},
+            "partner": {"description": "Ex: DLMF, OEIS, etc."},
         }
     )
     def get(self):
         """Occurrence of years of publication of papers"""
         args = request.args
-        partner_name = args["type"]
+        partner_name = args["partner"]
 
         queries = (
             ZBTarget.query.join(Link, Link.document == ZBTarget.id)
