@@ -105,13 +105,7 @@ link_item_arguments.add_argument("DE number", type=int, required=True)
 
 link_item_arguments.add_argument("external id", type=str, required=True)
 
-link_create_arguments = link_item_arguments.copy()
-
-link_item_arguments.add_argument("partner name", type=str, required=True)
-
-link_create_arguments.add_argument("link relation", type=str, required=True)
-
-link_create_arguments.add_argument("partner", type=str, required=True)
+link_item_arguments.add_argument("partner", type=str, required=True)
 
 
 @ns.route("/item/")
@@ -129,7 +123,7 @@ class LinkItem(Resource):
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
                 "(identifier of the link)"
             },
-            "partner name": {"description": "Ex: DLMF, OEIS, etc."},
+            "partner": {"description": "Ex: DLMF, OEIS, etc."},
         }
     )
     def get(self):
@@ -137,7 +131,7 @@ class LinkItem(Resource):
         args = request.args
         de_val = args["DE number"]
         source_val = args["external id"]
-        partner_name = args["partner name"]
+        partner_name = args["partner"]
 
         return_link = Link.query.filter_by(
             document=de_val, external_id=source_val, type=partner_name
@@ -149,7 +143,7 @@ class LinkItem(Resource):
 
         return return_display
 
-    @api.expect(link_create_arguments)
+    @api.expect(link_item_arguments)
     @api.response(201, "Link successfully created.")
     @api.doc(
         params={
@@ -162,8 +156,7 @@ class LinkItem(Resource):
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
                 "(identifier of the link)"
             },
-            "partner": {"description": "Ex: DLMF, OEIS, etc."},
-            "link relation": {"description": "Ex: None"},
+            "partner": {"description": "Ex: DLMF, OEIS, etc."}
         }
     )
     @token_required
@@ -176,30 +169,23 @@ class LinkItem(Resource):
         source_val = args["external id"]
         source_name = args["partner"]
         link_date = datetime.utcnow()
-        # provider_id = "Dariush, Matteo"
+        provider = helpers.get_provider()
 
         message_list = []
-        partner_name = None
 
         partner = Partner.query.filter_by(name=source_name).first()
         if partner:
             partner_name = partner.name
         else:
             message_list.append("Invalid partner name")
-            partner_name = None
 
         target_obj = ZBTarget.query.filter_by(id=de_val).first()
         if not target_obj:
             message_list.append("This DE is not in the database")
 
-        source_obj = Source.query.filter_by(
-            id=source_val, partner=partner_name
-        ).first()
-        if source_obj:
-            source_id = source_obj.id
-        else:
+        source_obj = Source.query.filter_by(id=source_val).first()
+        if not source_obj:
             message_list.append("Invalid external id")
-            source_id = None
 
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
@@ -218,9 +204,9 @@ class LinkItem(Resource):
                 external_id=source_val,
                 type=partner_name,
                 matched_by = "LinksApi",
-                created_by="Dariush, Matteo",
+                created_by= provider,
                 created_at=date_established,
-                matched_at=date_added,
+                matched_at=date_added
             )
             db.session.add(new_link)
             db.session.commit()
