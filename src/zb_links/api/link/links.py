@@ -190,9 +190,10 @@ class LinkItem(Resource):
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
 
-        number_links = Link.query.count()
-
-        new_link_id = number_links + 1
+        connection = db.engine.connect() 
+        max_request = "SELECT MAX(id) FROM document_external_ids;"
+        max_id = connection.execute(max_request).fetchone()[0]
+        new_link_id = max_id + 1
 
         date_established = link_date
         date_added = link_date
