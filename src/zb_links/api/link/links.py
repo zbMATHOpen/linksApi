@@ -199,8 +199,8 @@ class LinkItem(Resource):
                 document=de_val,
                 external_id=source_val,
                 type=partner_name,
-                matched_by = "LinksApi",
-                created_by= provider,
+                matched_by="LinksApi",
+                created_by=provider,
                 created_at=date_established,
                 matched_at=date_added
             )
