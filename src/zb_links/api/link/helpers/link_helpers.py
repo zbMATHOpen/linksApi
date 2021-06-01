@@ -14,13 +14,13 @@ def get_new_id():
         the document_external_ids table.
 
     """
-    connection = db.engine.connect() 
+    connection = db.engine.connect()
     max_request = "SELECT MAX(id) FROM document_external_ids;"
     max_id = connection.execute(max_request).fetchone()[0]
     new_link_id = max_id + 1
     return new_link_id
-      
-  
+
+
 def update_set_by_intersect(set_a, set_b):
     """
 
