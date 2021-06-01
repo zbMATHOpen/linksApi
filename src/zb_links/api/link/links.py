@@ -33,16 +33,16 @@ class LinkCollection(Resource):
         params={
             "authors": {
                 "description": "Ex: Abramowitz, M. "
-                "(multiple inputs with ; as delimiter)"
+                               "(multiple inputs with ; as delimiter)"
             },
             "DE number": {
                 "description": "Ex: 3273551 (available in the "
-                "bibtex of each document at https://zbmath.org/)"
+                               "bibtex of each document at https://zbmath.org/)"
             },
             "MSC code": {
                 "description": "Ex: 33-00 "
-                "(multiple inputs with space as "
-                "delimiter) "
+                               "(multiple inputs with space as "
+                               "delimiter) "
             },
         }
     )
@@ -112,16 +112,16 @@ link_item_arguments.add_argument("partner", type=str, required=True)
 class LinkItem(Resource):
     @api.expect(link_item_arguments)
     @api.marshal_with(link)
-    @api.doc(
+     @api.doc(
         params={
             "DE number": {
                 "description": "Ex: 3273551 (available "
-                "in the bibtex of each document at "
-                "https://zbmath.org/)"
+                               "in the bibtex of each document at "
+                               "https://zbmath.org/)"
             },
             "external id": {
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
-                "(identifier of the link)"
+                               "(identifier of the link)"
             },
             "partner": {"description": "Ex: DLMF, OEIS, etc."},
         }
@@ -149,12 +149,12 @@ class LinkItem(Resource):
         params={
             "DE number": {
                 "description": "Ex: 3273551 (available "
-                "in the bibtex of each document at "
-                "https://zbmath.org/)"
+                               "in the bibtex of each document at "
+                               "https://zbmath.org/)"
             },
             "external id": {
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
-                "(identifier of the link)"
+                               "(identifier of the link)"
             },
             "partner": {"description": "Ex: DLMF, OEIS, etc."},
         }
