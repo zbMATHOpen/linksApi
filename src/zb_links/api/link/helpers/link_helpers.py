@@ -31,7 +31,7 @@ def update_set_by_intersect(set_a, set_b):
 
     Returns
     -------
-    set_b if set_a is empty else 
+    set_b if set_a is empty else
     a set determined by the intersection of set_a
     with set_b
 
