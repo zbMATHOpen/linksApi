@@ -17,7 +17,7 @@ def test_get_link_item(client):
 
 
 def test_get_link_msc(client):
-    json = {"msc classification code": "33-00"}
+    json = {"MSC code": "33-00"}
     param = urlencode(json)
     response = client.get(f"/links_api/link/?{param}")
     data = response.json
