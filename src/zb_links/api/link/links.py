@@ -112,7 +112,7 @@ link_item_arguments.add_argument("partner", type=str, required=True)
 class LinkItem(Resource):
     @api.expect(link_item_arguments)
     @api.marshal_with(link)
-     @api.doc(
+    @api.doc(
         params={
             "DE number": {
                 "description": "Ex: 3273551 (available "
