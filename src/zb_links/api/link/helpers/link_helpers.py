@@ -52,7 +52,7 @@ def nontrivial(name_list):
     Returns
     -------
     boolean
-        true if there are any non empty entries 
+        true if there are any non empty entries
         (after reduction) in the name list.
 
     """
