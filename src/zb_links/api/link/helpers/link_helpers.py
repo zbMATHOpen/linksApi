@@ -14,13 +14,13 @@ def get_new_id():
         the document_external_ids table.
 
     """
-    connection = db.engine.connect() 
+    connection = db.engine.connect()
     max_request = "SELECT MAX(id) FROM document_external_ids;"
     max_id = connection.execute(max_request).fetchone()[0]
     new_link_id = max_id + 1
     return new_link_id
-      
-  
+
+
 def update_set_by_intersect(set_a, set_b):
     """
 
@@ -31,7 +31,11 @@ def update_set_by_intersect(set_a, set_b):
 
     Returns
     -------
+<<<<<<< HEAD
     set_b if set_a is empty else 
+=======
+    set_b if set_a is empty else
+>>>>>>> 6386a9e991c6959e4047dab037d611a6aebd4c63
     a set determined by the intersection of set_a
     with set_b
 
@@ -52,7 +56,11 @@ def nontrivial(name_list):
     Returns
     -------
     boolean
+<<<<<<< HEAD
         true if there are any non empty entries 
+=======
+        true if there are any non empty entries
+>>>>>>> 6386a9e991c6959e4047dab037d611a6aebd4c63
         (after reduction) in the name list.
 
     """

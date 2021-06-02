@@ -33,5 +33,4 @@ def get_provider():
 
     """
 
-    provider_name = "Dariush, Matteo"
-    return provider_name
+    return "Dariush, Matteo"

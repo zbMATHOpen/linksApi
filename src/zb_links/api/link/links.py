@@ -156,7 +156,7 @@ class LinkItem(Resource):
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
                 "(identifier of the link)"
             },
-            "partner": {"description": "Ex: DLMF, OEIS, etc."}
+            "partner": {"description": "Ex: DLMF, OEIS, etc."},
         }
     )
     @token_required
@@ -202,7 +202,7 @@ class LinkItem(Resource):
                 matched_by="LinksApi",
                 created_by=provider,
                 created_at=date_established,
-                matched_at=date_added
+                matched_at=date_added,
             )
             db.session.add(new_link)
             db.session.commit()
