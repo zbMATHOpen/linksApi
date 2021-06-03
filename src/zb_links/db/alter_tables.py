@@ -26,10 +26,16 @@ def alter_tables():
     sequence_request = "CREATE SEQUENCE IF NOT EXISTS external_id_seq;"
     connection.execute(sequence_request)
 
-    alter_val_request = "ALTER TABLE document_external_ids ALTER COLUMN id SET DEFAULT nextval('external_id_seq');"
+    alter_val_request = """
+        ALTER TABLE document_external_ids
+        ALTER COLUMN id
+        SET DEFAULT nextval('external_id_seq');
+    """
     connection.execute(alter_val_request)
 
-    alter_request = "ALTER SEQUENCE external_id_seq OWNED BY document_external_ids.id;"
+    alter_request = (
+        "ALTER SEQUENCE external_id_seq OWNED BY document_external_ids.id;"
+    )
     connection.execute(alter_request)
 
     max_id = get_max_external_id()
