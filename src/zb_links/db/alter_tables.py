@@ -41,5 +41,3 @@ def alter_tables():
     max_id = get_max_external_id()
     set_value_request = f"SELECT setval('external_id_seq', {max_id});"
     connection.execute(set_value_request)
-
-
