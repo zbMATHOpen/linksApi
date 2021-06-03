@@ -190,12 +190,10 @@ class LinkItem(Resource):
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
 
-        new_link_id = link_helpers.get_new_id()
         date_established = link_date
         date_added = link_date
         try:
             new_link = Link(
-                id=new_link_id,
                 document=de_val,
                 external_id=source_val,
                 type=partner_name,
