@@ -5,5 +5,6 @@ flask schema add
 flask db migrate
 flask db upgrade
 flask extra_tables add
+flask alter tables
 flask view add
 flask seed all

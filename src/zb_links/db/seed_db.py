@@ -93,8 +93,21 @@ def seed_target():
         author=authors,
         classification=msc_list,
     )
+    db.session.add(new_target)
+
+    new_target = ZBTarget(
+        id=2062129,
+        zbl_id="1234.98765",
+        type="serial_article",
+        title="a title",
+        year="1789",
+        source="an older source",
+        author="me",
+        classification="12A34",
+    )
 
     db.session.add(new_target)
+
     db.session.commit()
 
 
