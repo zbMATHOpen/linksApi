@@ -34,8 +34,7 @@ class Provider(db.Model):
     scheme = db.Column(db.String())
     url = db.Column(db.String())
 
-    def __init__(self, id, name, scheme, url):
-        self.id = id
+    def __init__(self, name, scheme, url):
         self.name = name
         self.scheme = scheme
         self.url = url

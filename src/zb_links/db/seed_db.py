@@ -6,8 +6,6 @@ import click
 from flask import Blueprint
 
 from zb_links.db.models import (
-    # AuthorId,
-    # AuthorName,
     Link,
     Partner,
     Provider,
@@ -33,12 +31,11 @@ def seed_partner():
 
 @seedbp.cli.command("provider")
 def seed_provider():
-    provider_id = 1
     name = "Dariush, Matteo"
     scheme = "zbMATH scheme"
     url = "https://zbmath.org/"
 
-    new_provider = Provider(provider_id, name, scheme, url)
+    new_provider = Provider(name, scheme, url)
 
     db.session.add(new_provider)
     db.session.commit()
@@ -114,7 +111,6 @@ def seed_target():
 @seedbp.cli.command("link")
 def seed_link():
     new_link = Link(
-        id=1,
         document=3273551,
         external_id="11.14#I1.i1.p1",
         type="DLMF",
