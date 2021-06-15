@@ -50,7 +50,7 @@ def roman(source_id):
         if re.search(romain_regex, possible_roman, flags=re.IGNORECASE):
             return True, possible_roman
         return False, ""
-    except:
+    except IndexError:
         return False, ""
 
 
