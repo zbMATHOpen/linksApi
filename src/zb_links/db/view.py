@@ -2,7 +2,6 @@ from flask import Blueprint
 
 from zb_links.db.models import db
 
-
 viewbp = Blueprint("view", __name__)
 
 

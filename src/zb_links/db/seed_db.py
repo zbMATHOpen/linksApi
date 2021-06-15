@@ -86,7 +86,7 @@ def seed_target():
         type="book",
         title=book_title,
         year="1964",
-        source=source_of_publication,
+        source=source_of_publication,/home/physikerwelt/git/dlmf_api_swagger
         author=authors,
         classification=msc_list,
     )
