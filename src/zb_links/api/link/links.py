@@ -18,11 +18,11 @@ ns = api.namespace(
 
 search_by_arguments = reqparse.RequestParser()
 
-search_by_arguments.add_argument("authors", type=str, required=False)
+search_by_arguments.add_argument("author", type=str, required=False)
 
-search_by_arguments.add_argument("MSC code", type=str, required=False)
+search_by_arguments.add_argument("classification", type=str, required=False)
 
-search_by_arguments.add_argument("DE number", type=int, required=False)
+search_by_arguments.add_argument("document", type=int, required=False)
 
 
 @api.expect(search_by_arguments)
@@ -31,17 +31,17 @@ class LinkCollection(Resource):
     @api.marshal_list_with(link)
     @api.doc(
         params={
-            "authors": {
+            "author": {
                 "description": "Ex: Abramowitz, M. "
                 "(multiple inputs with ; as delimiter)"
             },
-            "DE number": {
-                "description": "Ex: 3273551 (available in the "
+            "document": {
+                "description": "Ex: 3273551 (DE number, available in the "
                 "bibtex of each document at https://zbmath.org/)"
             },
-            "MSC code": {
+            "classification": {
                 "description": "Ex: 33-00 "
-                "(multiple inputs with space as "
+                "(MSC code, multiple inputs with space as "
                 "delimiter) "
             },
         }
@@ -53,12 +53,12 @@ class LinkCollection(Resource):
         author = None
         msc_val = None
         de_val = None
-        if "authors" in args:
-            author = args["authors"].lower()
-        if "MSC code" in args:
-            msc_val = args["MSC code"].lower()
-        if "DE number" in args:
-            de_val = args["DE number"]
+        if "author" in args:
+            author = args["author"].lower()
+        if "classification" in args:
+            msc_val = args["classification"].lower()
+        if "document" in args:
+            de_val = args["document"]
 
         link_set = None
         link_list_auth = None
@@ -101,9 +101,9 @@ class LinkCollection(Resource):
 
 link_item_arguments = reqparse.RequestParser()
 
-link_item_arguments.add_argument("DE number", type=int, required=True)
+link_item_arguments.add_argument("document", type=int, required=True)
 
-link_item_arguments.add_argument("external id", type=str, required=True)
+link_item_arguments.add_argument("external_id", type=str, required=True)
 
 link_item_arguments.add_argument("partner", type=str, required=True)
 
@@ -114,24 +114,24 @@ class LinkItem(Resource):
     @api.marshal_with(link)
     @api.doc(
         params={
-            "DE number": {
-                "description": "Ex: 3273551 (available "
+            "document": {
+                "description": "Ex: 3273551 (DE number, available "
                 "in the bibtex of each document at "
                 "https://zbmath.org/)"
             },
-            "external id": {
+            "external_id": {
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
                 "(identifier of the link)"
             },
-            "partner": {"description": "Ex: DLMF, OEIS, etc."},
+            "type": {"description": "Ex: DLMF, OEIS, etc."},
         }
     )
     def get(self):
         """Check relations between a given link and a given zbMATH object"""
         args = request.args
-        de_val = args["DE number"]
-        source_val = args["external id"]
-        partner_name = args["partner"]
+        de_val = args["document"]
+        source_val = args["external_id"]
+        partner_name = args["type"]
 
         return_link = Link.query.filter_by(
             document=de_val, external_id=source_val, type=partner_name
@@ -147,17 +147,9 @@ class LinkItem(Resource):
     @api.response(201, "Link successfully created.")
     @api.doc(
         params={
-            "DE number": {
-                "description": "Ex: 3273551 (available "
-                "in the bibtex of each document at "
-                "https://zbmath.org/)"
-            },
-            "external id": {
-                "description": "Ex (DLMF): 11.14#I1.i1.p1"
-                "(identifier of the link)"
-            },
-            "partner": {"description": "Ex: DLMF, OEIS, etc."},
-        }
+            "zbl code": {"description": "Ex: 0171.38503"},
+            "source identifier": {"description": "Ex: 11.14#I1.i1.p1"},
+            "partner name": {"description": "Ex: DLMF"},
     )
     @token_required
     @api.doc(security="apikey")
@@ -165,9 +157,9 @@ class LinkItem(Resource):
         """Create a new link related to a zbMATH object"""
         args = request.args
 
-        de_val = args["DE number"]
-        source_val = args["external id"]
-        source_name = args["partner"]
+        zbl_val = args["zbl code"]
+        source_val = args["source identifier]
+        source_name = args["partner name"]
         link_date = datetime.utcnow()
         provider = helpers.get_provider()
 
@@ -179,9 +171,9 @@ class LinkItem(Resource):
         else:
             message_list.append("Invalid partner name")
 
-        target_obj = ZBTarget.query.filter_by(id=de_val).first()
+        target_obj = ZBTarget.query.filter_by(zbl_code=zbl_val).first()
         if not target_obj:
-            message_list.append("This DE is not in the database")
+            message_list.append("Zbl code is not in the database")
 
         source_obj = Source.query.filter_by(id=source_val).first()
         if not source_obj:
@@ -194,7 +186,7 @@ class LinkItem(Resource):
         date_added = link_date
         try:
             new_link = Link(
-                document=de_val,
+                document=zbl_val,
                 external_id=source_val,
                 type=partner_name,
                 matched_by="LinksApi",
