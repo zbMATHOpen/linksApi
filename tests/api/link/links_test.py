@@ -38,9 +38,9 @@ def test_post_link(client):
 
     assert len(link_to_add) == 0, "test link to create is not unique"
 
-    json = {"DE number": document,
-            "external id": external_id,
-            "partner": partner_name}
+    json = {"document": document,
+            "external_id": external_id,
+            "type": partner_name}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
