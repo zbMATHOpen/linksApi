@@ -1,7 +1,8 @@
+import re
+
 from sqlalchemy import func, or_, text
 
 from zb_links.db.models import Link, ZBTarget, db
-import re
 
 
 def update_set_by_intersect(old_set, new_set):
