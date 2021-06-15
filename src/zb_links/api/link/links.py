@@ -159,7 +159,7 @@ class LinkItem(Resource):
         args = request.args
 
         zbl_val = args["zbl code"]
-        source_val = args["source identifier]
+        source_val = args["source identifier"]
         source_name = args["partner name"]
         link_date = datetime.utcnow()
         provider = helpers.get_provider()
