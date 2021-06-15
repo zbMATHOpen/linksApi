@@ -6,9 +6,9 @@ from zb_links.db.models import Link, db
 
 def test_get_link_item(client):
     test_id = "11.14#I1.i1.p1"
-    json = {"DE number": 3273551,
-            "external id": test_id,
-            "partner": "DLMF"}
+    json = {"document": 3273551,
+            "external_id": test_id,
+            "type": "DLMF"}
     param = urlencode(json)
     response = client.get(f"/links_api/link/item/?{param}")
     assert 200 == response.status_code
@@ -17,7 +17,7 @@ def test_get_link_item(client):
 
 
 def test_get_link_msc(client):
-    json = {"MSC code": "33-00"}
+    json = {"msc classification code": "33-00"}
     param = urlencode(json)
     response = client.get(f"/links_api/link/?{param}")
     data = response.json
