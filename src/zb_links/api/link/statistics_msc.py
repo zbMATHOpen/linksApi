@@ -17,7 +17,7 @@ ns = api.namespace(
 
 msc_arguments = reqparse.RequestParser()
 
-msc_arguments.add_argument("tyoe", type=str, required=True)
+msc_arguments.add_argument("type", type=str, required=True)
 
 
 @ns.route("/msc/")
