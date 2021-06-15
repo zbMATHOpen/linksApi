@@ -1,4 +1,7 @@
 from urllib.parse import urlencode
+import os
+
+from zb_links.db.models import Link, db
 
 
 def test_get_link_item(client):
@@ -20,3 +23,18 @@ def test_get_link_msc(client):
     data = response.json
     assert len(data) > 0
     assert not data[0]["RelationshipType"]
+
+
+def test_post_link(client):
+    document = 2062129
+    external_id = "11.14#I1.i1.p1"
+    partner_name = "DLMF"
+
+    link_query = Link.query.filter_by(document=document,
+                                      external_id=external_id,
+                                      type=partner_name,
+                                      )
+    link_to_add = link_query.all()
+
+    assert len(link_to_add) == 0, "test link to create is not unique"
+

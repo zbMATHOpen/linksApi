@@ -105,11 +105,7 @@ link_item_arguments.add_argument("document", type=int, required=True)
 
 link_item_arguments.add_argument("external_id", type=str, required=True)
 
-link_item_arguments.add_argument("type", type=str, required=True)
-
-link_create_arguments = link_item_arguments.copy()
-
-link_create_arguments.add_argument("link relation", type=str, required=True)
+link_item_arguments.add_argument("partner", type=str, required=True)
 
 
 @ns.route("/item/")
@@ -147,14 +143,13 @@ class LinkItem(Resource):
 
         return return_display
 
-    @api.expect(link_create_arguments)
+    @api.expect(link_item_arguments)
     @api.response(201, "Link successfully created.")
     @api.doc(
         params={
             "zbl code": {"description": "Ex: 0171.38503"},
             "source identifier": {"description": "Ex: 11.14#I1.i1.p1"},
             "partner name": {"description": "Ex: DLMF"},
-            "link relation": {"description": "Ex: None"},
         }
     )
     @token_required
@@ -167,56 +162,38 @@ class LinkItem(Resource):
         source_val = args["source identifier"]
         source_name = args["partner name"]
         link_date = datetime.utcnow()
-        provider_id = 1
+        provider = helpers.get_provider()
 
         message_list = []
-        partner_name = None
 
         partner = Partner.query.filter_by(name=source_name).first()
         if partner:
-            partner_id = partner.partner_id
             partner_name = partner.name
         else:
             message_list.append("Invalid partner name")
-            partner_id = None
 
         target_obj = ZBTarget.query.filter_by(zbl_code=zbl_val).first()
         if not target_obj:
-            message_list.append("Zbl code is not the database")
+            message_list.append("Zbl code is not in the database")
 
-        source_obj = Source.query.filter_by(
-            identifier=source_val, partner=partner_name
-        ).first()
-        if source_obj:
-            source_id = source_obj.source_id
-        else:
-            message_list.append("Invalid source identifier")
-            source_id = None
+        source_obj = Source.query.filter_by(id=source_val).first()
+        if not source_obj:
+            message_list.append("Invalid external id")
 
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
 
-        number_links = Link.query.count()
-
-        new_link_id = number_links + 1
-
         date_established = link_date
         date_added = link_date
-
-        relation = "generic relation"
-
         try:
             new_link = Link(
-                link_id=new_link_id,
-                source_id=source_id,
-                source_identifier=source_val,
-                target_id=zbl_val,
-                partner_id=partner_id,
-                partner_name=partner_name,
-                link_publication_date=date_established,
-                link_added_date=date_added,
-                link_provider=provider_id,
-                relationship_type=relation,
+                document=zbl_val,
+                external_id=source_val,
+                type=partner_name,
+                matched_by="LinksApi",
+                created_by=provider,
+                created_at=date_established,
+                matched_at=date_added,
             )
             db.session.add(new_link)
             db.session.commit()

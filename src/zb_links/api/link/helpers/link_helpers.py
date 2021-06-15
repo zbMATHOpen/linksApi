@@ -5,13 +5,41 @@ from sqlalchemy import func, or_, text
 from zb_links.db.models import Link, ZBTarget, db
 
 
-def update_set_by_intersect(old_set, new_set):
-    if not old_set:
-        return new_set
-    return set.intersection(old_set, new_set)
+def update_set_by_intersect(set_a, set_b):
+    """
+
+    Parameters
+    ----------
+    set_a : set
+    set_b : set
+
+    Returns
+    -------
+    set_b if set_a is empty else
+    a set determined by the intersection of set_a
+    with set_b
+
+    """
+    if not set_a:
+        return set_b
+    return set.intersection(set_a, set_b)
 
 
 def nontrivial(name_list):
+    """
+
+    Parameters
+    ----------
+    name_list : list of strings
+        contains author name strings.
+
+    Returns
+    -------
+    boolean
+        true if there are any non empty entries
+        (after reduction) in the name list.
+
+    """
     nontrivial_length = 0
     for name in name_list:
         reduced_name = re.sub("[^A-Za-z]+", "", name)
