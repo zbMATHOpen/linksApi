@@ -13,11 +13,11 @@ from zb_links.api.link.source import ns as source_namespace
 from zb_links.api.link.statistics_msc import ns as statistics_msc_namespace
 from zb_links.api.link.statistics_years import ns as statistics_years_namespace
 from zb_links.api.restx import api
+from zb_links.db.extra_tables import tablesbp
 from zb_links.db.manage_db import managebp
 from zb_links.db.models import db
-from zb_links.db.seed_db import seedbp
 from zb_links.db.schema import schemabp
-from zb_links.db.extra_tables import tablesbp
+from zb_links.db.seed_db import seedbp
 from zb_links.db.view import viewbp
 
 

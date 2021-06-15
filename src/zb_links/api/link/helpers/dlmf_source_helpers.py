@@ -1,7 +1,7 @@
-
-from bs4 import BeautifulSoup
-import requests
 import re
+
+import requests
+from bs4 import BeautifulSoup
 
 
 def get_page_title(soup):
@@ -44,7 +44,9 @@ def roman(source_id):
     try:
         after_section = split_source[1]
         possible_roman = after_section.split(".")[0]
-        romain_regex = r"^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
+        romain_regex = (
+            r"^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
+        )
         if re.search(romain_regex, possible_roman, flags=re.IGNORECASE):
             return True, possible_roman
         return False, ""
@@ -87,7 +89,6 @@ def get_title(source_id):
             if "about" in source_id:
                 prefix = "Profile "
             return prefix + get_page_title(soup)
-
 
     for child in title.find_all("span"):
         child.decompose()

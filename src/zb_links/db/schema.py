@@ -3,7 +3,6 @@ from flask import Blueprint
 
 from zb_links.db.models import db
 
-
 schemabp = Blueprint("schema", __name__)
 
 

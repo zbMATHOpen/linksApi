@@ -3,11 +3,12 @@
 # ------------------------------------------------------------------------------
 
 from collections import Counter
+
 from flask import request
 from flask_restx import Resource, reqparse
 
 from zb_links.api.restx import api
-from zb_links.db.models import ZBTarget, Link
+from zb_links.db.models import Link, ZBTarget
 
 ns = api.namespace(
     "statistics",
