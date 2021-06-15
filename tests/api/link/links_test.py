@@ -40,7 +40,8 @@ def test_post_link(client):
 
     json = {"document": document,
             "external_id": external_id,
-            "type": partner_name}
+            "partner": partner_name,
+            "type": "DLMF"}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
