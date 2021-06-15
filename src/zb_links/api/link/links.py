@@ -150,6 +150,7 @@ class LinkItem(Resource):
             "zbl code": {"description": "Ex: 0171.38503"},
             "source identifier": {"description": "Ex: 11.14#I1.i1.p1"},
             "partner name": {"description": "Ex: DLMF"},
+        }
     )
     @token_required
     @api.doc(security="apikey")
