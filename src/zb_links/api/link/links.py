@@ -170,8 +170,9 @@ class LinkItem(Resource):
         de_val = args["DE number"]
         source_val = args["external id"]
         source_name = args["partner"]
+        title_name = None
         try:
-            title_name = args["name"]
+            title_name = args["title"]
         except BadRequest:
             pass
         link_date = datetime.utcnow()
@@ -189,14 +190,16 @@ class LinkItem(Resource):
         if not target_obj:
             message_list.append("This DE is not in the database")
 
-        source_obj = Source.query.filter_by(id=source_val).first()
-        if not source_obj:
-            source_helpers.create_new_source(
-                source_val, source_name, title_name=None
-            )
-
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
+
+        source_obj = Source.query.filter_by(id=source_val).first()
+        if not source_obj:
+            response = source_helpers.create_new_source(
+                source_val, source_name, title_name
+            )
+            if response:
+                return response
 
         date_established = link_date
         date_added = link_date
