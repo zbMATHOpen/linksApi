@@ -7,8 +7,10 @@ from datetime import datetime
 from flask import request
 from flask_restx import Resource, reqparse
 
+from werkzeug.exceptions import BadRequest
+
 from zb_links.api.link.display import get_display, link
-from zb_links.api.link.helpers import helpers, link_helpers
+from zb_links.api.link.helpers import helpers, link_helpers, source_helpers
 from zb_links.api.restx import api, token_required
 from zb_links.db.models import Link, Partner, Source, ZBTarget, db
 
@@ -168,6 +170,10 @@ class LinkItem(Resource):
         de_val = args["DE number"]
         source_val = args["external id"]
         source_name = args["partner"]
+        try:
+            title_name = args["name"]
+        except BadRequest:
+            pass
         link_date = datetime.utcnow()
         provider = helpers.get_provider()
 
@@ -185,7 +191,9 @@ class LinkItem(Resource):
 
         source_obj = Source.query.filter_by(id=source_val).first()
         if not source_obj:
-            message_list.append("Invalid external id")
+            source_helpers.create_new_source(
+                source_val, source_name, title_name=None
+            )
 
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
