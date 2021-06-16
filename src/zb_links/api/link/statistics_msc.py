@@ -3,12 +3,11 @@
 # ------------------------------------------------------------------------------
 
 from collections import Counter
-
 from flask import request
 from flask_restx import Resource, reqparse
 
 from zb_links.api.restx import api
-from zb_links.db.models import Link, ZBTarget
+from zb_links.db.models import ZBTarget, Link
 
 ns = api.namespace(
     "statistics",
@@ -18,7 +17,7 @@ ns = api.namespace(
 
 msc_arguments = reqparse.RequestParser()
 
-msc_arguments.add_argument("type", type=str, required=True)
+msc_arguments.add_argument("partner", type=str, required=True)
 
 
 @ns.route("/msc/")
@@ -26,13 +25,13 @@ class MSCCollection(Resource):
     @api.expect(msc_arguments)
     @api.doc(
         params={
-            "type": {"description": "Ex: DLMF, OEIS, etc."},
+            "partner": {"description": "Ex: DLMF, OEIS, etc."},
         }
     )
     def get(self):
         """Occurrence of primary 2-digit level MSC codes"""
         args = request.args
-        partner_name = args["type"]
+        partner_name = args["partner"]
 
         queries = (
             ZBTarget.query.join(Link, Link.document == ZBTarget.id)

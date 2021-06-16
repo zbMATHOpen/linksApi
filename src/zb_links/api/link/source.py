@@ -2,9 +2,8 @@
 # Source window (1 GET)
 # ------------------------------------------------------------------------------
 
-from flask import request
 from flask_restx import Resource, reqparse
-
+from flask import request
 from zb_links.api.restx import api
 from zb_links.db.models import Source
 

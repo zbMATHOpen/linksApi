@@ -2,6 +2,7 @@ from flask import Blueprint
 
 from zb_links.db.models import db
 
+
 tablesbp = Blueprint("extra_tables", __name__)
 
 
