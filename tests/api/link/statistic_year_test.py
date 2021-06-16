@@ -1,5 +1,6 @@
 from urllib.parse import urlencode
 
+
 def test_get_statistics_year(client):
     json = {"partner": "DLMF"}
     param = urlencode(json)
