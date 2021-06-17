@@ -18,6 +18,7 @@ def create_new_source(source_val, source_name, title_name):
     try:
         url = Sources[source_name]["url_prefix"] + source_val
         new_source = Source(
+            id=source_val,
             id_scheme=Sources[source_name]["id_scheme"],
             type=Sources[source_name]["type"],
             url=url,
