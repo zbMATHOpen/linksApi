@@ -5,8 +5,7 @@
 import click
 from flask import Blueprint
 
-from zb_links.db.models import Partner
-from zb_links.db.models import Link, Provider, Source, ZBTarget, db
+from zb_links.db.models import Link, Partner, Provider, Source, ZBTarget, db
 
 seedbp = Blueprint("seed", __name__)
 

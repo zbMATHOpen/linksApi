@@ -1,15 +1,23 @@
 
+import re
+
 from zb_links.api.link.helpers.dlmf_source_helpers import get_title
 
 
 def test_with_subsection():
     title = get_title("26.8#vii.p4")
-    assert title == "Asymptotic Approximations"
+    dlmf_title = """
+        §26.8(vii) Asymptotic Approximations
+        ‣ Properties ‣ Chapter 26 Combinatorial Analysis
+    """
+    dlmf_title = re.sub(" +", " ", dlmf_title)
+    dlmf_title = dlmf_title.replace("\n", "").strip()
+    assert title == dlmf_title
 
 
 def test_without_subsection():
     title = get_title("27.3")
-    assert title == "Multiplicative Properties"
+    assert title == "§27.3 Multiplicative Properties"
 
 
 def test_figure():
