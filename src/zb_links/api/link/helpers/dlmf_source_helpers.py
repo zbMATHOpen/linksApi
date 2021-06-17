@@ -67,6 +67,9 @@ def get_title(source_id):
     title: str
         gives the title corresponding to the source_id
         returns None if id is invalid
+        title is restricted to Chapter, Section, Subsection.
+        exact title as listed in DLMF bib should be obtained
+        by scraping
 
     """
 
@@ -80,8 +83,15 @@ def get_title(source_id):
     subsection_given = subsection_results[0]
     if subsection_given:
         subsection = subsection_results[1]
-        section = soup.find("section", id=subsection)
-        title = section.find(class_="ltx_title ltx_title_subsection")
+        subsection_soup = soup.find("section", id=subsection)
+        subsection_title = (
+            subsection_soup.find(class_="ltx_title ltx_title_subsection")
+            .text.strip("/n")
+            .strip()
+        )
+        chpt_sec_soup = soup.find("link", rel="up")
+        chpt_sec_title = chpt_sec_soup["title"]
+        title = subsection_title + " " + chr(8227) + " " + chpt_sec_title
     else:
         title = soup.find(class_="ltx_title ltx_title_section")
         if not title:
@@ -89,8 +99,6 @@ def get_title(source_id):
             if "about" in source_id:
                 prefix = "Profile "
             return prefix + get_page_title(soup)
+        title = title.text.strip("/n").strip()
 
-    for child in title.find_all("span"):
-        child.decompose()
-
-    return title.text.strip("/n").strip()
+    return title
