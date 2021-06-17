@@ -91,11 +91,14 @@ def get_title(source_id):
         chpt_sec_title = (chpt_sec_soup["title"])
         title = subsection_title + " " + chr(8227) + " " + chpt_sec_title
     else:
-        title = soup.find(class_="ltx_title ltx_title_section")
+        title = soup.find(
+            class_="ltx_title ltx_title_section"
+        )
         if not title:
             prefix = ""
             if "about" in source_id:
                 prefix = "Profile "
             return prefix + get_page_title(soup)
+        title = title.text.strip("/n").strip()
 
     return title
