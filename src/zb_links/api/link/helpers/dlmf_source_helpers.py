@@ -84,16 +84,16 @@ def get_title(source_id):
     if subsection_given:
         subsection = subsection_results[1]
         subsection_soup = soup.find("section", id=subsection)
-        subsection_title = subsection_soup.find(
-            class_="ltx_title ltx_title_subsection"
-        ).text.strip("/n").strip()
+        subsection_title = (
+            subsection_soup.find(class_="ltx_title ltx_title_subsection")
+            .text.strip("/n")
+            .strip()
+        )
         chpt_sec_soup = soup.find("link", rel="up")
-        chpt_sec_title = (chpt_sec_soup["title"])
+        chpt_sec_title = chpt_sec_soup["title"]
         title = subsection_title + " " + chr(8227) + " " + chpt_sec_title
     else:
-        title = soup.find(
-            class_="ltx_title ltx_title_section"
-        )
+        title = soup.find(class_="ltx_title ltx_title_section")
         if not title:
             prefix = ""
             if "about" in source_id:

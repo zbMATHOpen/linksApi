@@ -6,7 +6,6 @@ from datetime import datetime
 
 from flask import request
 from flask_restx import Resource, reqparse
-
 from werkzeug.exceptions import BadRequest
 
 from zb_links.api.link.display import get_display, link

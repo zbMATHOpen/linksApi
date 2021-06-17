@@ -1,6 +1,5 @@
-from zb_links.api.link.helpers import helpers, dlmf_source_helpers
+from zb_links.api.link.helpers import dlmf_source_helpers, helpers
 from zb_links.db.models import Source, db
-
 
 Sources = {
     "DLMF": {
@@ -9,6 +8,7 @@ Sources = {
         "type": "DLMF reference",
     }
 }
+
 
 def create_new_source(source_val, source_name, title_name=None):
     if source_name == "DLMF":
@@ -23,7 +23,7 @@ def create_new_source(source_val, source_name, title_name=None):
             type=Sources[source_name]["type"],
             url=url,
             title=title_name,
-            partner=source_name
+            partner=source_name,
         )
         db.session.add(new_source)
         db.session.commit()
