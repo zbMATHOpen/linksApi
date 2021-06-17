@@ -10,7 +10,7 @@ Sources = {
     }
 }
 
-def create_new_source(source_val, source_name, title_name):
+def create_new_source(source_val, source_name, title_name=None):
     if source_name == "DLMF":
         if not title_name:
             title_name = dlmf_source_helpers.get_title(source_val)
