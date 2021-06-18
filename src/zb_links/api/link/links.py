@@ -53,13 +53,13 @@ class LinkCollection(Resource):
 
         author = None
         msc_val = None
-        de_val = None
+        doc_id = None
         if "authors" in args:
             author = args["authors"].lower()
         if "MSC code" in args:
             msc_val = args["MSC code"].lower()
         if "DE number" in args:
-            de_val = args["DE number"]
+            doc_id = args["DE number"]
 
         link_set = None
         link_list_auth = None
@@ -82,16 +82,16 @@ class LinkCollection(Resource):
                 link_set, set(link_list_msc)
             )
 
-        if de_val:
+        if doc_id:
             # get all links corresponding to document input
             link_de_val = Link.query.filter_by(
-                document=de_val, matched_by="LinksApi"
+                document=doc_id, matched_by="LinksApi"
             ).all()
             link_set = link_helpers.update_set_by_intersect(
                 link_set, set(link_de_val)
             )
 
-        if not (author or msc_val or de_val):
+        if not (author or msc_val or doc_id):
             link_set = set(Link.query.filter_by(matched_by="LinksApi").all())
 
         if link_set:
@@ -130,12 +130,12 @@ class LinkItem(Resource):
     def get(self):
         """Check relations between a given link and a given zbMATH object"""
         args = request.args
-        de_val = args["DE number"]
+        doc_id = args["DE number"]
         source_val = args["external id"]
         partner_name = args["partner"]
 
         return_link = Link.query.filter_by(
-            document=de_val, external_id=source_val, type=partner_name
+            document=doc_id, external_id=source_val, type=partner_name
         ).first()
 
         return_display = []
@@ -166,7 +166,7 @@ class LinkItem(Resource):
         """Create a new link related to a zbMATH object"""
         args = request.args
 
-        de_val = args["DE number"]
+        doc_id = args["DE number"]
         source_val = args["external id"]
         source_name = args["partner"]
         title_name = None
@@ -185,7 +185,7 @@ class LinkItem(Resource):
         else:
             message_list.append("Invalid partner name")
 
-        target_obj = ZBTarget.query.filter_by(id=de_val).first()
+        target_obj = ZBTarget.query.filter_by(id=doc_id).first()
         if not target_obj:
             message_list.append("This DE is not in the database")
 
@@ -204,7 +204,7 @@ class LinkItem(Resource):
         date_added = link_date
         try:
             new_link = Link(
-                document=de_val,
+                document=doc_id,
                 external_id=source_val,
                 type=partner_name,
                 matched_by="LinksApi",
