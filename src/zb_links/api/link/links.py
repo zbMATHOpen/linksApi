@@ -42,8 +42,8 @@ class LinkCollection(Resource):
                 "(multiple inputs with ; as delimiter)"
             },
             "DE number": {
-                "description": "Ex: 3273551 (available in the "
-                "bibtex of each document at https://zbmath.org/)"
+                "description": "Ex: 3273551 (DE number)"
+                               " or 0171.38503 (Zbl code)"
             },
             "MSC code": {
                 "description": "Ex: 33-00 "
@@ -125,9 +125,8 @@ class LinkItem(Resource):
     @api.doc(
         params={
             "DE number": {
-                "description": "Ex: 3273551 (available "
-                "in the bibtex of each document at "
-                "https://zbmath.org/)"
+                "description": "Ex: 3273551 (DE number)"
+                               " or 0171.38503 (Zbl code)"
             },
             "external id": {
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
@@ -163,9 +162,8 @@ class LinkItem(Resource):
     @api.doc(
         params={
             "DE number": {
-                "description": "Ex: 3273551 (available "
-                "in the bibtex of each document at "
-                "https://zbmath.org/)"
+                "description": "Ex: 3273551 (DE number)"
+                               " or 0171.38503 (Zbl code)"
             },
             "external id": {
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
