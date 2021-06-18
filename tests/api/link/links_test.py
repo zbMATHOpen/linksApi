@@ -64,3 +64,22 @@ def test_post_link(client):
     link_query.delete()
 
     db.session.commit()
+
+
+def test_post_link_with_bad_zbl(client):
+    zbl_id = '2062.129'
+    external_id = "11.14#I1.i1.p1"
+    partner_name = "DLMF"
+
+    json = {"DE number": zbl_id,
+            "external id": external_id,
+            "partner": partner_name}
+    param = urlencode(json)
+    headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
+    response = client.post(f"/links_api/link/item/?{param}",
+                          headers=headers,
+                          )
+    assert response.status_code == 422
+
+    data = response.json
+    assert data.get("message")
