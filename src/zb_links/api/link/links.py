@@ -28,7 +28,7 @@ search_by_arguments.add_argument("authors", type=str, required=False)
 
 search_by_arguments.add_argument("MSC code", type=str, required=False)
 
-search_by_arguments.add_argument("DE number", type=int, required=False)
+search_by_arguments.add_argument("DE number", type=str, required=False)
 
 
 @api.expect(search_by_arguments)
@@ -89,16 +89,13 @@ class LinkCollection(Resource):
 
         if doc_id:
             id_type = link_helpers.get_id_type(doc_id)
+            if id_type == "zbl_code":
+                doc_id = target_helpers.get_de_from_zbl_id(doc_id)
 
             # get all links corresponding to document input
-            if id_type == "zbl_code":
-                link_doc_id = Link.query.filter_by(
-                    zbl_id=doc_id, matched_by="LinksApi"
-                ).all()
-            if id_type == "de_number":
-                link_doc_id = Link.query.filter_by(
-                    document=doc_id, matched_by="LinksApi"
-                ).all()
+            link_doc_id = Link.query.filter_by(
+                document=doc_id, matched_by="LinksApi"
+            ).all()
             link_set = link_helpers.update_set_by_intersect(
                 link_set, set(link_doc_id)
             )
@@ -149,13 +146,11 @@ class LinkItem(Resource):
         return_link = None
         id_type = link_helpers.get_id_type(doc_id)
         if id_type == "zbl_code":
-            return_link = Link.query.filter_by(
-                zbl_id=doc_id, external_id=source_val, type=partner_name
-            ).first()
-        if id_type == "de_number":
-            return_link = Link.query.filter_by(
-                document=doc_id, external_id=source_val, type=partner_name
-            ).first()
+            doc_id = target_helpers.get_de_from_zbl_id(doc_id)
+
+        return_link = Link.query.filter_by(
+            document=doc_id, external_id=source_val, type=partner_name
+        ).first()
 
         return_display = []
         if return_link:

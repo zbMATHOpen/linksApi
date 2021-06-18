@@ -5,9 +5,31 @@ from zb_links.api.link.helpers import target_helpers
 from zb_links.db.models import Link, db
 
 
+def test_get_all_links_from_zbl(client):
+
+    json = {"DE number": "0171.38503"}
+    param = urlencode(json)
+    response = client.get(f"/links_api/link/?{param}")
+    assert 200 == response.status_code
+    first_data = response.json[0]
+    assert first_data["Source"]["Identifier"]["ID"] == "11.14#I1.i1.p1"
+
+
 def test_get_link_item(client):
     test_id = "11.14#I1.i1.p1"
     json = {"DE number": 3273551,
+            "external id": test_id,
+            "partner": "DLMF"}
+    param = urlencode(json)
+    response = client.get(f"/links_api/link/item/?{param}")
+    assert 200 == response.status_code
+    data = response.json
+    assert data["Source"]["Identifier"]["ID"] == test_id
+
+
+def test_get_link_item_zbl(client):
+    test_id = "11.14#I1.i1.p1"
+    json = {"DE number": "0171.38503",
             "external id": test_id,
             "partner": "DLMF"}
     param = urlencode(json)
