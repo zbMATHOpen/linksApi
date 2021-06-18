@@ -43,7 +43,7 @@ class LinkCollection(Resource):
             },
             "DE number": {
                 "description": "Ex: 3273551 (DE number)"
-                               " or 0171.38503 (Zbl code)"
+                " or 0171.38503 (Zbl code)"
             },
             "MSC code": {
                 "description": "Ex: 33-00 "
@@ -126,7 +126,7 @@ class LinkItem(Resource):
         params={
             "DE number": {
                 "description": "Ex: 3273551 (DE number)"
-                               " or 0171.38503 (Zbl code)"
+                " or 0171.38503 (Zbl code)"
             },
             "external id": {
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
@@ -163,7 +163,7 @@ class LinkItem(Resource):
         params={
             "DE number": {
                 "description": "Ex: 3273551 (DE number)"
-                               " or 0171.38503 (Zbl code)"
+                " or 0171.38503 (Zbl code)"
             },
             "external id": {
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
