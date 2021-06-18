@@ -9,7 +9,12 @@ from flask_restx import Resource, reqparse
 from werkzeug.exceptions import BadRequest
 
 from zb_links.api.link.display import get_display, link
-from zb_links.api.link.helpers import helpers, link_helpers, source_helpers
+from zb_links.api.link.helpers import (
+    helpers,
+    link_helpers,
+    source_helpers,
+    target_helpers,
+)
 from zb_links.api.restx import api, token_required
 from zb_links.db.models import Link, Partner, Source, ZBTarget, db
 
@@ -23,7 +28,7 @@ search_by_arguments.add_argument("authors", type=str, required=False)
 
 search_by_arguments.add_argument("MSC code", type=str, required=False)
 
-search_by_arguments.add_argument("DE number", type=int, required=False)
+search_by_arguments.add_argument("DE number", type=str, required=False)
 
 
 @api.expect(search_by_arguments)
@@ -37,8 +42,8 @@ class LinkCollection(Resource):
                 "(multiple inputs with ; as delimiter)"
             },
             "DE number": {
-                "description": "Ex: 3273551 (available in the "
-                "bibtex of each document at https://zbmath.org/)"
+                "description": "Ex: 3273551 (DE number)"
+                " or 0171.38503 (Zbl code)"
             },
             "MSC code": {
                 "description": "Ex: 33-00 "
@@ -59,12 +64,12 @@ class LinkCollection(Resource):
         if "MSC code" in args:
             msc_val = args["MSC code"].lower()
         if "DE number" in args:
-            doc_id = args["DE number"]
+            doc_id = args["DE number"].strip()
 
         link_set = None
         link_list_auth = None
         link_list_msc = None
-        link_de_val = None
+        link_doc_id = None
 
         links_display = []
 
@@ -83,12 +88,16 @@ class LinkCollection(Resource):
             )
 
         if doc_id:
+            id_type = link_helpers.get_id_type(doc_id)
+            if id_type == "zbl_code":
+                doc_id = target_helpers.get_de_from_zbl_id(doc_id)
+
             # get all links corresponding to document input
-            link_de_val = Link.query.filter_by(
+            link_doc_id = Link.query.filter_by(
                 document=doc_id, matched_by="LinksApi"
             ).all()
             link_set = link_helpers.update_set_by_intersect(
-                link_set, set(link_de_val)
+                link_set, set(link_doc_id)
             )
 
         if not (author or msc_val or doc_id):
@@ -102,7 +111,7 @@ class LinkCollection(Resource):
 
 link_item_arguments = reqparse.RequestParser()
 
-link_item_arguments.add_argument("DE number", type=int, required=True)
+link_item_arguments.add_argument("DE number", type=str, required=True)
 
 link_item_arguments.add_argument("external id", type=str, required=True)
 
@@ -116,9 +125,8 @@ class LinkItem(Resource):
     @api.doc(
         params={
             "DE number": {
-                "description": "Ex: 3273551 (available "
-                "in the bibtex of each document at "
-                "https://zbmath.org/)"
+                "description": "Ex: 3273551 (DE number)"
+                " or 0171.38503 (Zbl code)"
             },
             "external id": {
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
@@ -130,9 +138,14 @@ class LinkItem(Resource):
     def get(self):
         """Check relations between a given link and a given zbMATH object"""
         args = request.args
-        doc_id = args["DE number"]
+        doc_id = args["DE number"].strip()
         source_val = args["external id"]
         partner_name = args["partner"]
+
+        return_link = None
+        id_type = link_helpers.get_id_type(doc_id)
+        if id_type == "zbl_code":
+            doc_id = target_helpers.get_de_from_zbl_id(doc_id)
 
         return_link = Link.query.filter_by(
             document=doc_id, external_id=source_val, type=partner_name
@@ -149,9 +162,8 @@ class LinkItem(Resource):
     @api.doc(
         params={
             "DE number": {
-                "description": "Ex: 3273551 (available "
-                "in the bibtex of each document at "
-                "https://zbmath.org/)"
+                "description": "Ex: 3273551 (DE number)"
+                " or 0171.38503 (Zbl code)"
             },
             "external id": {
                 "description": "Ex (DLMF): 11.14#I1.i1.p1"
@@ -166,7 +178,11 @@ class LinkItem(Resource):
         """Create a new link related to a zbMATH object"""
         args = request.args
 
-        doc_id = args["DE number"]
+        doc_id = args["DE number"].strip()
+        id_type = link_helpers.get_id_type(doc_id)
+        if id_type == "zbl_code":
+            doc_id = target_helpers.get_de_from_zbl_id(doc_id)
+
         source_val = args["external id"]
         source_name = args["partner"]
         title_name = None
