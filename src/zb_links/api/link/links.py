@@ -88,9 +88,7 @@ class LinkCollection(Resource):
             )
 
         if doc_id:
-            id_type = link_helpers.get_id_type(doc_id)
-            if id_type == "zbl_code":
-                doc_id = target_helpers.get_de_from_zbl_id(doc_id)
+            doc_id = target_helpers.get_de_from_input(doc_id)
 
             # get all links corresponding to document input
             link_doc_id = Link.query.filter_by(
@@ -143,10 +141,7 @@ class LinkItem(Resource):
         partner_name = args["partner"]
 
         return_link = None
-        id_type = link_helpers.get_id_type(doc_id)
-        if id_type == "zbl_code":
-            doc_id = target_helpers.get_de_from_zbl_id(doc_id)
-
+        doc_id = target_helpers.get_de_from_input(doc_id)
         return_link = Link.query.filter_by(
             document=doc_id, external_id=source_val, type=partner_name
         ).first()
@@ -179,9 +174,7 @@ class LinkItem(Resource):
         args = request.args
 
         doc_id = args["DE number"].strip()
-        id_type = link_helpers.get_id_type(doc_id)
-        if id_type == "zbl_code":
-            doc_id = target_helpers.get_de_from_zbl_id(doc_id)
+        doc_id = target_helpers.get_de_from_input(doc_id)
 
         source_val = args["external id"]
         source_name = args["partner"]
