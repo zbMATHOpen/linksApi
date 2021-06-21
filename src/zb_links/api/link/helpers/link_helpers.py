@@ -123,9 +123,7 @@ def get_links_from_author(author):
 
         query_results = connection.execute(auth_doc_query, a_name=each_exp)
 
-        # query_results = connection.execute(text(auth_doc_query))
         author_documents = set(query_results)
-
         auth_doc_list = [doc_el[0] for doc_el in author_documents]
         doc_id_list.append(auth_doc_list)
 
@@ -188,29 +186,3 @@ def get_links_from_mscs(msc_val):
     link_list_msc = [link for link in link_query.all()]
 
     return link_list_msc
-
-
-def get_id_type(doc_id):
-    """
-
-    Parameters
-    ----------
-    doc_id : str or int (as string)
-        represents the DE number (document) resp. the Zbl code (zbl_id)
-        of a document in math_documents
-
-    Returns
-    -------
-    doc_type : str
-        'de_number' if the DE number is given
-        'zbl_id' if the Zbl code is given.
-
-    """
-    doc_type = None
-    try:
-        int(doc_id)
-        doc_type = "de_number"
-    except ValueError:
-        doc_type = "zbl_code"
-
-    return doc_type

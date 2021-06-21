@@ -1,7 +1,7 @@
 from zb_links.db.models import ZBTarget
 
 
-def get_de_from_zbl_id(doc_id):
+def get_de_from_input(doc_id):
     """
 
     Parameters

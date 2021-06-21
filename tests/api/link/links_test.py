@@ -15,6 +15,16 @@ def test_get_all_links_from_zbl(client):
     assert first_data["Source"]["Identifier"]["ID"] == "11.14#I1.i1.p1"
 
 
+def test_get_all_links_from_de(client):
+
+    json = {"DE number": "3273551"}
+    param = urlencode(json)
+    response = client.get(f"/links_api/link/?{param}")
+    assert 200 == response.status_code
+    first_data = response.json[0]
+    assert first_data["Source"]["Identifier"]["ID"] == "11.14#I1.i1.p1"
+
+
 def test_get_link_item(client):
     test_id = "11.14#I1.i1.p1"
     json = {"DE number": 3273551,
@@ -94,7 +104,7 @@ def test_post_link_with_zbl(client):
     external_id = "11.14#I1.i1.p1"
     partner_name = "DLMF"
 
-    de_val = target_helpers.get_de_from_zbl_id(zbl_id)
+    de_val = target_helpers.get_de_from_input(zbl_id)
 
     link_query = Link.query.filter_by(document=de_val,
                                       external_id=external_id,
