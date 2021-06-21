@@ -90,6 +90,15 @@ def test_post_link(client):
                           )
     assert response.status_code == 201
 
+    # add here created_by explicitly
+    connection = db.engine.connect()
+    data_row = """
+    UPDATE document_external_ids
+    SET created_by = 'api_user'
+    WHERE document = '2062129'
+    """
+    connection.execute(data_row)
+
     data = response.json
     assert data is None
 
@@ -132,6 +141,15 @@ def test_post_link_with_zbl(client):
                           headers=headers,
                           )
     assert response.status_code == 201
+
+    # add here created_by explicitly
+    connection = db.engine.connect()
+    data_row = """
+    UPDATE document_external_ids
+    SET created_by = 'api_user'
+    WHERE document = '2062129'
+    """
+    connection.execute(data_row)
 
     data = response.json
     assert data is None

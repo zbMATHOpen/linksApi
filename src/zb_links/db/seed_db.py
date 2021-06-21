@@ -2,7 +2,10 @@
 # Seeding the Database
 # ------------------------------------------------------------------------------
 
+from datetime import datetime
+
 import click
+import pytz
 from flask import Blueprint
 
 from zb_links.db.models import Link, Partner, Provider, Source, ZBTarget, db
@@ -24,7 +27,7 @@ def seed_partner():
 
 @seedbp.cli.command("provider")
 def seed_provider():
-    name = "Dariush, Matteo"
+    name = "api_user"
     scheme = "zbMATH scheme"
     url = "https://zbmath.org/"
 
@@ -103,15 +106,16 @@ def seed_target():
 
 @seedbp.cli.command("link")
 def seed_link():
+    dt = datetime(2021, 1, 1)
+    dt = dt.replace(tzinfo=pytz.timezone("Europe/Berlin"))
     new_link = Link(
         document=3273551,
         external_id="11.14#I1.i1.p1",
         type="DLMF",
-        matched_by="LinksApi",
-        created_at="2010-01-01 00:00:00",
-        created_by="Dariush, Matteo",
-        matched_at="2021-01-01 00:00:00",
-        parent_id=1,
+        matched_by="zbmath-links-api",
+        matched_by_version="0.2",
+        matched_at=dt,
+        created_by="api_user",
     )
 
     db.session.add(new_link)
