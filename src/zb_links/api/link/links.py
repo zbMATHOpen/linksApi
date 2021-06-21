@@ -231,6 +231,14 @@ class LinkItem(Resource):
 
 @ns.route("/item/<doc_id>")
 class LinkDoc(Resource):
+    @api.doc(
+        params={
+            "doc_id": {
+                "description": "Ex: 3273551 (DE number)"
+                " or 0171.38503 (Zbl code)"
+            }
+        }
+    )
     def get(self, doc_id):
         return redirect(
             url_for("links_api.link_link_collection", DE_number=doc_id)
