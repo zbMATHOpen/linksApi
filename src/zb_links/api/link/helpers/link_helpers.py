@@ -1,8 +1,13 @@
 import re
 
+from pkg_resources import get_distribution
 from sqlalchemy import func, or_, text
 
 from zb_links.db.models import Link, ZBTarget, db
+
+dist = get_distribution("zbmath-links-api")
+dist_name = dist.project_name
+dist_version = dist.version
 
 
 def update_set_by_intersect(set_a, set_b):
@@ -137,7 +142,7 @@ def get_links_from_author(author):
         for doc in intersection_docs
         for link in set(
             Link.query.filter(
-                Link.document == doc, Link.matched_by == "LinksApi"
+                Link.document == doc, Link.matched_by == dist_name
             ).all()
         )
     ]
@@ -164,7 +169,7 @@ def get_links_from_mscs(msc_val):
     """
 
     msc_query = ZBTarget.query.join(Link, Link.document == ZBTarget.id).filter(
-        Link.matched_by == "LinksApi"
+        Link.matched_by == dist_name
     )
     msc_list = msc_val.split(" ")
     for an_msc in msc_list:
@@ -180,7 +185,7 @@ def get_links_from_mscs(msc_val):
     msc_docs_ids = [doc.id for doc in msc_query]
 
     link_query = Link.query.filter(
-        Link.document.in_(msc_docs_ids), Link.matched_by == "LinksApi"
+        Link.document.in_(msc_docs_ids), Link.matched_by == dist_name
     )
 
     link_list_msc = [link for link in link_query.all()]

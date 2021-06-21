@@ -4,6 +4,7 @@
 
 from datetime import datetime
 
+import pytz
 from flask import redirect, request, url_for
 from flask_restx import Resource, reqparse
 from werkzeug.exceptions import BadRequest
@@ -17,6 +18,9 @@ from zb_links.api.link.helpers import (
 )
 from zb_links.api.restx import api, token_required
 from zb_links.db.models import Link, Partner, Source, ZBTarget, db
+
+dist_name = link_helpers.dist_name
+dist_version = link_helpers.dist_version
 
 ns = api.namespace(
     "link", description="Operations related to linking to zbMATH"
@@ -92,14 +96,14 @@ class LinkCollection(Resource):
 
             # get all links corresponding to document input
             link_doc_id = Link.query.filter_by(
-                document=doc_id, matched_by="LinksApi"
+                document=doc_id, matched_by=dist_name
             ).all()
             link_set = link_helpers.update_set_by_intersect(
                 link_set, set(link_doc_id)
             )
 
         if not (author or msc_val or doc_id):
-            link_set = set(Link.query.filter_by(matched_by="LinksApi").all())
+            link_set = set(Link.query.filter_by(matched_by=dist_name).all())
 
         if link_set:
             links_display = [get_display(element) for element in link_set]
@@ -183,8 +187,7 @@ class LinkItem(Resource):
             title_name = args["title"]
         except BadRequest:
             pass
-        link_date = datetime.utcnow()
-        provider = helpers.get_provider()
+        date_added = datetime.now(pytz.timezone("Europe/Berlin"))
 
         message_list = []
 
@@ -209,16 +212,13 @@ class LinkItem(Resource):
             if response:
                 return response
 
-        date_established = link_date
-        date_added = link_date
         try:
             new_link = Link(
                 document=doc_id,
                 external_id=source_val,
                 type=partner_name,
-                matched_by="LinksApi",
-                created_by=provider,
-                created_at=date_established,
+                matched_by=dist_name,
+                matched_by_version=dist_version,
                 matched_at=date_added,
             )
             db.session.add(new_link)
