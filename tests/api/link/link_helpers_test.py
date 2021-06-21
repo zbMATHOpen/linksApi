@@ -1,6 +1,5 @@
 
 from zb_links.api.link.helpers.link_helpers import get_links_from_author
-from zb_links.db.models import db
 
 
 def test_author_query(client):

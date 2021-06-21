@@ -50,12 +50,11 @@ class Link(db.Model):
     external_id = db.Column(db.String())
     type = db.Column(db.String())
     matched_by = db.Column(db.String())
-    created_at = db.Column(db.DateTime)
+    matched_by_version = db.Column(db.String())
+    matched_at = db.Column(db.DateTime(timezone=True))
+    last_modified_at = db.Column(db.DateTime(timezone=True))
+    last_modified_by = db.Column(db.String())
     created_by = db.Column(db.String())
-    matched_at = db.Column(db.DateTime)
-    parent_id = db.Column(
-        db.Integer, db.ForeignKey("document_external_ids.id")
-    )
 
 
 class ZBTarget(db.Model):

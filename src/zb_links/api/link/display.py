@@ -108,7 +108,7 @@ def get_display(link_element):
 
     element_source = link_element.external_id
     element_target = link_element.document
-    element_link_publication_date = link_element.created_at
+    element_link_publication_date = link_element.matched_at
     element_link_provider = link_element.created_by
     element_relationship_type = None
 
