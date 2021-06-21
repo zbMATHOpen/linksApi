@@ -4,7 +4,7 @@
 
 from datetime import datetime
 
-from flask import request
+from flask import redirect, request, url_for
 from flask_restx import Resource, reqparse
 from werkzeug.exceptions import BadRequest
 
@@ -28,7 +28,7 @@ search_by_arguments.add_argument("authors", type=str, required=False)
 
 search_by_arguments.add_argument("MSC code", type=str, required=False)
 
-search_by_arguments.add_argument("DE number", type=str, required=False)
+search_by_arguments.add_argument("DE_number", type=str, required=False)
 
 
 @api.expect(search_by_arguments)
@@ -41,7 +41,7 @@ class LinkCollection(Resource):
                 "description": "Ex: Abramowitz, M. "
                 "(multiple inputs with ; as delimiter)"
             },
-            "DE number": {
+            "DE_number": {
                 "description": "Ex: 3273551 (DE number)"
                 " or 0171.38503 (Zbl code)"
             },
@@ -63,8 +63,8 @@ class LinkCollection(Resource):
             author = args["authors"].lower()
         if "MSC code" in args:
             msc_val = args["MSC code"].lower()
-        if "DE number" in args:
-            doc_id = args["DE number"].strip()
+        if "DE_number" in args:
+            doc_id = args["DE_number"].strip()
 
         link_set = None
         link_list_auth = None
@@ -227,3 +227,20 @@ class LinkItem(Resource):
             return helpers.make_message(409, str(e))
 
         return None, 201
+
+
+@ns.route("/item/<doc_id>")
+class LinkDoc(Resource):
+    @api.doc(
+        params={
+            "doc_id": {
+                "description": "Ex: 3273551 (DE number)"
+                " or 0171.38503 (Zbl code)"
+            }
+        }
+    )
+    def get(self, doc_id):
+        """Retrieve links for a given document"""
+        return redirect(
+            url_for("links_api.link_link_collection", DE_number=doc_id)
+        )
