@@ -1,3 +1,4 @@
+from flask import url_for, request
 from urllib.parse import urlencode
 import os
 
@@ -7,7 +8,7 @@ from zb_links.db.models import Link, db
 
 def test_get_all_links_from_zbl(client):
 
-    json = {"DE number": "0171.38503"}
+    json = {"DE_number": "0171.38503"}
     param = urlencode(json)
     response = client.get(f"/links_api/link/?{param}")
     assert 200 == response.status_code
@@ -17,7 +18,7 @@ def test_get_all_links_from_zbl(client):
 
 def test_get_all_links_from_de(client):
 
-    json = {"DE number": "3273551"}
+    json = {"DE_number": "3273551"}
     param = urlencode(json)
     response = client.get(f"/links_api/link/?{param}")
     assert 200 == response.status_code
@@ -35,6 +36,14 @@ def test_get_link_item(client):
     assert 200 == response.status_code
     data = response.json
     assert data["Source"]["Identifier"]["ID"] == test_id
+
+
+def test_get_link_through_redirect(client):
+    de_number = 2062129
+    client.get(
+        f"/links_api/link/item/{de_number}", follow_redirects=True
+    )
+    assert request.path == url_for("links_api.link_link_collection")
 
 
 def test_get_link_item_zbl(client):
