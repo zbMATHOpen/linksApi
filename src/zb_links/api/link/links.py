@@ -236,7 +236,6 @@ class LinkItem(Resource):
 
         return None, 201
 
-
     @api.expect(link_edit_arguments)
     @api.response(201, "Link successfully edited.")
     @api.doc(
@@ -290,10 +289,9 @@ class LinkItem(Resource):
                 name=new_partner_name
             ).first()
             if not new_partner:
-                message_list.append(
-                    "Invalid new partner name"
-                )
+                message_list.append("Invalid new partner name")
             link.type = new_partner_name
+            partner_name = new_partner_name
 
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
@@ -304,19 +302,19 @@ class LinkItem(Resource):
             source_obj = Source.query.filter_by(id=new_ext_id).first()
             if not source_obj:
                 response = source_helpers.create_new_source(
-                    new_ext_id, new_partner
+                    new_ext_id, partner_name
                 )
                 if response:
                     return response
 
-            new_ext_id = target_helpers.get_de_from_input(new_doc_id)
             link.external_id = new_ext_id
+
+        # TODO: check for existing links
 
         date_modified = datetime.now(pytz.timezone("Europe/Berlin"))
         link.last_modified_at = date_modified
 
         db.session.commit()
-
 
 
 @ns.route("/item/<doc_id>")

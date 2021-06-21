@@ -3,7 +3,7 @@ from urllib.parse import urlencode
 import os
 
 from zb_links.api.link.helpers import target_helpers
-from zb_links.db.models import Link, db
+from zb_links.db.models import Link, Source, db
 
 
 def test_get_all_links_from_zbl(client):
@@ -118,7 +118,7 @@ def test_post_link(client):
 
 
 def test_post_link_with_zbl(client):
-    zbl_id = '1234.98765'
+    zbl_id = "1234.98765"
     external_id = "11.14#I1.i1.p1"
     partner_name = "DLMF"
 
@@ -170,7 +170,7 @@ def test_post_link_with_zbl(client):
 
 
 def test_post_link_with_bad_zbl(client):
-    zbl_id = '2062.129'
+    zbl_id = "2062.129"
     external_id = "11.14#I1.i1.p1"
     partner_name = "DLMF"
 
@@ -186,3 +186,103 @@ def test_post_link_with_bad_zbl(client):
 
     data = response.json
     assert data.get("message")
+
+
+def test_patch_link_with_de(client):
+    doc_id = 3273551
+    external_id = "11.14#I1.i1.p1"
+    partner_name = "DLMF"
+
+    de_val = target_helpers.get_de_from_input(doc_id)
+
+    link_query = Link.query.filter_by(document=de_val,
+                                      external_id=external_id,
+                                      type=partner_name,
+                                      )
+    link_to_edit = link_query.all()
+
+    assert len(link_to_edit) > 0, "test link is not in database"
+
+    new_doc_id = 2062129
+    json_base = {"DE number": de_val,
+                "external id": external_id,
+                "partner": partner_name}
+    json_edit = json_base.copy()
+    json_edit["new_DE_number"] = new_doc_id
+    param_edit = urlencode(json_edit)
+    headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
+    response = client.patch(f"/links_api/link/item/?{param_edit}",
+                            headers=headers,
+                            )
+    assert response.status_code == 200
+
+    data = response.json
+    assert data is None
+
+    json_base["DE number"] = new_doc_id
+    param_base = urlencode(json_base)
+    response = client.get(f"/links_api/link/item/?{param_base}")
+    data = response.json
+    source: dict = data.get("Source")
+    assert source["Identifier"]["ID"] == external_id
+
+    # change back
+    json_base["new_DE_number"] = doc_id
+    param_base = urlencode(json_base)
+    response = client.patch(f"/links_api/link/item/?{param_base}",
+                            headers=headers,
+                            )
+    assert response.status_code == 200
+
+
+def test_patch_link_with_new_source(client):
+    doc_id = 3273551
+    external_id = "11.14#I1.i1.p1"
+    partner_name = "DLMF"
+
+    de_val = target_helpers.get_de_from_input(doc_id)
+
+    link_query = Link.query.filter_by(document=de_val,
+                                      external_id=external_id,
+                                      type=partner_name,
+                                      )
+    link_to_edit = link_query.all()
+
+    assert len(link_to_edit) > 0, "test link is not in database"
+
+    new_external_id = "26.8#vii.p4"
+
+    json_base = {"DE number": doc_id,
+                "external id": external_id,
+                "partner": partner_name}
+    json_edit = json_base.copy()
+    json_edit["new_external_id"] = new_external_id
+    param_edit = urlencode(json_edit)
+    headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
+    response = client.patch(f"/links_api/link/item/?{param_edit}",
+                            headers=headers,
+                            )
+    assert response.status_code == 200
+
+    data = response.json
+    assert data is None
+
+    json_base["external id"] = new_external_id
+    param_base = urlencode(json_base)
+    response = client.get(f"/links_api/link/item/?{param_base}")
+    data = response.json
+    source: dict = data.get("Source")
+    assert source["Identifier"]["ID"] == new_external_id
+
+    # change link back
+    json_base["new_external_id"] = external_id
+    param_base = urlencode(json_base)
+    response = client.patch(f"/links_api/link/item/?{param_base}",
+                            headers=headers,
+                            )
+    assert response.status_code == 200
+
+    # delete new source entry
+    new_source = Source.query.filter_by(id=new_external_id)
+    new_source.delete()
+    db.session.commit()
