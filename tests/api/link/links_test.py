@@ -86,8 +86,8 @@ def test_post_link(client):
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
-                          headers=headers,
-                          )
+                           headers=headers,
+                           )
     assert response.status_code == 201
 
     # add here created_by explicitly
@@ -138,8 +138,8 @@ def test_post_link_with_zbl(client):
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
-                          headers=headers,
-                          )
+                           headers=headers,
+                           )
     assert response.status_code == 201
 
     # add here created_by explicitly
@@ -180,8 +180,8 @@ def test_post_link_with_bad_zbl(client):
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
-                          headers=headers,
-                          )
+                           headers=headers,
+                           )
     assert response.status_code == 422
 
     data = response.json
@@ -205,8 +205,8 @@ def test_patch_link_with_de(client):
 
     new_doc_id = 2062129
     json_base = {"DE number": de_val,
-                "external id": external_id,
-                "partner": partner_name}
+                 "external id": external_id,
+                 "partner": partner_name}
     json_edit = json_base.copy()
     json_edit["new_DE_number"] = new_doc_id
     param_edit = urlencode(json_edit)
@@ -250,8 +250,8 @@ def test_patch_link_with_new_source(client):
     new_external_id = "26.8#vii.p4"
 
     json_base = {"DE number": doc_id,
-                "external id": external_id,
-                "partner": partner_name}
+                 "external id": external_id,
+                 "partner": partner_name}
     json_edit = json_base.copy()
     json_edit["new_external_id"] = new_external_id
     param_edit = urlencode(json_edit)
@@ -301,8 +301,8 @@ def test_post_then_delete_link(client):
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
-                          headers=headers,
-                          )
+                           headers=headers,
+                           )
     assert response.status_code == 201
 
     # delete test entry

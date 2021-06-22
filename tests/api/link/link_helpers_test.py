@@ -19,7 +19,3 @@ def test_last_name_author_query(client):
     author_links = get_links_from_author(author)
 
     assert len(author_links) > 0
-
-
-
-
