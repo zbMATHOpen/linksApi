@@ -127,24 +127,23 @@ link_edit_arguments.add_argument("new_external_id", type=str, required=False)
 
 link_edit_arguments.add_argument("new_partner", type=str, required=False)
 
+link_params = {
+    "DE number": {
+        "description": "Ex: 3273551 (DE number)"
+        " or 0171.38503 (Zbl code)"
+        },
+    "external id": {
+        "description": "Ex (DLMF): 11.14#I1.i1.p1"
+        "(identifier of the link)"
+        },
+    "partner": {"description": "Ex: DLMF, OEIS, etc."},
+}
 
 @ns.route("/item/")
 class LinkItem(Resource):
     @api.expect(link_item_arguments)
     @api.marshal_with(link)
-    @api.doc(
-        params={
-            "DE number": {
-                "description": "Ex: 3273551 (DE number)"
-                " or 0171.38503 (Zbl code)"
-            },
-            "external id": {
-                "description": "Ex (DLMF): 11.14#I1.i1.p1"
-                "(identifier of the link)"
-            },
-            "partner": {"description": "Ex: DLMF, OEIS, etc."},
-        }
-    )
+    @api.doc(params=link_params)
     def get(self):
         """Check relations between a given link and a given zbMATH object"""
         args = request.args
@@ -166,19 +165,7 @@ class LinkItem(Resource):
 
     @api.expect(link_item_arguments)
     @api.response(201, "Link successfully created.")
-    @api.doc(
-        params={
-            "DE number": {
-                "description": "Ex: 3273551 (DE number)"
-                " or 0171.38503 (Zbl code)"
-            },
-            "external id": {
-                "description": "Ex (DLMF): 11.14#I1.i1.p1"
-                "(identifier of the link)"
-            },
-            "partner": {"description": "Ex: DLMF, OEIS, etc."},
-        }
-    )
+    @api.doc(params=link_params)
     @token_required
     @api.doc(security="apikey")
     def post(self):
@@ -212,6 +199,8 @@ class LinkItem(Resource):
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
 
+        # TODO: check for existing links
+
         source_obj = Source.query.filter_by(id=source_val).first()
         if not source_obj:
             response = source_helpers.create_new_source(
@@ -238,19 +227,7 @@ class LinkItem(Resource):
 
     @api.expect(link_edit_arguments)
     @api.response(201, "Link successfully edited.")
-    @api.doc(
-        params={
-            "DE number": {
-                "description": "Ex: 3273551 (DE number)"
-                " or 0171.38503 (Zbl code)"
-            },
-            "external id": {
-                "description": "Ex (DLMF): 11.14#I1.i1.p1"
-                "(identifier of the link)"
-            },
-            "partner": {"description": "Ex: DLMF, OEIS, etc."},
-        }
-    )
+    @api.doc(params=link_params)
     @token_required
     @api.doc(security="apikey")
     def patch(self):
@@ -315,6 +292,29 @@ class LinkItem(Resource):
         link.last_modified_at = date_modified
 
         db.session.commit()
+
+
+    @api.expect(link_item_arguments)
+    @api.marshal_with(link)
+    @api.doc(params=link_params)
+    def get(self):
+        """Check relations between a given link and a given zbMATH object"""
+        args = request.args
+        doc_id = args["DE number"].strip()
+        source_val = args["external id"]
+        partner_name = args["partner"]
+
+        return_link = None
+        doc_id = target_helpers.get_de_from_input(doc_id)
+        return_link = Link.query.filter_by(
+            document=doc_id, external_id=source_val, type=partner_name
+        ).first()
+
+        return_display = []
+        if return_link:
+            return_display = get_display(return_link)
+
+        return return_display
 
 
 @ns.route("/item/<doc_id>")
