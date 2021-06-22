@@ -214,10 +214,7 @@ def test_patch_link_with_de(client):
     response = client.patch(f"/links_api/link/item/?{param_edit}",
                             headers=headers,
                             )
-    assert response.status_code == 200
-
-    data = response.json
-    assert data is None
+    assert response.status_code == 204
 
     json_base["DE number"] = new_doc_id
     param_base = urlencode(json_base)
@@ -232,7 +229,7 @@ def test_patch_link_with_de(client):
     response = client.patch(f"/links_api/link/item/?{param_base}",
                             headers=headers,
                             )
-    assert response.status_code == 200
+    assert response.status_code == 204
 
 
 def test_patch_link_with_new_source(client):
@@ -262,10 +259,7 @@ def test_patch_link_with_new_source(client):
     response = client.patch(f"/links_api/link/item/?{param_edit}",
                             headers=headers,
                             )
-    assert response.status_code == 200
-
-    data = response.json
-    assert data is None
+    assert response.status_code == 204
 
     json_base["external id"] = new_external_id
     param_base = urlencode(json_base)
@@ -280,9 +274,38 @@ def test_patch_link_with_new_source(client):
     response = client.patch(f"/links_api/link/item/?{param_base}",
                             headers=headers,
                             )
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # delete new source entry
     new_source = Source.query.filter_by(id=new_external_id)
     new_source.delete()
     db.session.commit()
+
+
+def test_post_then_delete_link(client):
+    document = 2062129
+    external_id = "11.14#I1.i1.p1"
+    partner_name = "DLMF"
+
+    link_query = Link.query.filter_by(document=document,
+                                      external_id=external_id,
+                                      type=partner_name,
+                                      )
+    link = link_query.all()
+
+    assert len(link) == 0, "test link to create is not unique"
+
+    json = {"DE number": document,
+            "external id": external_id,
+            "partner": partner_name}
+    param = urlencode(json)
+    headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
+    response = client.post(f"/links_api/link/item/?{param}",
+                          headers=headers,
+                          )
+    assert response.status_code == 201
+
+    # delete test entry
+    response = client.delete(f"/links_api/link/item/?{param}",
+                             headers=headers,
+                             )

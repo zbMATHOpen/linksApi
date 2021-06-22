@@ -129,15 +129,14 @@ link_edit_arguments.add_argument("new_partner", type=str, required=False)
 
 link_params = {
     "DE number": {
-        "description": "Ex: 3273551 (DE number)"
-        " or 0171.38503 (Zbl code)"
-        },
+        "description": "Ex: 3273551 (DE number)" " or 0171.38503 (Zbl code)"
+    },
     "external id": {
-        "description": "Ex (DLMF): 11.14#I1.i1.p1"
-        "(identifier of the link)"
-        },
+        "description": "Ex (DLMF): 11.14#I1.i1.p1" "(identifier of the link)"
+    },
     "partner": {"description": "Ex: DLMF, OEIS, etc."},
 }
+
 
 @ns.route("/item/")
 class LinkItem(Resource):
@@ -226,7 +225,7 @@ class LinkItem(Resource):
         return None, 201
 
     @api.expect(link_edit_arguments)
-    @api.response(201, "Link successfully edited.")
+    @api.response(204, "Link successfully edited.")
     @api.doc(params=link_params)
     @token_required
     @api.doc(security="apikey")
@@ -292,29 +291,32 @@ class LinkItem(Resource):
         link.last_modified_at = date_modified
 
         db.session.commit()
-
+        return None, 204
 
     @api.expect(link_item_arguments)
-    @api.marshal_with(link)
+    @api.response(204, "Link successfully deleted.")
     @api.doc(params=link_params)
-    def get(self):
-        """Check relations between a given link and a given zbMATH object"""
+    @token_required
+    @api.doc(security="apikey")
+    def delete(self):
+        """Delete a link"""
         args = request.args
         doc_id = args["DE number"].strip()
         source_val = args["external id"]
         partner_name = args["partner"]
 
-        return_link = None
         doc_id = target_helpers.get_de_from_input(doc_id)
-        return_link = Link.query.filter_by(
+        link_to_delete_query = Link.query.filter_by(
             document=doc_id, external_id=source_val, type=partner_name
-        ).first()
+        )
 
-        return_display = []
-        if return_link:
-            return_display = get_display(return_link)
+        if not link_to_delete_query.first():
+            return helpers.make_message(422, "No such link")
 
-        return return_display
+        link_to_delete_query.delete()
+        db.session.commit()
+
+        return None, 204
 
 
 @ns.route("/item/<doc_id>")
