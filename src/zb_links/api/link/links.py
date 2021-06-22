@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Link window (2 GET + 1 POST)
+# Link window (3 GET + 1 POST + 1 DELETE + 1 PATCH)
 # ------------------------------------------------------------------------------
 
 from datetime import datetime
@@ -119,24 +119,30 @@ link_item_arguments.add_argument("external id", type=str, required=True)
 
 link_item_arguments.add_argument("partner", type=str, required=True)
 
+link_edit_arguments = link_item_arguments.copy()
+
+link_edit_arguments.add_argument("new_DE_number", type=str, required=False)
+
+link_edit_arguments.add_argument("new_external_id", type=str, required=False)
+
+link_edit_arguments.add_argument("new_partner", type=str, required=False)
+
+link_params = {
+    "DE number": {
+        "description": "Ex: 3273551 (DE number)" " or 0171.38503 (Zbl code)"
+    },
+    "external id": {
+        "description": "Ex (DLMF): 11.14#I1.i1.p1" "(identifier of the link)"
+    },
+    "partner": {"description": "Ex: DLMF, OEIS, etc."},
+}
+
 
 @ns.route("/item/")
 class LinkItem(Resource):
     @api.expect(link_item_arguments)
     @api.marshal_with(link)
-    @api.doc(
-        params={
-            "DE number": {
-                "description": "Ex: 3273551 (DE number)"
-                " or 0171.38503 (Zbl code)"
-            },
-            "external id": {
-                "description": "Ex (DLMF): 11.14#I1.i1.p1"
-                "(identifier of the link)"
-            },
-            "partner": {"description": "Ex: DLMF, OEIS, etc."},
-        }
-    )
+    @api.doc(params=link_params)
     def get(self):
         """Check relations between a given link and a given zbMATH object"""
         args = request.args
@@ -158,19 +164,7 @@ class LinkItem(Resource):
 
     @api.expect(link_item_arguments)
     @api.response(201, "Link successfully created.")
-    @api.doc(
-        params={
-            "DE number": {
-                "description": "Ex: 3273551 (DE number)"
-                " or 0171.38503 (Zbl code)"
-            },
-            "external id": {
-                "description": "Ex (DLMF): 11.14#I1.i1.p1"
-                "(identifier of the link)"
-            },
-            "partner": {"description": "Ex: DLMF, OEIS, etc."},
-        }
-    )
+    @api.doc(params=link_params)
     @token_required
     @api.doc(security="apikey")
     def post(self):
@@ -204,6 +198,8 @@ class LinkItem(Resource):
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
 
+        # TODO: check for existing links
+
         source_obj = Source.query.filter_by(id=source_val).first()
         if not source_obj:
             response = source_helpers.create_new_source(
@@ -227,6 +223,100 @@ class LinkItem(Resource):
             return helpers.make_message(409, str(e))
 
         return None, 201
+
+    @api.expect(link_edit_arguments)
+    @api.response(204, "Link successfully edited.")
+    @api.doc(params=link_params)
+    @token_required
+    @api.doc(security="apikey")
+    def patch(self):
+        """Edit a link"""
+        args = request.args
+        doc_id = args["DE number"].strip()
+        source_val = args["external id"]
+        partner_name = args["partner"]
+
+        link = None
+        doc_id = target_helpers.get_de_from_input(doc_id)
+        link = Link.query.filter_by(
+            document=doc_id, external_id=source_val, type=partner_name
+        ).first()
+
+        if not link:
+            return helpers.make_message(422, "No such link")
+
+        message_list = []
+        new_doc_id = None
+        new_ext_id = None
+        new_partner = None
+        if "new_DE_number" in args:
+            new_doc_id = args["new_DE_number"].strip()
+            new_doc_id = target_helpers.get_de_from_input(new_doc_id)
+            if not new_doc_id:
+                message_list.append(
+                    "Document with the new id is not in the database"
+                )
+            link.document = new_doc_id
+
+        if "new_partner" in args:
+            new_partner_name = args["new_partner"].strip()
+
+            new_partner = Partner.query.filter_by(
+                name=new_partner_name
+            ).first()
+            if not new_partner:
+                message_list.append("Invalid new partner name")
+            link.type = new_partner_name
+            partner_name = new_partner_name
+
+        if len(message_list) > 0:
+            return helpers.make_message(422, message_list)
+
+        if "new_external_id" in args:
+            new_ext_id = args["new_external_id"].strip()
+
+            source_obj = Source.query.filter_by(id=new_ext_id).first()
+            if not source_obj:
+                response = source_helpers.create_new_source(
+                    new_ext_id, partner_name
+                )
+                if response:
+                    return response
+
+            link.external_id = new_ext_id
+
+        # TODO: check for existing links
+
+        date_modified = datetime.now(pytz.timezone("Europe/Berlin"))
+        link.last_modified_at = date_modified
+
+        db.session.commit()
+        return None, 204
+
+    @api.expect(link_item_arguments)
+    @api.response(204, "Link successfully deleted.")
+    @api.doc(params=link_params)
+    @token_required
+    @api.doc(security="apikey")
+    def delete(self):
+        """Delete a link"""
+        args = request.args
+        doc_id = args["DE number"].strip()
+        source_val = args["external id"]
+        partner_name = args["partner"]
+
+        doc_id = target_helpers.get_de_from_input(doc_id)
+        link_to_delete_query = Link.query.filter_by(
+            document=doc_id, external_id=source_val, type=partner_name
+        )
+
+        if not link_to_delete_query.first():
+            return helpers.make_message(422, "No such link")
+
+        link_to_delete_query.delete()
+        db.session.commit()
+
+        return None, 204
 
 
 @ns.route("/item/<doc_id>")

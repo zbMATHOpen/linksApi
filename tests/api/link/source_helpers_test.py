@@ -18,6 +18,7 @@ def test_new_source_with_title():
     test_source.delete()
     db.session.commit()
 
+
 def test_new_source_wout_title():
     source_val = "26.8#vii.p4"
     source_name = "DLMF"
