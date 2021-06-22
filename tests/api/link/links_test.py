@@ -309,3 +309,60 @@ def test_post_then_delete_link(client):
     response = client.delete(f"/links_api/link/item/?{param}",
                              headers=headers,
                              )
+
+def test_post_existing_link(client):
+    document = 3273551
+    external_id = "11.14#I1.i1.p1"
+    partner_name = "DLMF"
+
+    link_query = Link.query.filter_by(document=document,
+                                      external_id=external_id,
+                                      type=partner_name,
+                                      )
+    link = link_query.all()
+
+    orig_number = len(link)
+    assert orig_number > 0, "need to test against existing link"
+
+
+    json = {"DE number": document,
+            "external id": external_id,
+            "partner": partner_name}
+    param = urlencode(json)
+    headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
+    response = client.post(f"/links_api/link/item/?{param}",
+                           headers=headers,
+                           )
+    assert response.status_code == 422
+
+    link = link_query.all()
+    assert len(link) == orig_number
+
+
+def test_empty_patch(client):
+    document = 3273551
+    external_id = "11.14#I1.i1.p1"
+    partner_name = "DLMF"
+
+    link_query = Link.query.filter_by(document=document,
+                                      external_id=external_id,
+                                      type=partner_name,
+                                      )
+    link = link_query.all()
+
+    orig_number = len(link)
+    assert orig_number > 0, "need to test against existing link"
+
+
+    json = {"DE number": document,
+            "external id": external_id,
+            "partner": partner_name}
+    param = urlencode(json)
+    headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
+    response = client.patch(f"/links_api/link/item/?{param}",
+                            headers=headers,
+                            )
+    assert response.status_code == 422
+
+    link = link_query.all()
+    assert len(link) == orig_number
