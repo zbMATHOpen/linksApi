@@ -310,6 +310,8 @@ def test_post_then_delete_link(client):
                              headers=headers,
                              )
 
+    assert response.status_code == 204
+
 
 def test_post_existing_link(client):
     document = 3273551
