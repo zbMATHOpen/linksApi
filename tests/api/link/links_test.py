@@ -310,6 +310,7 @@ def test_post_then_delete_link(client):
                              headers=headers,
                              )
 
+
 def test_post_existing_link(client):
     document = 3273551
     external_id = "11.14#I1.i1.p1"
@@ -323,7 +324,6 @@ def test_post_existing_link(client):
 
     orig_number = len(link)
     assert orig_number > 0, "need to test against existing link"
-
 
     json = {"DE number": document,
             "external id": external_id,
@@ -352,7 +352,6 @@ def test_empty_patch(client):
 
     orig_number = len(link)
     assert orig_number > 0, "need to test against existing link"
-
 
     json = {"DE number": document,
             "external id": external_id,
