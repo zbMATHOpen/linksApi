@@ -191,3 +191,28 @@ def get_links_from_mscs(msc_val):
     link_list_msc = [link for link in link_query.all()]
 
     return link_list_msc
+
+
+def link_exists(link_data):
+    """
+
+    Parameters
+    ----------
+    link_data : tuple
+        document_id (as de_number):int, external_id: str, partner: str
+
+    Returns
+    -------
+    bool
+        True if there is already a link in the database corresponding to input
+        False otherwise.
+
+    """
+
+    doc_id, source_val, partner_name = link_data
+    link_to_check = Link.query.filter_by(
+        document=doc_id, external_id=source_val, type=partner_name
+    ).first()
+    if not link_to_check:
+        return False
+    return True
