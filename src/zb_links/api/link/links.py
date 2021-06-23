@@ -195,10 +195,11 @@ class LinkItem(Resource):
         if not target_obj:
             message_list.append("This DE is not in the database")
 
+        if link_helpers.link_exists((doc_id, source_val, source_name)):
+            message_list.append("This link already exists in the database")
+
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
-
-        # TODO: check for existing links
 
         source_obj = Source.query.filter_by(id=source_val).first()
         if not source_obj:
@@ -232,14 +233,16 @@ class LinkItem(Resource):
     def patch(self):
         """Edit a link"""
         args = request.args
-        doc_id = args["DE number"].strip()
-        source_val = args["external id"]
-        partner_name = args["partner"]
+        link_document = args["DE number"].strip()
+        link_external_id = args["external id"]
+        link_type = args["partner"]
 
         link = None
-        doc_id = target_helpers.get_de_from_input(doc_id)
+        link_document = target_helpers.get_de_from_input(link_document)
         link = Link.query.filter_by(
-            document=doc_id, external_id=source_val, type=partner_name
+            document=link_document,
+            external_id=link_external_id,
+            type=link_type,
         ).first()
 
         if not link:
@@ -256,7 +259,7 @@ class LinkItem(Resource):
                 message_list.append(
                     "Document with the new id is not in the database"
                 )
-            link.document = new_doc_id
+            link_document = new_doc_id
 
         if "new_partner" in args:
             new_partner_name = args["new_partner"].strip()
@@ -266,8 +269,7 @@ class LinkItem(Resource):
             ).first()
             if not new_partner:
                 message_list.append("Invalid new partner name")
-            link.type = new_partner_name
-            partner_name = new_partner_name
+            link_type = new_partner_name
 
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
@@ -278,15 +280,25 @@ class LinkItem(Resource):
             source_obj = Source.query.filter_by(id=new_ext_id).first()
             if not source_obj:
                 response = source_helpers.create_new_source(
-                    new_ext_id, partner_name
+                    new_ext_id, link_type
                 )
                 if response:
                     return response
 
-            link.external_id = new_ext_id
+            link_external_id = new_ext_id
 
-        # TODO: check for existing links
+        if not (new_doc_id or new_ext_id or new_partner):
+            return helpers.make_message(422, "empty data for a patch")
 
+        link_data_tuple = (link_document, link_external_id, link_type)
+        if link_helpers.link_exists(link_data_tuple):
+            return helpers.make_message(
+                422, "This link already exists in the database"
+            )
+
+        link.document = link_document
+        link.external_id = link_external_id
+        link.type = link_type
         date_modified = datetime.now(pytz.timezone("Europe/Berlin"))
         link.last_modified_at = date_modified
 
