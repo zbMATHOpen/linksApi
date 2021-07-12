@@ -9,6 +9,7 @@ from flask import redirect, request, url_for
 from flask_restx import Resource, reqparse
 from werkzeug.exceptions import BadRequest
 
+from zb_links.api.link import arg_names, descriptions
 from zb_links.api.link.display import get_display, link
 from zb_links.api.link.helpers import (
     helpers,
@@ -28,11 +29,13 @@ ns = api.namespace(
 
 search_by_arguments = reqparse.RequestParser()
 
-search_by_arguments.add_argument("authors", type=str, required=False)
+search_by_arguments.add_argument(arg_names["auth"], type=str, required=False)
 
-search_by_arguments.add_argument("MSC code", type=str, required=False)
+search_by_arguments.add_argument(
+    arg_names["classification"], type=str, required=False
+)
 
-search_by_arguments.add_argument("DE_number", type=str, required=False)
+search_by_arguments.add_argument(arg_names["doc"], type=str, required=False)
 
 
 @api.expect(search_by_arguments)
@@ -41,18 +44,12 @@ class LinkCollection(Resource):
     @api.marshal_list_with(link)
     @api.doc(
         params={
-            "authors": {
-                "description": "Ex: Abramowitz, M. "
-                "(multiple inputs with ; as delimiter)"
+            arg_names["auth"]: {
+                "description": descriptions[arg_names["auth"]]
             },
-            "DE_number": {
-                "description": "Ex: 3273551 (DE number)"
-                " or 0171.38503 (Zbl code)"
-            },
-            "MSC code": {
-                "description": "Ex: 33-00 "
-                "(multiple inputs with space as "
-                "delimiter) "
+            arg_names["doc"]: {"description": descriptions[arg_names["doc"]]},
+            arg_names["classification"]: {
+                "description": descriptions[arg_names["classification"]]
             },
         }
     )
@@ -63,12 +60,12 @@ class LinkCollection(Resource):
         author = None
         msc_val = None
         doc_id = None
-        if "authors" in args:
-            author = args["authors"].lower()
-        if "MSC code" in args:
-            msc_val = args["MSC code"].lower()
-        if "DE_number" in args:
-            doc_id = args["DE_number"].strip()
+        if arg_names["auth"] in args:
+            author = args[arg_names["auth"]].lower()
+        if arg_names["classification"] in args:
+            msc_val = args[arg_names["classification"]].lower()
+        if arg_names["doc"] in args:
+            doc_id = args[arg_names["doc"]].strip()
 
         link_set = None
         link_list_auth = None
@@ -113,28 +110,40 @@ class LinkCollection(Resource):
 
 link_item_arguments = reqparse.RequestParser()
 
-link_item_arguments.add_argument("DE number", type=str, required=True)
+link_item_arguments.add_argument(
+    arg_names["document"], type=str, required=True
+)
 
-link_item_arguments.add_argument("external id", type=str, required=True)
+link_item_arguments.add_argument(
+    arg_names["link_ext_id"], type=str, required=True
+)
 
-link_item_arguments.add_argument("partner", type=str, required=True)
+link_item_arguments.add_argument(
+    arg_names["link_partner"], type=str, required=True
+)
 
 link_edit_arguments = link_item_arguments.copy()
 
-link_edit_arguments.add_argument("new_DE_number", type=str, required=False)
+link_edit_arguments.add_argument(
+    arg_names["edit_link_doc"], type=str, required=False
+)
 
-link_edit_arguments.add_argument("new_external_id", type=str, required=False)
+link_edit_arguments.add_argument(
+    arg_names["edit_link_ext_id"], type=str, required=False
+)
 
-link_edit_arguments.add_argument("new_partner", type=str, required=False)
+link_edit_arguments.add_argument(
+    arg_names["edit_link_partner"], type=str, required=False
+)
 
 link_params = {
-    "DE number": {
-        "description": "Ex: 3273551 (DE number)" " or 0171.38503 (Zbl code)"
+    arg_names["document"]: {"description": descriptions[arg_names["doc"]]},
+    arg_names["link_ext_id"]: {
+        "description": descriptions[arg_names["link_ext_id"]]
     },
-    "external id": {
-        "description": "Ex (DLMF): 11.14#I1.i1.p1" "(identifier of the link)"
+    arg_names["link_partner"]: {
+        "description": descriptions[arg_names["link_partner"]]
     },
-    "partner": {"description": "Ex: DLMF, OEIS, etc."},
 }
 
 
@@ -146,9 +155,9 @@ class LinkItem(Resource):
     def get(self):
         """Check relations between a given link and a given zbMATH object"""
         args = request.args
-        doc_id = args["DE number"].strip()
-        source_val = args["external id"]
-        partner_name = args["partner"]
+        doc_id = args[arg_names["document"]].strip()
+        source_val = args[arg_names["link_ext_id"]]
+        partner_name = args[arg_names["link_partner"]]
 
         return_link = None
         doc_id = target_helpers.get_de_from_input(doc_id)
@@ -171,11 +180,11 @@ class LinkItem(Resource):
         """Create a new link related to a zbMATH object"""
         args = request.args
 
-        doc_id = args["DE number"].strip()
+        doc_id = args[arg_names["document"]].strip()
         doc_id = target_helpers.get_de_from_input(doc_id)
 
-        source_val = args["external id"]
-        source_name = args["partner"]
+        source_val = args[arg_names["link_ext_id"]]
+        source_name = args[arg_names["link_partner"]]
         title_name = None
         try:
             title_name = args["title"]
@@ -233,9 +242,9 @@ class LinkItem(Resource):
     def patch(self):
         """Edit a link"""
         args = request.args
-        link_document = args["DE number"].strip()
-        link_external_id = args["external id"]
-        link_type = args["partner"]
+        link_document = args[arg_names["document"]].strip()
+        link_external_id = args[arg_names["link_ext_id"]]
+        link_type = args[arg_names["link_partner"]]
 
         link = None
         link_document = target_helpers.get_de_from_input(link_document)
@@ -252,8 +261,8 @@ class LinkItem(Resource):
         new_doc_id = None
         new_ext_id = None
         new_partner = None
-        if "new_DE_number" in args:
-            new_doc_id = args["new_DE_number"].strip()
+        if arg_names["edit_link_doc"] in args:
+            new_doc_id = args[arg_names["edit_link_doc"]].strip()
             new_doc_id = target_helpers.get_de_from_input(new_doc_id)
             if not new_doc_id:
                 message_list.append(
@@ -261,8 +270,8 @@ class LinkItem(Resource):
                 )
             link_document = new_doc_id
 
-        if "new_partner" in args:
-            new_partner_name = args["new_partner"].strip()
+        if arg_names["edit_link_partner"] in args:
+            new_partner_name = args[arg_names["edit_link_partner"]].strip()
 
             new_partner = Partner.query.filter_by(
                 name=new_partner_name
@@ -274,8 +283,8 @@ class LinkItem(Resource):
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
 
-        if "new_external_id" in args:
-            new_ext_id = args["new_external_id"].strip()
+        if arg_names["edit_link_ext_id"] in args:
+            new_ext_id = args[arg_names["edit_link_ext_id"]].strip()
 
             source_obj = Source.query.filter_by(id=new_ext_id).first()
             if not source_obj:
@@ -313,9 +322,9 @@ class LinkItem(Resource):
     def delete(self):
         """Delete a link"""
         args = request.args
-        doc_id = args["DE number"].strip()
-        source_val = args["external id"]
-        partner_name = args["partner"]
+        doc_id = args[arg_names["document"]].strip()
+        source_val = args[arg_names["link_ext_id"]]
+        partner_name = args[arg_names["link_partner"]]
 
         doc_id = target_helpers.get_de_from_input(doc_id)
         link_to_delete_query = Link.query.filter_by(
