@@ -2,13 +2,14 @@ from flask import url_for, request
 from urllib.parse import urlencode
 import os
 
+from zb_links.api.link import arg_names
 from zb_links.api.link.helpers import target_helpers
 from zb_links.db.models import Link, Source, db
 
 
 def test_get_all_links_from_zbl(client):
 
-    json = {"DE_number": "0171.38503"}
+    json = {arg_names["doc"]: "0171.38503"}
     param = urlencode(json)
     response = client.get(f"/links_api/link/?{param}")
     assert 200 == response.status_code
@@ -18,7 +19,7 @@ def test_get_all_links_from_zbl(client):
 
 def test_get_all_links_from_de(client):
 
-    json = {"DE_number": "3273551"}
+    json = {arg_names["doc"]: "3273551"}
     param = urlencode(json)
     response = client.get(f"/links_api/link/?{param}")
     assert 200 == response.status_code
@@ -28,9 +29,9 @@ def test_get_all_links_from_de(client):
 
 def test_get_link_item(client):
     test_id = "11.14#I1.i1.p1"
-    json = {"DE number": 3273551,
-            "external id": test_id,
-            "partner": "DLMF"}
+    json = {arg_names["document"]: 3273551,
+            arg_names["link_ext_id"]: test_id,
+            arg_names["link_partner"]: "DLMF"}
     param = urlencode(json)
     response = client.get(f"/links_api/link/item/?{param}")
     assert 200 == response.status_code
@@ -48,9 +49,9 @@ def test_get_link_through_redirect(client):
 
 def test_get_link_item_zbl(client):
     test_id = "11.14#I1.i1.p1"
-    json = {"DE number": "0171.38503",
-            "external id": test_id,
-            "partner": "DLMF"}
+    json = {arg_names["document"]: "0171.38503",
+            arg_names["link_ext_id"]: test_id,
+            arg_names["link_partner"]: "DLMF"}
     param = urlencode(json)
     response = client.get(f"/links_api/link/item/?{param}")
     assert 200 == response.status_code
@@ -80,9 +81,9 @@ def test_post_link(client):
 
     assert len(link_to_add) == 0, "test link to create is not unique"
 
-    json = {"DE number": document,
-            "external id": external_id,
-            "partner": partner_name}
+    json = {arg_names["document"]: document,
+            arg_names["link_ext_id"]: external_id,
+            arg_names["link_partner"]: partner_name}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
@@ -132,9 +133,9 @@ def test_post_link_with_zbl(client):
 
     assert len(link_to_add) == 0, "test link to create is not unique"
 
-    json = {"DE number": de_val,
-            "external id": external_id,
-            "partner": partner_name}
+    json = {arg_names["document"]: de_val,
+            arg_names["link_ext_id"]: external_id,
+            arg_names["link_partner"]: partner_name}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
@@ -174,9 +175,9 @@ def test_post_link_with_bad_zbl(client):
     external_id = "11.14#I1.i1.p1"
     partner_name = "DLMF"
 
-    json = {"DE number": zbl_id,
-            "external id": external_id,
-            "partner": partner_name}
+    json = {arg_names["document"]: zbl_id,
+            arg_names["link_ext_id"]: external_id,
+            arg_names["link_partner"]: partner_name}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
@@ -204,9 +205,9 @@ def test_patch_link_with_de(client):
     assert len(link_to_edit) > 0, "test link is not in database"
 
     new_doc_id = 2062129
-    json_base = {"DE number": de_val,
-                 "external id": external_id,
-                 "partner": partner_name}
+    json_base = {arg_names["document"]: de_val,
+                 arg_names["link_ext_id"]: external_id,
+                 arg_names["link_partner"]: partner_name}
     json_edit = json_base.copy()
     json_edit["new_DE_number"] = new_doc_id
     param_edit = urlencode(json_edit)
@@ -216,7 +217,7 @@ def test_patch_link_with_de(client):
                             )
     assert response.status_code == 204
 
-    json_base["DE number"] = new_doc_id
+    json_base[arg_names["document"]] = new_doc_id
     param_base = urlencode(json_base)
     response = client.get(f"/links_api/link/item/?{param_base}")
     data = response.json
@@ -224,7 +225,7 @@ def test_patch_link_with_de(client):
     assert source["Identifier"]["ID"] == external_id
 
     # change back
-    json_base["new_DE_number"] = doc_id
+    json_base[arg_names["edit_link_doc"]] = doc_id
     param_base = urlencode(json_base)
     response = client.patch(f"/links_api/link/item/?{param_base}",
                             headers=headers,
@@ -249,11 +250,11 @@ def test_patch_link_with_new_source(client):
 
     new_external_id = "26.8#vii.p4"
 
-    json_base = {"DE number": doc_id,
-                 "external id": external_id,
-                 "partner": partner_name}
+    json_base = {arg_names["document"]: doc_id,
+                 arg_names["link_ext_id"]: external_id,
+                 arg_names["link_partner"]: partner_name}
     json_edit = json_base.copy()
-    json_edit["new_external_id"] = new_external_id
+    json_edit[arg_names["edit_link_ext_id"]] = new_external_id
     param_edit = urlencode(json_edit)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.patch(f"/links_api/link/item/?{param_edit}",
@@ -261,7 +262,7 @@ def test_patch_link_with_new_source(client):
                             )
     assert response.status_code == 204
 
-    json_base["external id"] = new_external_id
+    json_base[arg_names["link_ext_id"]] = new_external_id
     param_base = urlencode(json_base)
     response = client.get(f"/links_api/link/item/?{param_base}")
     data = response.json
@@ -269,7 +270,7 @@ def test_patch_link_with_new_source(client):
     assert source["Identifier"]["ID"] == new_external_id
 
     # change link back
-    json_base["new_external_id"] = external_id
+    json_base[arg_names["edit_link_ext_id"]] = external_id
     param_base = urlencode(json_base)
     response = client.patch(f"/links_api/link/item/?{param_base}",
                             headers=headers,
@@ -295,9 +296,9 @@ def test_post_then_delete_link(client):
 
     assert len(link) == 0, "test link to create is not unique"
 
-    json = {"DE number": document,
-            "external id": external_id,
-            "partner": partner_name}
+    json = {arg_names["document"]: document,
+            arg_names["link_ext_id"]: external_id,
+            arg_names["link_partner"]: partner_name}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
@@ -327,9 +328,9 @@ def test_post_existing_link(client):
     orig_number = len(link)
     assert orig_number > 0, "need to test against existing link"
 
-    json = {"DE number": document,
-            "external id": external_id,
-            "partner": partner_name}
+    json = {arg_names["document"]: document,
+            arg_names["link_ext_id"]: external_id,
+            arg_names["link_partner"]: partner_name}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
@@ -355,9 +356,9 @@ def test_empty_patch(client):
     orig_number = len(link)
     assert orig_number > 0, "need to test against existing link"
 
-    json = {"DE number": document,
-            "external id": external_id,
-            "partner": partner_name}
+    json = {arg_names["document"]: document,
+            arg_names["link_ext_id"]: external_id,
+            arg_names["link_partner"]: partner_name}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.patch(f"/links_api/link/item/?{param}",
