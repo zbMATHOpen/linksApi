@@ -67,12 +67,9 @@ def get_title(source_id):
     title: str
         gives the title corresponding to the source_id
         returns None if id is invalid
-<<<<<<< HEAD
-=======
         title is restricted to Chapter, Section, Subsection.
         exact title as listed in DLMF bib should be obtained
         by scraping
->>>>>>> feat/5450
 
     """
 
