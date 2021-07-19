@@ -283,6 +283,35 @@ def test_patch_link_with_new_source(client):
     db.session.commit()
 
 
+def test_patch_link_with_new_title(client):
+    doc_id = 3273551
+    external_id = "11.14#I1.i1.p1"
+    partner_name = "DLMF"
+
+    json_base = {arg_names["document"]: doc_id,
+                 arg_names["link_ext_id"]: external_id,
+                 arg_names["link_partner"]: partner_name}
+    json_edit = json_base.copy()
+
+    source_obj = Source.query.filter_by(id=external_id).first()
+    old_title = source_obj.title
+    new_title = old_title + " edited"
+
+    json_edit["title"] = new_title
+    json_edit[arg_names["edit_link_ext_id"]] = external_id
+    param_edit = urlencode(json_edit)
+    headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
+    response = client.patch(f"/links_api/link/item/?{param_edit}",
+                            headers=headers,
+                            )
+    assert response.status_code == 204
+
+    # change back title
+    source_obj.title = old_title
+    db.session.commit()
+
+
+
 def test_post_then_delete_link(client):
     document = 2062129
     external_id = "11.14#I1.i1.p1"
