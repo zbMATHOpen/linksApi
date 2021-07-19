@@ -31,3 +31,35 @@ def create_new_source(source_val, source_name, title_name=None):
         return helpers.make_message(409, str(e))
 
     return None
+
+
+def edit_source_title(source_val, source_name, title_name):
+    """
+    Edits the title field in the zblinks.source table
+
+    Parameters
+    ----------
+    source_val : str
+        the id of the source.
+    source_name : str
+        name of the zbMATH partner.
+    title_name : str
+        title associated with the source id (source_val).
+
+    Returns
+    -------
+    http code, 409, if error
+    None otherwise
+
+    """
+
+    try:
+        source = Source.query.filter_by(
+            id=source_val, partner=source_name
+        ).first()
+        source.title = title_name
+        db.session.commit()
+    except Exception as e:
+        return helpers.make_message(409, str(e))
+
+    return None
