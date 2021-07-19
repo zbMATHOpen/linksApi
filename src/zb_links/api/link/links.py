@@ -186,6 +186,7 @@ class LinkItem(Resource):
         source_val = args[arg_names["link_ext_id"]]
         source_name = args[arg_names["link_partner"]]
         title_name = None
+        partner_name = None
         try:
             title_name = args["title"]
         except BadRequest:
@@ -210,7 +211,9 @@ class LinkItem(Resource):
         if len(message_list) > 0:
             return helpers.make_message(422, message_list)
 
-        source_obj = Source.query.filter_by(id=source_val).first()
+        source_obj = Source.query.filter_by(
+            id=source_val, partner=partner_name
+        ).first()
         if not source_obj:
             response = source_helpers.create_new_source(
                 source_val, source_name, title_name
@@ -245,6 +248,11 @@ class LinkItem(Resource):
         link_document = args[arg_names["document"]].strip()
         link_external_id = args[arg_names["link_ext_id"]]
         link_type = args[arg_names["link_partner"]]
+        title_name = None
+        try:
+            title_name = args["title"]
+        except BadRequest:
+            pass
 
         link = None
         link_document = target_helpers.get_de_from_input(link_document)
@@ -286,10 +294,18 @@ class LinkItem(Resource):
         if arg_names["edit_link_ext_id"] in args:
             new_ext_id = args[arg_names["edit_link_ext_id"]].strip()
 
-            source_obj = Source.query.filter_by(id=new_ext_id).first()
+            source_obj = Source.query.filter_by(
+                id=new_ext_id, partner=link_type
+            ).first()
             if not source_obj:
                 response = source_helpers.create_new_source(
-                    new_ext_id, link_type
+                    new_ext_id, link_type, title_name
+                )
+                if response:
+                    return response
+            elif title_name:
+                response = source_helpers.edit_source_title(
+                    link_external_id, link_type, title_name
                 )
                 if response:
                     return response
@@ -301,9 +317,10 @@ class LinkItem(Resource):
 
         link_data_tuple = (link_document, link_external_id, link_type)
         if link_helpers.link_exists(link_data_tuple):
-            return helpers.make_message(
-                422, "This link already exists in the database"
-            )
+            if not title_name:
+                return helpers.make_message(
+                    422, "This link already exists in the database"
+                )
 
         link.document = link_document
         link.external_id = link_external_id
