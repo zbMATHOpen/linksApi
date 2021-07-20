@@ -253,6 +253,8 @@ class LinkItem(Resource):
         except BadRequest:
             pass
 
+        title_same = True
+
         link = None
         link_document = target_helpers.get_de_from_input(link_document)
         link = Link.query.filter_by(
@@ -292,42 +294,49 @@ class LinkItem(Resource):
 
         if arg_names["edit_link_ext_id"] in args:
             new_ext_id = args[arg_names["edit_link_ext_id"]].strip()
+            link_external_id = new_ext_id
 
-            source_obj = Source.query.filter_by(
-                id=new_ext_id, partner=link_type
-            ).first()
-            if not source_obj:
-                response = source_helpers.create_new_source(
+        source_obj = Source.query.filter_by(
+            id=link_external_id, partner=link_type
+        ).first()
+        if not source_obj:
+            response = source_helpers.create_new_source(
+                new_ext_id, link_type, title_name
+            )
+            if response:
+                return response
+
+        source_obj = Source.query.filter_by(
+            id=link_external_id, partner=link_type
+        ).first()
+        if title_name:
+            source_title = source_obj.title
+            if title_name != source_title:
+                title_same = False
+                response = source_helpers.edit_source_title(
                     new_ext_id, link_type, title_name
                 )
                 if response:
                     return response
-            elif title_name:
-                response = source_helpers.edit_source_title(
-                    link_external_id, link_type, title_name
-                )
-                if response:
-                    return response
 
-            link_external_id = new_ext_id
-
-        if not (new_doc_id or new_ext_id or new_partner):
+        if not (new_doc_id or new_ext_id or new_partner) and title_same:
             return helpers.make_message(422, "empty data for a patch")
 
         link_data_tuple = (link_document, link_external_id, link_type)
         if link_helpers.link_exists(link_data_tuple):
-            if not title_name:
+            if title_same:
                 return helpers.make_message(
                     422, "This link already exists in the database"
                 )
+        else:
+            link.document = link_document
+            link.external_id = link_external_id
+            link.type = link_type
+            date_modified = datetime.now(pytz.timezone("Europe/Berlin"))
+            link.last_modified_at = date_modified
 
-        link.document = link_document
-        link.external_id = link_external_id
-        link.type = link_type
-        date_modified = datetime.now(pytz.timezone("Europe/Berlin"))
-        link.last_modified_at = date_modified
+            db.session.commit()
 
-        db.session.commit()
         return None, 204
 
     @api.expect(link_item_arguments)
