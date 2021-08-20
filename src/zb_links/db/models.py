@@ -25,21 +25,6 @@ class Partner(db.Model):
         self.url = url
 
 
-class Provider(db.Model):
-    __tablename__ = "provider"
-    __table_args__ = {"schema": "zb_links"}
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String())
-    scheme = db.Column(db.String())
-    url = db.Column(db.String())
-
-    def __init__(self, name, scheme, url):
-        self.name = name
-        self.scheme = scheme
-        self.url = url
-
-
 class Link(db.Model):
     __tablename__ = "document_external_ids"
 
