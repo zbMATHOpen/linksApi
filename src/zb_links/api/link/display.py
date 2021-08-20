@@ -5,7 +5,7 @@
 from flask_restx import fields, marshal
 
 from zb_links.api.restx import api
-from zb_links.db.models import Provider, Source, ZBTarget
+from zb_links.db.models import Source, ZBTarget
 
 object_id_info = api.model(
     "identifier",
@@ -162,15 +162,13 @@ def get_display(link_element):
         "PublicationDate": target_obj.year,
     }
 
-    provider_obj = Provider.query.filter_by(name=element_link_provider).first()
     provider_id_dict = {
-        "ID": provider_obj.name,
-        "IDScheme": provider_obj.scheme,
-        "IDURL": provider_obj.url,
+        "ID": link_element.created_by,
+        "IDScheme": "zbMATH scheme",
     }
     provider_dict = {
         "identifier": marshal(provider_id_dict, object_id_info),
-        "provider_name": provider_obj.name,
+        "provider_name": link_element.created_by,
     }
 
     links_display_format = {
