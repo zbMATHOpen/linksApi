@@ -25,18 +25,6 @@ def seed_partner():
     db.session.commit()
 
 
-@seedbp.cli.command("provider")
-def seed_provider():
-    name = "api_user"
-    scheme = "zbMATH scheme"
-    url = "https://zbmath.org/"
-
-    new_provider = Provider(name, scheme, url)
-
-    db.session.add(new_provider)
-    db.session.commit()
-
-
 @seedbp.cli.command("source")
 def seed_source():
     chapter_title = (
