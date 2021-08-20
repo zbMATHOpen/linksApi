@@ -8,7 +8,7 @@ import click
 import pytz
 from flask import Blueprint
 
-from zb_links.db.models import Link, Partner, Provider, Source, ZBTarget, db
+from zb_links.db.models import Link, Partner, Source, ZBTarget, db
 
 seedbp = Blueprint("seed", __name__)
 
@@ -22,18 +22,6 @@ def seed_partner():
     new_partner = Partner(name, scheme, url)
 
     db.session.add(new_partner)
-    db.session.commit()
-
-
-@seedbp.cli.command("provider")
-def seed_provider():
-    name = "api_user"
-    scheme = "zbMATH scheme"
-    url = "https://zbmath.org/"
-
-    new_provider = Provider(name, scheme, url)
-
-    db.session.add(new_provider)
     db.session.commit()
 
 
@@ -136,7 +124,6 @@ def seed_author_ids():
 @click.pass_context
 def click_seed_all(ctx):
     seed_partner.invoke(ctx)
-    seed_provider.invoke(ctx)
     seed_source.invoke(ctx)
     seed_target.invoke(ctx)
     seed_link.invoke(ctx)
