@@ -163,12 +163,12 @@ def get_display(link_element):
     }
 
     provider_id_dict = {
-        "ID": link_element.created_by,
+        "ID": element_link_provider,
         "IDScheme": "zbMATH scheme",
     }
     provider_dict = {
         "identifier": marshal(provider_id_dict, object_id_info),
-        "provider_name": link_element.created_by,
+        "provider_name": element_link_provider,
     }
 
     links_display_format = {
