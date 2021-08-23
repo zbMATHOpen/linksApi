@@ -24,7 +24,7 @@ class SourceCollection(Resource):
         }
     )
     def get(self):
-        """List of links in the source"""
+        """List of links of a given zbMATH partner"""
         args = request.args
         partner_name = args["partner"]
 

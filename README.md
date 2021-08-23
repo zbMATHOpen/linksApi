@@ -1,102 +1,140 @@
-## zbMATH links API
+## zbMATH Links API
 ![test status](https://github.com/zbmathopen/linksApi/actions/workflows/pytest.yml/badge.svg)
 
-1) Install requirements and set the env variables.
+The purpose of the zbMATH Links API is to show the interconnections between [zbMATH](https://zbmath.org/) (the `target` of the API) and external platforms (called here `partners` and constituting the `source` of the API) which store links linking to objects in the target, i.e., documents indexed at zbMATH. 
+The prototypical partner is the [Digital Library of Mathematical Functions](https://dlmf.nist.gov/) (DLMF), which contains more than 6.000 links linking to publications indexed at zbMATH. 
+Other partners can be integrated as well.
 
-    On a first install:
+To run the zbMATH Links API with a dummy database (only for illustrative purposes) please follow these steps:
+
+1) Install the requirements and set the environment variables.
+On a first install:
+
     ```
     python3 -m venv env
     source env/bin/activate
     pip install .
     ```
 
-    This will install the API as a package (zbmath_link_api) in the virtual environment.
-
-    Note: to install the API as a package outside the virtual environment,
-    deactivate your virtual environment,
+    This will install the zbMATH Links API  as a package, `zbmath-link-api`, in the virtual environment. 
+    Note: to install the API as a package outside the virtual environment, deactivate your virtual environment:
+    
     ```
     deactivate
     ```
+    
     Navigate to root folder, and
+    
     ```
     pip install -e .
     ```
 
 
 2) Create the database.
-
-   Define an environment variable `SQLALCHEMY_DATABASE_URI` to define the 
-   [database connection uri.](https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/?highlight=sqlalchemy_database_uri#connection-uri-format)
-   With initialization a migration folder will automatically be created by
-   Flask.
+Define an environment variable `SQLALCHEMY_DATABASE_URI` to set the [database connection URI.](https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/?highlight=sqlalchemy_database_uri#connection-uri-format)
+With initialization a migration folder will be automatically created.
+   
    ```
-   flask manage_db drop_all
    flask db init
+   flask schema add
    flask db migrate
    flask db upgrade
+   flask extra_tables add
+   flask view add
    ```
 
 
-3) Populate the database.
-
-   The following command adds just a single entry in all tables as a starting
-   example dataset.
+3) Populate the database. 
+The following command adds just a single illustrative entry in all tables as a starting example dataset.
+   
    ```
    flask seed all
    ```
 
+4) Run the zbMATH Links API:
 
-4) Run the API.
    ```
    flask run
    ```
 
-
 5) View the API at http://127.0.0.1:5000/links_api/
 
-6) See settings for configuring write access.
-   You can use [dotenv](https://pypi.org/project/python-dotenv/) to store your settings.
+6) See settings for configuring writing access. 
+One can use [dotenv](https://pypi.org/project/python-dotenv/) to store your settings.
+   
+To run the zbMATH Links API with DLMF data an auxiliary package is needed, `update-zblinks-api`, to be installed separately. 
+This will allow the user to populate the database with real data coming from DLMF and execute an update when needed. 
+The following procedure works if the database one is going to populate is (a dump of) the real database at zbMATH.
+
+1) As above.
+
+2) As above.
+   
+3) Install the separate package `update-zblinks-api` and use the command
+
+   ```
+   csv-initial -p DLMF
+   ```
+   
+   This will create two csv files with real DLMF data up to the year 2020: `DLMF_deids_table_init.csv` (to be inserted into the table `document_external_ids`) and  `DLMF_source_table_init.csv` (to be inserted into the table `source`).
+   
+4) In the package `update-zblinks-api`  use the command
+
+   ```
+   update-api
+   ```
+   
+   This has the purpose to update the dataset to the present state and to fill the column `title` in the table `document_external_ids` for the newly added DLMF links.
+   
+   
+5) Run the zbMATH Links API:
+
+   ```
+   flask run
+   ```
+
+6) View the API at http://127.0.0.1:5000/links_api/
+
+7) See settings for configuring a writing access. 
+One can use [dotenv](https://pypi.org/project/python-dotenv/) to store your settings.
+   
+8) Over time links may change (deletions, modifications, new links). The command
+
+   ```
+   update-api
+   ```
+   
+   will allow the user to update the database.
 
 ## Remarks:
 
-a) In what follows links are objects belonging to the "source" (of a given
-partner) and zbMATH objects are objects belonging to the "target".
+a) In what follows links are objects belonging to the `source` (within a given partner) and zbMATH objects are objects belonging to the `target` [zbMATH](https://zbmath.org/).
 
-b) The API offers 8 endpoints.
+b) The zbMATH Links API offers 11 endpoints.
 
-1. GET/partner shows the partners of zbMATH.
+1. GET/link. It retrieves links for given zbMATH objects.
 
-2. PUT/partner allows one to edit a selected partner of zbMATH.
-This route requires authentication.
+2. DELETE/link/item. It deletes a link from the database.
 
-3. GET/link allows one to retrieve links for given zbMATH objects.
-The parameters are: Authors, MSC codes, X-Field (see below).
-Note: in case of no results an empty list [] will be the output.
+3. POST/link/item. It creates a new link related to a zbMATH object.
 
-4. GET/link/item allows one to check relations between a given link,
-and a given zbMATH object.
-The parameters are: Zbl code, Source identifier, Partner name,
-X-Field (see below).
-Note: in case of no results an empty list [] will be the output.
+4. GET/link/item. It checks relations between a given link and a given zbMATH object.
 
-5. POST/link allows one to create a new link (in a given partner) related
-to a zbMATH object.
-The parameters are: Zbl code, Source identifier, Partner name, Link relation.
-This route requires authentication.
+5. PATCH/link/item. It edits and existing link.
 
-6. GET/source provides a list of all links in the source.
+6. GET/link/item/{doc_id}. It retrieves links for a given zbMATH object.
 
-7. GET/statistics/msc shows the occurrence of primary MSC codes
-(2-digit level) in the source.
+7. GET/partner. It retrieves data of a given zbMATH partner.
 
-8. GET/statistics/year shows the occurrence of years of publication of
-references in the source.
+8. PUT/partner. It edits data of a given zbMATH partner.
 
-c) The X-Field is an optional parameter that can be used when one
-is running a query that can pull back a lot of metadata, but only a few
-fields in the output are of interest. Example: in the GET/link one is interested
-only in retrieving the id identifier of sources where the name of the
-author is Abramowitz.
+9. GET/source. It produces a list of all links of a given zbMATH partner.
+
+10. GET/statistics/msc. It shows the occurrence of primary MSC codes (2-digit level) of zbMATH objects in the set of links of a given partner.
+
+11. GET/statistics/year. It shows the occurrence of years of publication of zbMATH objects in the set of links of a given partner.
+
+c) The X-Field is an optional parameter that can be used when one is running a query that can pull back a lot of metadata, but only a few fields in the output are of interest. Example: in the GET/link one is interested only in retrieving the id identifier of sources where the name of the author is Abramowitz.
 Then, Author: Abramowitz, X-Field: {Source{Identifier{ID}}}.
 
 ## Docker use
@@ -109,7 +147,7 @@ visit http://127.0.0.1:5001/links_api/
 
 ## Settings
 
-To use the write feature it is required to set the environment variable
+To use the write feature in some endpoints it is required to set the environment variable
 `ZBMATH_API_KEY`.
 This is unfortunately a bit complicated.
 See

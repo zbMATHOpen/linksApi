@@ -30,7 +30,7 @@ class MSCCollection(Resource):
         }
     )
     def get(self):
-        """Occurrence of primary 2-digit level MSC codes"""
+        """Occurrence of primary MSC codes of zbMATH objects"""
         args = request.args
         partner_name = args["partner"]
 

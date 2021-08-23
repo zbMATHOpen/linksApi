@@ -26,7 +26,7 @@ class YearCollection(Resource):
         }
     )
     def get(self):
-        """Occurrence of years of publication of papers"""
+        """Occurrence of years of publication of zbMATH objects"""
         args = request.args
         partner_name = args["partner"]
 
