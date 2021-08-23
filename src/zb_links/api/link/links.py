@@ -376,7 +376,7 @@ class LinkDoc(Resource):
         }
     )
     def get(self, doc_id):
-        """Retrieve links for a given document"""
+        """Retrieve links for a given zbMATH object"""
         return redirect(
             url_for("links_api.link_link_collection", DE_number=doc_id)
         )
