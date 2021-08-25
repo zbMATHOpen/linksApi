@@ -16,7 +16,7 @@ On a first install:
     pip install .
     ```
 
-    This will install the zbMATH Links API  as a package, `zbmath-link-api`, in the virtual environment. 
+    This will install the zbMATH Links API  as a package, `zbmath-links-api`, in the virtual environment. 
     Note: to install the API as a package outside the virtual environment, deactivate your virtual environment:
     
     ```
@@ -62,7 +62,7 @@ The following command adds just a single illustrative entry in all tables as a s
 6) See settings for configuring writing access. 
 One can use [dotenv](https://pypi.org/project/python-dotenv/) to store your settings.
    
-To run the zbMATH Links API with DLMF data an auxiliary package is needed, `update-zblinks-api`, to be installed separately. 
+To run the zbMATH Links API with DLMF data an auxiliary package is needed, `update-zblinks-api` (available [here](https://github.com/zbMATHOpen/Update_Links)), to be installed separately. 
 This will allow the user to populate the database with real data coming from DLMF and execute an update when needed. 
 The following procedure works if the database one is going to populate is (a dump of) the real database at zbMATH.
 
