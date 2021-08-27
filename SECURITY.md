@@ -8,4 +8,5 @@
 
 ## Reporting a Vulnerability
 
-Email support _at_ zbmath.org
+Consult
+https://zbmath.org/security.txt
