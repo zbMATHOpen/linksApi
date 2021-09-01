@@ -15,11 +15,12 @@ seedbp = Blueprint("seed", __name__)
 
 @seedbp.cli.command("partner")
 def seed_partner():
-    name = "DLMF"
+    name = "dlmf"
+    display_name = "DLMF"
     scheme = "DLMF scheme"
     url = "https://dlmf.nist.gov/"
 
-    new_partner = Partner(name, scheme, url)
+    new_partner = Partner(name, display_name, scheme, url)
 
     db.session.add(new_partner)
     db.session.commit()
@@ -39,11 +40,11 @@ def seed_source():
         type="DLMF bibliographic entry",
         url="https://dlmf.nist.gov/11.14#I1.i1.p1",
         title=chapter_title,
-        partner="DLMF",
+        partner="dlmf",
     )
 
     # add source to partner
-    partner_obj = Partner.query.filter_by(name="DLMF").first()
+    partner_obj = Partner.query.filter_by(name="dlmf").first()
     partner_obj.sources.append(new_source_entry)
 
     db.session.add(new_source_entry)
@@ -99,7 +100,7 @@ def seed_link():
     new_link = Link(
         document=3273551,
         external_id="11.14#I1.i1.p1",
-        type="DLMF",
+        type="dlmf",
         matched_by="zbmath-links-api",
         matched_by_version="0.2",
         matched_at=dt,
