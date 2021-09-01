@@ -17,6 +17,6 @@ def add_schemas():
         INNER JOIN math_author_ids AS a_id2
         ON a_id.author = a_id2.author
         ON deid.document = a_id2.document
-        WHERE deid.matched_by = 'update-zblinks-api';
+        WHERE deid.matched_by = 'zbmath-links-api';
     """
     connection.execute(view_request)
