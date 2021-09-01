@@ -67,17 +67,22 @@ class PartnerCollection(Resource):
             return helpers.make_message(422, "Invalid input")
 
         partner_name = partner_to_edit.name
+        partner_display_name = partner_to_edit.display_name
         partner_scheme = partner_to_edit.scheme
         partner_url = partner_to_edit.url
         if "new partner name" in arg_key_list:
-            partner_name = args["new partner name"].lower()
+            partner_display_name = args["new partner name"]
+            partner_name = partner_display_name.lower()
         if "partner id scheme" in arg_key_list:
             partner_scheme = args["partner id scheme"]
         if "partner url" in arg_key_list:
             partner_url = args["partner url"]
 
         data_to_update = dict(
-            name=partner_name, scheme=partner_scheme, url=partner_url
+            name=partner_name,
+            display_name=partner_display_name,
+            scheme=partner_scheme,
+            url=partner_url
         )
 
         partner_query.update(data_to_update)

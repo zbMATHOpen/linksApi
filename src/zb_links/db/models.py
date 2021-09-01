@@ -12,6 +12,7 @@ class Partner(db.Model):
     __table_args__ = {"schema": "zb_links"}
 
     name = db.Column(db.String(), primary_key=True)
+    display_name = db.Column(db.String())
     scheme = db.Column(db.String())
     url = db.Column(db.String())
 
@@ -19,8 +20,9 @@ class Partner(db.Model):
         "Source", backref="partners", cascade="all, delete-orphan"
     )
 
-    def __init__(self, name, scheme, url):
+    def __init__(self, name, display_name, scheme, url):
         self.name = name
+        self.display_name = display_name
         self.scheme = scheme
         self.url = url
 
