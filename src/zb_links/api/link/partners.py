@@ -58,7 +58,7 @@ class PartnerCollection(Resource):
         for a_key in arg_keys:
             arg_key_list.append(a_key)
 
-        partner_name = args["current partner name"]
+        partner_name = args["current partner name"].lower()
 
         partner_query = Partner.query.filter_by(name=partner_name)
         partner_to_edit = Partner.query.get(partner_name)
@@ -70,7 +70,7 @@ class PartnerCollection(Resource):
         partner_scheme = partner_to_edit.scheme
         partner_url = partner_to_edit.url
         if "new partner name" in arg_key_list:
-            partner_name = args["new partner name"]
+            partner_name = args["new partner name"].lower()
         if "partner id scheme" in arg_key_list:
             partner_scheme = args["partner id scheme"]
         if "partner url" in arg_key_list:

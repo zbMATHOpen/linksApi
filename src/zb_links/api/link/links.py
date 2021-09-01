@@ -157,7 +157,7 @@ class LinkItem(Resource):
         args = request.args
         doc_id = args[arg_names["document"]].strip()
         source_val = args[arg_names["link_ext_id"]]
-        partner_name = args[arg_names["link_partner"]]
+        partner_name = args[arg_names["link_partner"]].lower()
 
         return_link = None
         doc_id = target_helpers.get_de_from_input(doc_id)
@@ -184,7 +184,7 @@ class LinkItem(Resource):
         doc_id = target_helpers.get_de_from_input(doc_id)
 
         source_val = args[arg_names["link_ext_id"]]
-        source_name = args[arg_names["link_partner"]]
+        source_name = args[arg_names["link_partner"]].lower()
         title_name = None
         try:
             title_name = args["title"]
@@ -246,7 +246,7 @@ class LinkItem(Resource):
         args = request.args
         link_document = args[arg_names["document"]].strip()
         link_external_id = args[arg_names["link_ext_id"]]
-        link_type = args[arg_names["link_partner"]]
+        link_type = args[arg_names["link_partner"]].lower()
         title_name = None
         try:
             title_name = args["title"]
@@ -349,7 +349,7 @@ class LinkItem(Resource):
         args = request.args
         doc_id = args[arg_names["document"]].strip()
         source_val = args[arg_names["link_ext_id"]]
-        partner_name = args[arg_names["link_partner"]]
+        partner_name = args[arg_names["link_partner"]].lower()
 
         doc_id = target_helpers.get_de_from_input(doc_id)
         link_to_delete_query = Link.query.filter_by(
