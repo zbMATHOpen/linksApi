@@ -5,7 +5,7 @@
 from flask_restx import fields, marshal
 
 from zb_links.api.restx import api
-from zb_links.db.models import Source, ZBTarget
+from zb_links.db.models import Partner, Source, ZBTarget
 
 object_id_info = api.model(
     "identifier",
@@ -112,12 +112,13 @@ def get_display(link_element):
     element_link_provider = link_element.created_by
     element_relationship_type = None
 
-    source_publisher_url = ""
-    source_publisher_id_scheme = ""
-    partner = link_element.type
-    if partner == "DLMF":
-        source_publisher_url = "https://dlmf.nist.gov/"
-        source_publisher_id_scheme = "name of partner"
+    partner_id = link_element.type
+    partner_obj = Partner.query.get(partner_id)
+    partner_display = partner_obj.display_name
+
+    source_publisher_url = partner_obj.url
+    source_publisher_id_scheme = partner_obj.scheme
+
 
     source_obj = Source.query.get(element_source)
     source_id_dict = {
@@ -127,12 +128,12 @@ def get_display(link_element):
     }
     source_name_dict = {"Name": source_obj.type}
     source_publisher_identifier_dict = {
-        "ID": partner,
+        "ID": partner_id,
         "IDScheme": source_publisher_id_scheme,
         "IDURL": source_publisher_url,
     }
     source_publisher_dict = {
-        "Name": partner,
+        "Name": partner_display,
         "Identifier": marshal(
             source_publisher_identifier_dict, object_id_info
         ),
