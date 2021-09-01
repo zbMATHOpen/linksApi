@@ -15,6 +15,9 @@ partner = api.model(
     "Linking partner",
     {
         "name": fields.String(required=True, description="Partner name"),
+        "display_name": fields.String(
+             required=True, description="Partner name as displayed"
+        ),
         "scheme": fields.String(
             required=True,
             description="Schematic followed to establish partner identifier",
