@@ -29,7 +29,7 @@ def test_put_partner(client):
     response = client.get("/links_api/partner/")
     data = response.json
     name: dict = data[0].get("name")
-    assert test_name == name
+    assert test_name.lower() == name
 
 
 def test_put_partner_full(client):

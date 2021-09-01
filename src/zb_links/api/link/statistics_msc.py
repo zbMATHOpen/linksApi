@@ -32,7 +32,7 @@ class MSCCollection(Resource):
     def get(self):
         """Occurrence of primary MSC codes of zbMATH objects"""
         args = request.args
-        partner_name = args["partner"]
+        partner_name = args["partner"].lower()
 
         queries = (
             ZBTarget.query.join(Link, Link.document == ZBTarget.id)

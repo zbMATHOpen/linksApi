@@ -28,7 +28,7 @@ class YearCollection(Resource):
     def get(self):
         """Occurrence of years of publication of zbMATH objects"""
         args = request.args
-        partner_name = args["partner"]
+        partner_name = args["partner"].lower()
 
         queries = (
             ZBTarget.query.join(Link, Link.document == ZBTarget.id)

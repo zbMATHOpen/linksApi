@@ -5,7 +5,7 @@ from zb_links.db.models import Source, db
 
 def test_new_source_with_title():
     source_val = "26.8#vii.p4"
-    source_name = "DLMF"
+    source_name = "dlmf"
     title_name = "my cool title"
 
     response = create_new_source(source_val, source_name, title_name)
@@ -21,7 +21,7 @@ def test_new_source_with_title():
 
 def test_new_source_wout_title():
     source_val = "26.8#vii.p4"
-    source_name = "DLMF"
+    source_name = "dlmf"
 
     response = create_new_source(source_val, source_name)
     assert not response
