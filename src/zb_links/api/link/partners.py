@@ -16,7 +16,7 @@ partner = api.model(
     {
         "name": fields.String(required=True, description="Partner name"),
         "display_name": fields.String(
-             required=True, description="Partner name as displayed"
+            required=True, description="Partner name as displayed"
         ),
         "scheme": fields.String(
             required=True,
