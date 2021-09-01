@@ -119,7 +119,6 @@ def get_display(link_element):
     source_publisher_url = partner_obj.url
     source_publisher_id_scheme = partner_obj.scheme
 
-
     source_obj = Source.query.get(element_source)
     source_id_dict = {
         "ID": source_obj.id,

@@ -82,7 +82,7 @@ class PartnerCollection(Resource):
             name=partner_name,
             display_name=partner_display_name,
             scheme=partner_scheme,
-            url=partner_url
+            url=partner_url,
         )
 
         partner_query.update(data_to_update)
