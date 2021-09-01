@@ -26,7 +26,7 @@ class SourceCollection(Resource):
     def get(self):
         """List of links of a given zbMATH partner"""
         args = request.args
-        partner_name = args["partner"]
+        partner_name = args["partner"].lower()
 
         sources = Source.query.filter(Source.partner == partner_name).all()
         display_list = []
