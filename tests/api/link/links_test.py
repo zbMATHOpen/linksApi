@@ -71,7 +71,7 @@ def test_get_link_msc(client):
 def test_post_link(client):
     document = 2062129
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     link_query = Link.query.filter_by(document=document,
                                       external_id=external_id,
@@ -121,7 +121,7 @@ def test_post_link(client):
 def test_post_link_with_zbl(client):
     zbl_id = "1234.98765"
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     de_val = target_helpers.get_de_from_input(zbl_id)
 
@@ -173,7 +173,7 @@ def test_post_link_with_zbl(client):
 def test_post_link_with_bad_zbl(client):
     zbl_id = "2062.129"
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     json = {arg_names["document"]: zbl_id,
             arg_names["link_ext_id"]: external_id,
@@ -192,7 +192,7 @@ def test_post_link_with_bad_zbl(client):
 def test_patch_link_with_empty(client):
     doc_id = 3273551
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     json_base = {arg_names["document"]: doc_id,
                   arg_names["link_ext_id"]: external_id,
@@ -214,7 +214,7 @@ def test_patch_link_with_empty(client):
 def test_patch_link_with_fake_new(client):
     doc_id = 3273551
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     json_base = {arg_names["document"]: doc_id,
                   arg_names["link_ext_id"]: external_id,
@@ -237,7 +237,7 @@ def test_patch_link_with_fake_new(client):
 def test_patch_link_with_de(client):
     doc_id = 3273551
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     de_val = target_helpers.get_de_from_input(doc_id)
 
@@ -281,7 +281,7 @@ def test_patch_link_with_de(client):
 def test_patch_link_with_new_source(client):
     doc_id = 3273551
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     de_val = target_helpers.get_de_from_input(doc_id)
 
@@ -331,7 +331,7 @@ def test_patch_link_with_new_source(client):
 def test_patch_link_with_new_title(client):
     doc_id = 3273551
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     json_base = {arg_names["document"]: doc_id,
                  arg_names["link_ext_id"]: external_id,
@@ -360,7 +360,7 @@ def test_patch_link_with_new_title(client):
 def test_post_then_delete_link(client):
     document = 2062129
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     link_query = Link.query.filter_by(document=document,
                                       external_id=external_id,
@@ -391,7 +391,7 @@ def test_post_then_delete_link(client):
 def test_post_existing_link(client):
     document = 3273551
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     link_query = Link.query.filter_by(document=document,
                                       external_id=external_id,
@@ -419,7 +419,7 @@ def test_post_existing_link(client):
 def test_empty_patch(client):
     document = 3273551
     external_id = "11.14#I1.i1.p1"
-    partner_name = "DLMF"
+    partner_name = "dlmf"
 
     link_query = Link.query.filter_by(document=document,
                                       external_id=external_id,

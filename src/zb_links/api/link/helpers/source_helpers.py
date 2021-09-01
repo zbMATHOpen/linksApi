@@ -2,7 +2,7 @@ from zb_links.api.link.helpers import dlmf_source_helpers, helpers
 from zb_links.db.models import Source, db
 
 Sources = {
-    "DLMF": {
+    "dlmf": {
         "id_scheme": "DLMF scheme",
         "url_prefix": "https://dlmf.nist.gov/",
         "type": "DLMF reference",
@@ -11,7 +11,7 @@ Sources = {
 
 
 def create_new_source(source_val, source_name, title_name=None):
-    if source_name == "DLMF":
+    if source_name == "dlmf":
         if not title_name:
             title_name = dlmf_source_helpers.get_title(source_val)
 
