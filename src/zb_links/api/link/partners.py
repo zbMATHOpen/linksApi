@@ -125,7 +125,6 @@ class PartnerCollection(Resource):
                     422, "Partner is already in the database"
                 )
 
-
         except Exception as e:
             return helpers.make_message(409, str(e))
 
