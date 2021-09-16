@@ -40,6 +40,23 @@ partner_edit_arguments.add_argument("partner id scheme", type=str)
 
 partner_edit_arguments.add_argument("partner url", type=str)
 
+partner_insert_arguments = reqparse.RequestParser()
+
+partner_insert_arguments.add_argument("name", type=str, required=True)
+
+partner_insert_arguments.add_argument("display_name", type=str, required=True)
+
+partner_insert_arguments.add_argument("scheme", type=str, required=True)
+
+partner_insert_arguments.add_argument("url", type=str, required=True)
+
+partner_doc = {
+    "name": {"description": "X"},
+    "display_name": {"description": "Y"},
+    "scheme": {"description": "Z"},
+    "url": {"description": "W"}
+}
+
 
 @ns.route("/")
 class PartnerCollection(Resource):
@@ -90,3 +107,38 @@ class PartnerCollection(Resource):
 
         partner_query.update(data_to_update)
         db.session.commit()
+
+    @api.expect(partner_insert_arguments)
+    @api.response(201, "Partner successfully created.")
+    @api.doc(params=partner_doc)
+    @token_required
+    @api.doc(security="apikey")
+    def post(self):
+        """Create a new partner related of zbMATH"""
+        args = request.args
+
+        try:
+            partner_exists = Partner.query.get(args["name"])
+
+            if partner_exists:
+                return helpers.make_message(422, "Partner is already in "
+                                                 "the database")
+
+        except Exception as e:
+            return helpers.make_message(409, str(e))
+
+
+        try:
+            partner = Partner(
+                name=args["name"],
+                display_name=args["display_name"],
+                scheme=args["scheme"],
+                url=args["url"],
+            )
+
+            db.session.add(partner)
+            db.session.commit()
+        except Exception as e:
+            return helpers.make_message(409, str(e))
+
+        return None, 201
