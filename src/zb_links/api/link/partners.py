@@ -54,7 +54,7 @@ partner_doc = {
     "name": {"description": "X"},
     "display_name": {"description": "Y"},
     "scheme": {"description": "Z"},
-    "url": {"description": "W"}
+    "url": {"description": "W"},
 }
 
 
@@ -121,12 +121,13 @@ class PartnerCollection(Resource):
             partner_exists = Partner.query.get(args["name"])
 
             if partner_exists:
-                return helpers.make_message(422, "Partner is already in "
-                                                 "the database")
+                return helpers.make_message(
+                    422, "Partner is already in the database"
+                )
+
 
         except Exception as e:
             return helpers.make_message(409, str(e))
-
 
         try:
             partner = Partner(
