@@ -42,7 +42,7 @@ partner_insert_arguments = reqparse.RequestParser()
 
 partner_insert_arguments.add_argument("name", type=str, required=True)
 
-partner_insert_arguments.add_argument("display_name", type=str, required=True)
+partner_insert_arguments.add_argument("display name", type=str, required=True)
 
 partner_insert_arguments.add_argument("scheme", type=str, required=True)
 
@@ -121,7 +121,7 @@ class PartnerCollection(Resource):
         try:
             partner = Partner(
                 name=args["name"],
-                display_name=args["display_name"],
+                display_name=args["display name"],
                 scheme=args["scheme"],
                 url=args["url"],
             )
