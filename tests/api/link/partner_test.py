@@ -47,7 +47,7 @@ def test_put_partner_full(client):
     assert data is None
     response = client.get("/links_api/partner/")
     data = response.json
-    schema: dict = data[0].get("new scheme")
+    schema: dict = data[0].get("scheme")
     assert test_schema == schema
 
     json = {"current name": "DLMF",
