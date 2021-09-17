@@ -50,13 +50,6 @@ partner_insert_arguments.add_argument("scheme", type=str, required=True)
 
 partner_insert_arguments.add_argument("url", type=str, required=True)
 
-partner_doc = {
-    "name": {"description": "X"},
-    "display_name": {"description": "Y"},
-    "scheme": {"description": "Z"},
-    "url": {"description": "W"},
-}
-
 
 @ns.route("/")
 class PartnerCollection(Resource):
@@ -110,11 +103,10 @@ class PartnerCollection(Resource):
 
     @api.expect(partner_insert_arguments)
     @api.response(201, "Partner successfully created.")
-    @api.doc(params=partner_doc)
     @token_required
     @api.doc(security="apikey")
     def post(self):
-        """Create a new partner related of zbMATH"""
+        """Create a new partner related to zbMATH"""
         args = request.args
 
         try:
