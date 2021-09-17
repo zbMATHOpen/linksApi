@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Partner window (1 GET + 1 PUT)
+# Partner window (1 GET + 1 PUT + 1 POST)
 # ------------------------------------------------------------------------------
 
 from flask import request
@@ -31,14 +31,14 @@ partner = api.model(
 partner_edit_arguments = reqparse.RequestParser()
 
 partner_edit_arguments.add_argument(
-    "current partner name", type=str, required=True
+    "current name", type=str, required=True
 )
 
-partner_edit_arguments.add_argument("new partner name", type=str)
+partner_edit_arguments.add_argument("new name", type=str)
 
-partner_edit_arguments.add_argument("partner id scheme", type=str)
+partner_edit_arguments.add_argument("new scheme", type=str)
 
-partner_edit_arguments.add_argument("partner url", type=str)
+partner_edit_arguments.add_argument("new url", type=str)
 
 partner_insert_arguments = reqparse.RequestParser()
 
@@ -55,7 +55,7 @@ partner_insert_arguments.add_argument("url", type=str, required=True)
 class PartnerCollection(Resource):
     @api.marshal_list_with(partner)
     def get(self):
-        """Retrieve data of a zbMATH partner (partner id, name, scheme, url)"""
+        """Retrieve data of zbMATH partners"""
         partners = Partner.query.all()
 
         return partners
@@ -64,14 +64,14 @@ class PartnerCollection(Resource):
     @token_required
     @api.doc(security="apikey")
     def put(self):
-        """Edit data of a zbMATH partner (partner id, name, scheme, url)"""
+        """Edit data of a zbMATH partner"""
         args = request.args
         arg_keys = args.keys()
         arg_key_list = []
         for a_key in arg_keys:
             arg_key_list.append(a_key)
 
-        partner_name = args["current partner name"].lower()
+        partner_name = args["current name"].lower()
 
         partner_query = Partner.query.filter_by(name=partner_name)
         partner_to_edit = Partner.query.get(partner_name)
@@ -83,13 +83,13 @@ class PartnerCollection(Resource):
         partner_display_name = partner_to_edit.display_name
         partner_scheme = partner_to_edit.scheme
         partner_url = partner_to_edit.url
-        if "new partner name" in arg_key_list:
-            partner_display_name = args["new partner name"]
+        if "new name" in arg_key_list:
+            partner_display_name = args["new name"]
             partner_name = partner_display_name.lower()
-        if "partner id scheme" in arg_key_list:
-            partner_scheme = args["partner id scheme"]
-        if "partner url" in arg_key_list:
-            partner_url = args["partner url"]
+        if "new scheme" in arg_key_list:
+            partner_scheme = args["new scheme"]
+        if "new url" in arg_key_list:
+            partner_url = args["new url"]
 
         data_to_update = dict(
             name=partner_name,
