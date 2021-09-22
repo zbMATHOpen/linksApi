@@ -165,7 +165,7 @@ def get_display(link_element):
     provider_id_dict = {
         "ID": element_link_provider,
         "IDScheme": "zbMATH scheme",
-        "IDURL": "https://zbmath.org/"
+        "IDURL": "https://zbmath.org/",
     }
     provider_dict = {
         "identifier": marshal(provider_id_dict, object_id_info),
