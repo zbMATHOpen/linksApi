@@ -65,7 +65,7 @@ def test_get_link_msc(client):
     response = client.get(f"/links_api/link/?{param}")
     data = response.json
     assert len(data) > 0
-    assert data[0]["RelationshipType"] == "isRelatedTo"
+    # assert data[0]["RelationshipType"] == "isRelatedTo"
 
 
 def test_post_link(client):
