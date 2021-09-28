@@ -122,6 +122,10 @@ link_item_arguments.add_argument(
     arg_names["link_partner"], type=str, required=True
 )
 
+link_item_arguments.add_argument(
+    arg_names["link_publication_date"], type=str, required=True
+)
+
 link_edit_arguments = link_item_arguments.copy()
 
 link_edit_arguments.add_argument(
@@ -143,6 +147,9 @@ link_params = {
     },
     arg_names["link_partner"]: {
         "description": descriptions[arg_names["link_partner"]]
+    },
+    arg_names["link_publication_date"]: {
+        "description": descriptions[arg_names["link_publication_date"]]
     },
 }
 
@@ -190,7 +197,12 @@ class LinkItem(Resource):
             title_name = args["title"]
         except BadRequest:
             pass
-        date_added = datetime.now(pytz.timezone("Europe/Berlin"))
+        try:
+            date_added = datetime.strptime(
+                args["link_publication_date"], "%Y-%m-%d"
+            )
+        except Exception as e:
+            return helpers.make_message(409, str(e))
 
         message_list = []
 

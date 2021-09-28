@@ -8,6 +8,7 @@ arg_names = {
     "edit_link_doc": "new_DE_number",
     "edit_link_ext_id": "new_external_id",
     "edit_link_partner": "new_partner",
+    "link_publication_date": "link_publication_date",
 }
 
 descriptions = {
@@ -26,4 +27,5 @@ descriptions = {
     arg_names["edit_link_doc"]: "",
     arg_names["edit_link_ext_id"]: "",
     arg_names["edit_link_partner"]: "",
+    arg_names["link_publication_date"]: "",
 }

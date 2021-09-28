@@ -95,8 +95,7 @@ def seed_target():
 
 @seedbp.cli.command("link")
 def seed_link():
-    dt = datetime(2021, 1, 1)
-    dt = dt.replace(tzinfo=pytz.timezone("Europe/Berlin"))
+    dt = datetime("2021-12-12", "%Y-%m-%d")
     new_link = Link(
         document=3273551,
         external_id="11.14#I1.i1.p1",
