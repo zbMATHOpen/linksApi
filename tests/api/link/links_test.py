@@ -96,8 +96,8 @@ def test_post_link(client):
     connection = db.engine.connect()
     data_row = """
     UPDATE document_external_ids
-    SET created_by = "api_user"
-    WHERE document = "2062129"
+    SET created_by = 'api_user'
+    WHERE document = '2062129'
     """
     connection.execute(data_row)
 
@@ -152,8 +152,8 @@ def test_post_link_with_zbl(client):
     connection = db.engine.connect()
     data_row = """
     UPDATE document_external_ids
-    SET created_by = "api_user"
-    WHERE document = "2062129"
+    SET created_by = 'api_user'
+    WHERE document = '2062129'
     """
     connection.execute(data_row)
 
@@ -258,7 +258,6 @@ def test_patch_link_with_de(client):
     link_query = Link.query.filter_by(document=de_val,
                                       external_id=external_id,
                                       type=partner_name,
-                                      matched_at=date,
                                       )
     link_to_edit = link_query.all()
 
@@ -305,7 +304,6 @@ def test_patch_link_with_new_source(client):
     link_query = Link.query.filter_by(document=de_val,
                                       external_id=external_id,
                                       type=partner_name,
-                                      matched_at=date,
                                       )
     link_to_edit = link_query.all()
 
@@ -381,10 +379,12 @@ def test_post_then_delete_link(client):
     document = 2062129
     external_id = "11.14#I1.i1.p1"
     partner_name = "dlmf"
+    date = "2021-12-12"
 
     link_query = Link.query.filter_by(document=document,
                                       external_id=external_id,
                                       type=partner_name,
+                                      matched_at=date,
                                       )
     link = link_query.all()
 
@@ -392,7 +392,8 @@ def test_post_then_delete_link(client):
 
     json = {arg_names["document"]: document,
             arg_names["link_ext_id"]: external_id,
-            arg_names["link_partner"]: partner_name}
+            arg_names["link_partner"]: partner_name,
+            arg_names["link_publication_date"]: date}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
@@ -412,6 +413,7 @@ def test_post_existing_link(client):
     document = 3273551
     external_id = "11.14#I1.i1.p1"
     partner_name = "dlmf"
+    date = "2021-12-15"
 
     link_query = Link.query.filter_by(document=document,
                                       external_id=external_id,
@@ -424,7 +426,8 @@ def test_post_existing_link(client):
 
     json = {arg_names["document"]: document,
             arg_names["link_ext_id"]: external_id,
-            arg_names["link_partner"]: partner_name}
+            arg_names["link_partner"]: partner_name,
+            arg_names["link_publication_date"]: date}
     param = urlencode(json)
     headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
     response = client.post(f"/links_api/link/item/?{param}",
