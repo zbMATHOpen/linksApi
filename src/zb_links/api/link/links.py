@@ -123,7 +123,7 @@ link_item_arguments.add_argument(
 )
 
 link_item_arguments.add_argument(
-    arg_names["link_publication_date"], type=str, required=True
+    arg_names["link_publication_date"], type=str, required=False
 )
 
 link_edit_arguments = link_item_arguments.copy()
