@@ -68,13 +68,13 @@ target = api.model(
     {
         "Identifier": fields.Nested(object_id_info),
         "Type": fields.Nested(name_model),
-        "Title": fields.String(description="title of the publication"),
-        "Creator": fields.List(fields.Nested(name_model_creator)),
+        # "Title": fields.String(description="title of the publication"),
+        # "Creator": fields.List(fields.Nested(name_model_creator)),
         "PublicationDate": fields.Integer(description="year of publication"),
-        "Publisher": fields.String(
-            required=True,
-            description="publisher of book or journal name of publication",
-        ),
+        # "Publisher": fields.String(
+        #     required=True,
+        #     description="publisher of book or journal name of publication",
+        # ),
     },
 )
 
@@ -110,7 +110,7 @@ def get_display(link_element):
     element_target = link_element.document
     element_link_publication_date = link_element.matched_at
     element_link_provider = link_element.created_by
-    element_relationship_type = None
+    element_relationship_type = "isRelatedTo"
 
     partner_id = link_element.type
     partner_obj = Partner.query.get(partner_id)
@@ -165,6 +165,7 @@ def get_display(link_element):
     provider_id_dict = {
         "ID": element_link_provider,
         "IDScheme": "zbMATH scheme",
+        "IDURL": "https://zbmath.org/",
     }
     provider_dict = {
         "identifier": marshal(provider_id_dict, object_id_info),
