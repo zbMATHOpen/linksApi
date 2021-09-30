@@ -110,7 +110,7 @@ One can use [dotenv](https://pypi.org/project/python-dotenv/) to store your sett
 
 a) In what follows links are objects belonging to the `source` (within a given partner) and zbMATH objects are objects belonging to the `target` [zbMATH](https://zbmath.org/).
 
-b) The zbMATH Links API offers 11 endpoints.
+b) The zbMATH Links API offers 12 endpoints.
 
 1. GET/link. It retrieves links for given zbMATH objects.
 
@@ -128,11 +128,13 @@ b) The zbMATH Links API offers 11 endpoints.
 
 8. PUT/partner. It edits data of a given zbMATH partner.
 
-9. GET/source. It produces a list of all links of a given zbMATH partner.
+9. POST/partner. It creates a new partner related to zbMATH.
 
-10. GET/statistics/msc. It shows the occurrence of primary MSC codes (2-digit level) of zbMATH objects in the set of links of a given partner.
+10. GET/source. It produces a list of all links of a given zbMATH partner.
 
-11. GET/statistics/year. It shows the occurrence of years of publication of zbMATH objects in the set of links of a given partner.
+11. GET/statistics/msc. It shows the occurrence of primary MSC codes (2-digit level) of zbMATH objects in the set of links of a given partner.
+
+12. GET/statistics/year. It shows the occurrence of years of publication of zbMATH objects in the set of links of a given partner.
 
 c) The X-Field is an optional parameter that can be used when one is running a query that can pull back a lot of metadata, but only a few fields in the output are of interest. Example: in the GET/link one is interested only in retrieving the id identifier of sources where the name of the author is Abramowitz.
 Then, Author: Abramowitz, X-Field: {Source{Identifier{ID}}}.
