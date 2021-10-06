@@ -414,7 +414,7 @@ def test_patch_link_with_fake_new(client):
     assert response.status_code == 422
 
 
-def test_patch_link_with_de(client):
+def test_patch_link_with_de_with_date(client):
     doc_id = 3273551
     external_id = "11.14#I1.i1.p1"
     partner_name = "dlmf"
@@ -460,11 +460,10 @@ def test_patch_link_with_de(client):
     assert response.status_code == 204
 
 
-def test_patch_link_with_de_with_date(client):
+def test_patch_link_with_de(client):
     doc_id = 3273551
     external_id = "11.14#I1.i1.p1"
     partner_name = "dlmf"
-    date = "2021-12-12"
 
     de_val = target_helpers.get_de_from_input(doc_id)
 
@@ -479,8 +478,7 @@ def test_patch_link_with_de_with_date(client):
     new_doc_id = 2062129
     json_base = {arg_names["document"]: de_val,
                  arg_names["link_ext_id"]: external_id,
-                 arg_names["link_partner"]: partner_name,
-                 arg_names["link_publication_date"]: date}
+                 arg_names["link_partner"]: partner_name}
     json_edit = json_base.copy()
     json_edit["new_DE_number"] = new_doc_id
     param_edit = urlencode(json_edit)
@@ -556,7 +554,7 @@ def test_patch_link_with_new_source(client):
     db.session.commit()
 
 
-def test_patch_link_with_new_title(client):
+def test_patch_link_with_new_title_with_date(client):
     doc_id = 3273551
     external_id = "11.14#I1.i1.p1"
     partner_name = "dlmf"
@@ -586,16 +584,14 @@ def test_patch_link_with_new_title(client):
     db.session.commit()
 
 
-def test_patch_link_with_new_title_with_date(client):
+def test_patch_link_with_new_title(client):
     doc_id = 3273551
     external_id = "11.14#I1.i1.p1"
     partner_name = "dlmf"
-    date = "2021-12-12"
 
     json_base = {arg_names["document"]: doc_id,
                  arg_names["link_ext_id"]: external_id,
-                 arg_names["link_partner"]: partner_name,
-                 arg_names["link_publication_date"]: date}
+                 arg_names["link_partner"]: partner_name}
     json_edit = json_base.copy()
 
     source_obj = Source.query.filter_by(id=external_id).first()

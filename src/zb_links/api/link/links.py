@@ -197,13 +197,15 @@ class LinkItem(Resource):
             title_name = args["title"]
         except BadRequest:
             pass
-        if doc_id:
+        if args["link_publication_date"]:
             try:
                 date_added = datetime.strptime(
                     args["link_publication_date"], "%Y-%m-%d"
                 )
             except Exception as e:
                 return helpers.make_message(409, str(e))
+        else:
+            date_added = datetime.now(pytz.timezone("Europe/Berlin"))
 
         message_list = []
 
