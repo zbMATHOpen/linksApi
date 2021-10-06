@@ -197,12 +197,13 @@ class LinkItem(Resource):
             title_name = args["title"]
         except BadRequest:
             pass
-        try:
-            date_added = datetime.strptime(
-                args["link_publication_date"], "%Y-%m-%d"
-            )
-        except Exception as e:
-            return helpers.make_message(409, str(e))
+        if doc_id:
+            try:
+                date_added = datetime.strptime(
+                    args["link_publication_date"], "%Y-%m-%d"
+                )
+            except Exception as e:
+                return helpers.make_message(409, str(e))
 
         message_list = []
 
