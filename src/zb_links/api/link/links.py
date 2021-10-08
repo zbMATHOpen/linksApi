@@ -215,7 +215,6 @@ class LinkItem(Resource):
         else:
             date_added = datetime.now(pytz.timezone("Europe/Berlin"))
 
-
         partner = Partner.query.filter_by(name=source_name).first()
         if partner:
             partner_name = partner.name
