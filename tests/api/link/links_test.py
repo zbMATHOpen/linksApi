@@ -226,6 +226,41 @@ def test_post_link_with_zbl_with_date(client):
     db.session.commit()
 
 
+def test_post_link_with_bad_date(client):
+    zbl_id = "1234.98765"
+    external_id = "11.14#I1.i1.p1"
+    partner_name = "dlmf"
+    date = "2021"
+
+    de_val = target_helpers.get_de_from_input(zbl_id)
+
+    link_query = Link.query.filter_by(document=de_val,
+                                      external_id=external_id,
+                                      type=partner_name
+                                      )
+    link_to_add = link_query.all()
+
+    assert len(link_to_add) == 0, "test link to create is not unique"
+
+    json = {arg_names["document"]: de_val,
+            arg_names["link_ext_id"]: external_id,
+            arg_names["link_partner"]: partner_name,
+            arg_names["link_publication_date"]: date}
+    param = urlencode(json)
+    headers = {"X-API-KEY": os.getenv("ZBMATH_API_KEY")}
+    response = client.post(f"/links_api/link/item/?{param}",
+                            headers=headers,
+                            )
+    assert response.status_code == 422
+
+    # check for no entry
+    link_query = Link.query.filter_by(document=de_val,
+                                      external_id=external_id,
+                                      type=partner_name
+                                      )
+    assert not link_query.all()
+
+
 def test_post_link_with_zbl(client):
     zbl_id = "1234.98765"
     external_id = "11.14#I1.i1.p1"

@@ -197,15 +197,24 @@ class LinkItem(Resource):
             title_name = args["title"]
         except BadRequest:
             pass
-        date_added = datetime.now(pytz.timezone("Europe/Berlin"))
-        try:
-            date_added = datetime.strptime(
-                args["link_publication_date"], "%Y-%m-%d"
-            )
-        except BadRequest:
-            pass
 
         message_list = []
+
+        date_added = None
+        try:
+            date_added = args[arg_names["link_publication_date"]]
+        except BadRequest:
+            pass
+        if date_added:
+            try:
+                date_added = datetime.strptime(
+                    args["link_publication_date"], "%Y-%m-%d"
+                )
+            except ValueError:
+                message_list.append("Invalid date format")
+        else:
+            date_added = datetime.now(pytz.timezone("Europe/Berlin"))
+
 
         partner = Partner.query.filter_by(name=source_name).first()
         if partner:
