@@ -185,6 +185,9 @@ class LinkItem(Resource):
     @api.doc(security="apikey")
     def post(self):
         """Create a new link related to a zbMATH object"""
+
+        mbv = dist_version
+
         args = request.args
 
         doc_id = args[arg_names["document"]].strip()
@@ -198,6 +201,11 @@ class LinkItem(Resource):
         except BadRequest:
             pass
 
+        try:
+            mbv = args["matched_by_version"]
+        except BadRequest:
+            pass
+
         message_list = []
 
         date_added = None
@@ -208,7 +216,7 @@ class LinkItem(Resource):
         if date_added:
             try:
                 date_added = datetime.strptime(
-                    args["link_publication_date"], "%Y-%m-%d"
+                    args[arg_names["link_publication_date"]], "%Y-%m-%d"
                 )
             except ValueError:
                 message_list.append("Invalid date format")
@@ -247,7 +255,7 @@ class LinkItem(Resource):
                 external_id=source_val,
                 type=partner_name,
                 matched_by=dist_name,
-                matched_by_version=dist_version,
+                matched_by_version=mbv,
                 matched_at=date_added,
             )
             db.session.add(new_link)
