@@ -55,7 +55,7 @@ One can use [dotenv](https://pypi.org/project/python-dotenv/) to store your sett
 
 **DLMF database.**  To run the zbMATH Links API with DLMF data an auxiliary package is needed, `update-zblinks-api` (available [here](https://github.com/zbMATHOpen/Update_Links)), to be installed separately. 
 This will allow the user to populate the database with real data coming from DLMF and execute an update when needed. 
-Please follow these steps (only the third step is different above)
+Please follow these steps (only the third step is different from above):
 
 1) As above.
 
