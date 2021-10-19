@@ -55,21 +55,17 @@ One can use [dotenv](https://pypi.org/project/python-dotenv/) to store your sett
 
 **DLMF database.**  To run the zbMATH Links API with DLMF data an auxiliary package is needed, `update-zblinks-api` (available [here](https://github.com/zbMATHOpen/Update_Links)), to be installed separately. 
 This will allow the user to populate the database with real data coming from DLMF and execute an update when needed. 
-Please follow these steps:
+Please follow these steps (only the third step is different above)
 
 1) As above.
 
 2) As above.
    
-3) Install the separate package `update-zblinks-api` and follow the instructions for that package.
+3) To populate the database, please install the separate package `update-zblinks-api` and follow the instructions for that package.
 
-4) Run the zbMATH Links API:
+4) As above.
 
-   ```
-   flask run
-   ```
-
-5) View the API at http://127.0.0.1:5000/links_api/
+5) As above.
 
 **Remark.** See settings for configuring writing access. 
 One can use [dotenv](https://pypi.org/project/python-dotenv/) to store your settings.
