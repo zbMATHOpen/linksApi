@@ -7,4 +7,5 @@ RUN mkdir src && pip install .[test]
 COPY . /zb_links
 RUN pip install -e .
 EXPOSE 5000
+ENV FLASK_APP="zb_links.app.py"
 ENTRYPOINT ["gunicorn", "--bind",  "0.0.0.0:5000", "zb_links.app:create_app()"]
