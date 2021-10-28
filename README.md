@@ -14,9 +14,10 @@ On a first install:
     python3 -m venv env
     source env/bin/activate
     pip install -e .
+    export FLASK_APP=zb_links.app
     ```
 
-    This will install the package, `zbmath-links-api` in the [virtual environment](https://docs.python.org/3/tutorial/venv.html).
+    This will install the package, `zbmath-links-api` in the [virtual environment](https://docs.python.org/3/tutorial/venv.html), and set the environment variable for flask to [discover the application](https://flask.palletsprojects.com/en/2.0.x/cli/).
 
 
 2) Create the database.
