@@ -14,6 +14,7 @@ services:
     command: /zb_links/startup.sh
     environment:
       SQLALCHEMY_DATABASE_URI: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'
+      FLASK_APP: 'zb_links.db.init_tables.init_db_app.py'
     entrypoint: ''
     depends_on:
       - db
@@ -27,3 +28,4 @@ services:
       - migration
     environment:
       SQLALCHEMY_DATABASE_URI: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'
+      FLASK_APP: 'zb_links.app.py'
