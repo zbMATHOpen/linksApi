@@ -6,9 +6,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Start the database
-        run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d db
+        run: docker-compose up -d db
       - name: Migrate the database schema
-        run: docker-compose up --build migration
+        run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --build migration
       - name: Test
         run: docker-compose run --no-deps --entrypoint "" rest scripts/test
       - name: Shutdown database
