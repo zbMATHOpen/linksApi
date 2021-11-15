@@ -15,7 +15,6 @@ services:
     environment:
       SQLALCHEMY_DATABASE_URI: 'postgresql://dlmfzb:dlmfzb@db/dlmfzb'
       FLASK_APP: 'zb_links.db.init_tables.init_db_app.py'
-    entrypoint: ''
     depends_on:
       - db
   rest:

@@ -10,7 +10,7 @@ jobs:
       - name: Migrate the database schema
         run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up --build migration
       - name: Test
-        run: docker-compose run --no-deps --entrypoint "" rest scripts/test
+        run: docker-compose run --no-deps rest scripts/test
       - name: Shutdown database
         if: ${{ always() }}
         run: docker-compose stop db
