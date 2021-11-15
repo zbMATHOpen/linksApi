@@ -1,13 +1,9 @@
 import sqlalchemy
-from flask import Blueprint
 
 from zb_links.db.models import db
 
-managebp = Blueprint("manage_db", __name__)
-
 
 # clears the database
-@managebp.cli.command("drop_all")
 def db_drop_all():
 
     connection = db.engine.connect()

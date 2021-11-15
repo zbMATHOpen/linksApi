@@ -4,16 +4,11 @@
 
 from datetime import datetime
 
-import click
 import pytz
-from flask import Blueprint
 
 from zb_links.db.models import Link, Partner, Source, ZBTarget, db
 
-seedbp = Blueprint("seed", __name__)
 
-
-@seedbp.cli.command("partner")
 def seed_partner():
     name = "dlmf"
     display_name = "DLMF"
@@ -26,7 +21,6 @@ def seed_partner():
     db.session.commit()
 
 
-@seedbp.cli.command("source")
 def seed_source():
     chapter_title = (
         "1st item ‣ §11.14(ii) Struve Functions ‣ "
@@ -51,7 +45,6 @@ def seed_source():
     db.session.commit()
 
 
-@seedbp.cli.command("target")
 def seed_target():
     book_title = (
         "Handbook of mathematical functions with formulas, "
@@ -93,7 +86,6 @@ def seed_target():
     db.session.commit()
 
 
-@seedbp.cli.command("link")
 def seed_link():
     dt = datetime(2021, 1, 1)
     dt = dt.replace(tzinfo=pytz.timezone("Europe/Berlin"))
@@ -112,7 +104,6 @@ def seed_link():
     db.session.commit()
 
 
-@seedbp.cli.command("author_ids")
 def seed_author_ids():
     connection = db.engine.connect()
     data_row = """
@@ -122,11 +113,9 @@ def seed_author_ids():
     connection.execute(data_row)
 
 
-@seedbp.cli.command("all")
-@click.pass_context
-def click_seed_all(ctx):
-    seed_partner.invoke(ctx)
-    seed_source.invoke(ctx)
-    seed_target.invoke(ctx)
-    seed_link.invoke(ctx)
-    seed_author_ids.invoke(ctx)
+def seed_all():
+    seed_partner()
+    seed_source()
+    seed_target()
+    seed_link()
+    seed_author_ids()

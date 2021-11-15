@@ -1,12 +1,7 @@
-from flask import Blueprint
-
 from zb_links.db.models import db
 
-viewbp = Blueprint("view", __name__)
 
-
-@viewbp.cli.command("add")
-def add_schemas():
+def add_view():
 
     connection = db.engine.connect()
     view_request = """

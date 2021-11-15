@@ -1,11 +1,6 @@
-from flask import Blueprint
-
 from zb_links.db.models import db
 
-tablesbp = Blueprint("extra_tables", __name__)
 
-
-@tablesbp.cli.command("add")
 def add_tables():
 
     connection = db.engine.connect()

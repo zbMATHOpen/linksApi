@@ -1,8 +1,8 @@
 ## zbMATH Links API
 ![test status](https://github.com/zbmathopen/linksApi/actions/workflows/pytest.yml/badge.svg)
 
-The purpose of the zbMATH Links API is to show the interconnections between [zbMATH](https://zbmath.org/) (the `target` of the API) and external platforms (called here `partners` and constituting the `source` of the API) which store links linking to objects in the target, i.e., documents indexed at zbMATH. 
-The prototypical partner is the [Digital Library of Mathematical Functions](https://dlmf.nist.gov/) (DLMF), which contains more than 6.000 links linking to publications indexed at zbMATH. 
+The purpose of the zbMATH Links API is to show the interconnections between [zbMATH](https://zbmath.org/) (the `target` of the API) and external platforms (called here `partners` and constituting the `source` of the API) which store links linking to objects in the target, i.e., documents indexed at zbMATH.
+The prototypical partner is the [Digital Library of Mathematical Functions](https://dlmf.nist.gov/) (DLMF), which contains more than 6.000 links linking to publications indexed at zbMATH.
 Other partners can be integrated as well.
 
    **Dummy database.**  To run the zbMATH Links API with a dummy database (only for illustrative purposes) please follow these steps:
@@ -14,64 +14,64 @@ On a first install:
     python3 -m venv env
     source env/bin/activate
     pip install -e .
-    export FLASK_APP=zb_links.app
     ```
 
     This will install the package, `zbmath-links-api` in the [virtual environment](https://docs.python.org/3/tutorial/venv.html), and set the environment variable for flask to [discover the application](https://flask.palletsprojects.com/en/2.0.x/cli/).
 
 
 2) Create the database.
-Define an environment variable `SQLALCHEMY_DATABASE_URI` to set the [database connection URI](https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/?highlight=sqlalchemy_database_uri#connection-uri-format). Connect
-to the database, e.g., `export SQLALCHEMY_DATABASE_URI="postgresql:///my_database"`.
+Define and export an environment variable `SQLALCHEMY_DATABASE_URI` to set the [database connection URI](https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/?highlight=sqlalchemy_database_uri#connection-uri-format), e.g., `export SQLALCHEMY_DATABASE_URI="postgresql:///my_database"`.
+Define and export the environment variable `FLASK_APP="zb_links.db.init_tables.init_db_app.py"`.
 With initialization a migration folder will be automatically created.
-   
+
    ```
    flask db init
-   flask schema add
+   flask schema_add
    flask db migrate
    flask db upgrade
-   flask extra_tables add
-   flask view add
+   flask extra_tables_add
+   flask view_add
    ```
 
 
-3) Populate the (dummy) database. 
+3) Populate the (dummy) database.
 The following command adds just a single illustrative entry in all tables as a starting example dataset.
-   
+
    ```
-   flask seed all
+   flask seed_all
    ```
 
 4) Run the zbMATH Links API:
 
    ```
+   export FLASK_APP=zb_links.app
    flask run
    ```
 
 5) View the API at http://127.0.0.1:5000/links_api/
 
-**Remark.** See settings for configuring writing access. 
+**Remark.** See settings for configuring writing access.
 One can use [dotenv](https://pypi.org/project/python-dotenv/) to store your settings.
-   
 
-**DLMF database.**  To run the zbMATH Links API with DLMF data an auxiliary package is needed, `update-zblinks-api` (available [here](https://github.com/zbMATHOpen/Update_Links)), to be installed separately. 
-This will allow the user to populate the database with real data coming from DLMF and execute an update when needed. 
+
+**DLMF database.**  To run the zbMATH Links API with DLMF data an auxiliary package is needed, `update-zblinks-api` (available [here](https://github.com/zbMATHOpen/Update_Links)), to be installed separately.
+This will allow the user to populate the database with real data coming from DLMF and execute an update when needed.
 Please follow these steps (only the third step is different from above):
 
 1) As above.
 
 2) As above.
-   
+
 3) To populate the database, please install the separate package `update-zblinks-api` and follow the instructions for that package.
 
 4) As above.
 
 5) As above.
 
-**Remark.** See settings for configuring writing access. 
+**Remark.** See settings for configuring writing access.
 One can use [dotenv](https://pypi.org/project/python-dotenv/) to store your settings.
- 
-**Remark.**   For a proper operation of the API with real DLMF data at least one table (more precisely, a subset of it) of the real database of zbMATH is needed, i.e., `math_documents`. 
+
+**Remark.**   For a proper operation of the API with real DLMF data at least one table (more precisely, a subset of it) of the real database of zbMATH is needed, i.e., `math_documents`.
 Indeed, the needed table must contain at least those documents indexed at zbMATH that are referenced in the links obtained by the `update-zblinks-api` package. For the same reason, a view of the zbMATH table `math_authors_ids` is needed.
 
 ## Remarks:
