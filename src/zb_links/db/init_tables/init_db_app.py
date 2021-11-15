@@ -1,13 +1,12 @@
-
 from flask import Flask
 from flask_migrate import Migrate
 
 from zb_links import configure_app, initialize_db
-from zb_links.db.models import db
+from zb_links.db.init_tables.extra_tables import add_tables
+from zb_links.db.init_tables.schema import add_schemas
 from zb_links.db.init_tables.seed_db import seed_all
 from zb_links.db.init_tables.view import add_view
-from zb_links.db.init_tables.schema import add_schemas
-from zb_links.db.init_tables.extra_tables import add_tables
+from zb_links.db.models import db
 
 
 def create_app():

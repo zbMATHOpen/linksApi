@@ -1,8 +1,9 @@
-
 import os
+
 from pkg_resources import get_distribution
 
 from zb_links.db.models import db
+
 
 def configure_app(flask_app):
     default_config = {

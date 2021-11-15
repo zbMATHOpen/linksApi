@@ -13,8 +13,6 @@ from zb_links.api.link.statistics_years import ns as statistics_years_namespace
 from zb_links.api.restx import api
 
 
-
-
 def initialize_app(flask_app):
     configure_app(flask_app)
 
