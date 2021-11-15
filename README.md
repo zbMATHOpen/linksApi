@@ -21,17 +21,17 @@ On a first install:
 
 
 2) Create the database.
-Define an environment variable `SQLALCHEMY_DATABASE_URI` to set the [database connection URI](https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/?highlight=sqlalchemy_database_uri#connection-uri-format). Connect
-to the database, e.g., `export SQLALCHEMY_DATABASE_URI="postgresql:///my_database"`.
+Define and export an environment variable `SQLALCHEMY_DATABASE_URI` to set the [database connection URI](https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/?highlight=sqlalchemy_database_uri#connection-uri-format), e.g., `export SQLALCHEMY_DATABASE_URI="postgresql:///my_database"`. 
+Define and export the environment variable `FLASK_APP="zb_links.db.init_tables.init_db_app.py"`.
 With initialization a migration folder will be automatically created.
    
    ```
    flask db init
-   flask schema add
+   flask schema_add
    flask db migrate
    flask db upgrade
-   flask extra_tables add
-   flask view add
+   flask extra_tables_add
+   flask view_add
    ```
 
 
@@ -39,7 +39,7 @@ With initialization a migration folder will be automatically created.
 The following command adds just a single illustrative entry in all tables as a starting example dataset.
    
    ```
-   flask seed all
+   flask seed_all
    ```
 
 4) Run the zbMATH Links API:
