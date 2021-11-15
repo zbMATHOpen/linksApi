@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Start the database
-        run: docker-compose up -d db
+        run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d db
       - name: Migrate the database schema
         run: docker-compose up --build migration
       - name: Test
