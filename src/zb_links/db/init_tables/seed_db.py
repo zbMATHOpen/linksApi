@@ -113,16 +113,6 @@ def seed_author_ids():
     connection.execute(data_row)
 
 
-# @seedbp.cli.command("all")
-# @click.pass_context
-# def click_seed_all(ctx):
-#     seed_partner.invoke(ctx)
-#     seed_source.invoke(ctx)
-#     seed_target.invoke(ctx)
-#     seed_link.invoke(ctx)
-#     seed_author_ids.invoke(ctx)
-
-
 def seed_all():
     seed_partner()
     seed_source()
