@@ -107,11 +107,11 @@ b) The zbMATH Links API offers 12 endpoints.
 c) The X-Field is an optional parameter that can be used when one is running a query that can pull back a lot of metadata, but only a few fields in the output are of interest. Example: in the GET/link one is interested only in retrieving the id identifier of sources where the name of the author is Abramowitz.
 Then, Author: Abramowitz, X-Field: {Source{Identifier{ID}}}.
 
-## Docker use
+## Docker use (requires BuildKit)
 
 run
 ```
-docker-compose up -d
+COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d
 ```
 visit http://127.0.0.1:5001/links_api/
 
