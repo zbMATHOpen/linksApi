@@ -1,8 +1,12 @@
+import configparser
 import os
 
 from pkg_resources import get_distribution
 
 from zb_links.db.models import db
+
+config = configparser.ConfigParser()
+config.read("config.ini")
 
 
 def configure_app(flask_app):
@@ -25,8 +29,12 @@ def configure_app(flask_app):
     flask_app.config.from_mapping(default_config)
     # Overwrite config with
     for key in default_config.keys():
-        if key in os.environ:
-            flask_app.config[key] = os.getenv(key)
+        try:
+            if key in config["application"].keys():
+                flask_app.config[key] = config["application"][key]
+        except KeyError:
+            if key in os.environ:
+                flask_app.config[key] = os.getenv(key)
 
 
 def initialize_db(flask_app):
