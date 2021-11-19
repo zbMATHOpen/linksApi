@@ -6,7 +6,7 @@ from pkg_resources import get_distribution
 from zb_links.db.models import db
 
 config = configparser.ConfigParser()
-config.read("config.ini")
+config.read("/etc/linksapi/config.ini")
 
 
 def configure_app(flask_app):
