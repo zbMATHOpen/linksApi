@@ -100,6 +100,9 @@ class LinkCollection(Resource):
             )
 
         if not (author or msc_val or doc_id):
+            print("Links")
+            from zb_links.db.models import db
+            print(db)
             link_set = set(Link.query.filter_by(matched_by=dist_name).all())
 
         if link_set:

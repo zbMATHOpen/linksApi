@@ -41,3 +41,5 @@ def configure_app(flask_app):
 def initialize_db(flask_app):
     db.init_app(flask_app)
     db.app = flask_app
+    print("Init")
+    print(db)

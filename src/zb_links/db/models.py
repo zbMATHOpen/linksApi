@@ -28,6 +28,8 @@ class Partner(db.Model):
 
 
 class Link(db.Model):
+    print("Model")
+    print(db)
     __tablename__ = "document_external_ids"
 
     id = db.Column(db.Integer, primary_key=True)
