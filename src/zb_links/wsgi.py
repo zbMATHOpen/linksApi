@@ -2,6 +2,7 @@ from zb_links import config
 from zb_links.app import create_app as create_api_app
 from zb_links.db.init_tables.init_db_app import create_app as create_db_app
 
+application = None
 try:
     flask_app = config["application"]["FLASK_APP"]
 
