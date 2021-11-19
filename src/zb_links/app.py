@@ -34,7 +34,3 @@ def create_app():
     initialize_app(application)
     initialize_db(application)
     return application
-
-
-if __name__ == "__main__":
-    app = create_app()
