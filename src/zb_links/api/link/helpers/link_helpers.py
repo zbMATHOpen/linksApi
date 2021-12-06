@@ -128,8 +128,7 @@ def get_links_from_author(author):
 
         query_results = connection.execute(auth_doc_query, a_name=each_exp)
 
-        author_documents = set(query_results)
-        auth_doc_list = [doc_el[0] for doc_el in author_documents]
+        auth_doc_list = list(set([row[0] for row in query_results]))
         doc_id_list.append(auth_doc_list)
 
     # get intersection of doc ids belonging to each author set
