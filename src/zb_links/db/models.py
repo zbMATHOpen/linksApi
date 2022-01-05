@@ -41,7 +41,7 @@ class Link(db.Model):
     matched_at = db.Column(db.DateTime(timezone=True))
     last_modified_at = db.Column(db.DateTime(timezone=True))
     last_modified_by = db.Column(db.String())
-    created_by = db.Column(db.String())
+    created_by = db.Column(db.String(), server_default="current_user()")
 
 
 class ZBTarget(db.Model):
